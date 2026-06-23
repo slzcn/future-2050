@@ -114,6 +114,8 @@ function viewLastResult(){
   $game.classList.add('hidden');
   const el=$ending; el.classList.remove('hidden');
   el.innerHTML=r.html;
+  // 【修复】存档HTML里的 #scQr 只是空容器，二维码需运行时重新绘制，否则空白
+  renderShareQR();
   // 重新挂载渲染(MBTI block 已在html里)
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -661,7 +663,7 @@ function toast(msg,ms){const t=document.getElementById('toast');t.textContent=ms
 function genImage(){
   if(window.Sfx)Sfx.play('click');
   const card=document.getElementById('shareCard');
-  // 截图前临时隐藏「二十六年投资轨迹」明细块(页面仍显示,只是不进长图,避免截图过长)
+  // 截图前临时隐藏「二十四年押注轨迹」明细块(页面仍显示,只是不进长图,避免截图过长)
   const rec=document.getElementById('scRecord');
   const recPrevDisplay = rec ? rec.style.display : null;
   if(rec) rec.style.display='none';
@@ -684,7 +686,7 @@ function renderShareQR(){
     var box=document.getElementById('scQr'); if(!box||typeof QRCode==='undefined') return;
     box.innerHTML='';
     // 二维码固定指向公网稳定地址(不用当前域,避免妙搭域名/301跳转扫不出),带上该局 ref/名字
-    var pub='https://slzcn.github.io/vc-simulator/';
+    var pub='https://slzcn.github.io/future-2050/';
     var id=(typeof getPlayerId==='function')?getPlayerId():'';
     var nm=(typeof getPlayerName==='function')?getPlayerName():'';
     var target=pub+'?ref='+encodeURIComponent(id||'');
@@ -728,7 +730,7 @@ function copyLink(){
   }
   const url=buildShareLink();
   const who=nm?nm+'（我）':'我';
-  const txt=`${who}在「中国创业投资模拟器」走完了二十六年创投人生，来挑战你的投资判断力，看看你能不能超过我 👉 ${url}`;
+  const txt=`${who}在「2050未来投资模拟器」押注了人类未来二十四年，来挑战你的未来判断力，看看你能不能超过我 👉 ${url}`;
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>toast(CONFIG.text.copyOk),()=>fb(txt));}
   else fb(txt);
   function fb(t){const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(CONFIG.text.copyOk);}catch(e){toast(CONFIG.text.copyFail);}ta.remove();}

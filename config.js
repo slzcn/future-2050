@@ -117,7 +117,7 @@ const CONFIG = {
     tierB:  '${name}没能跑出来，你交了学费。${why}。',
     tierC:  '${name}彻底归零，血本无归。${why}——这一课，刻骨铭心。',
     // 邀请横幅
-    invited: '🎉 你是被 <b>${name}</b> 邀请来的，开启属于你的二十六年吧',
+    invited: '🎉 你是被 <b>${name}</b> 邀请来的，开启属于你的二十四年吧',
     // 选择页
     choiceTitle: '${year} 年 · 投资抉择',
     choiceSub: '作为${title}，这一站你只能押注 1 个未来',
