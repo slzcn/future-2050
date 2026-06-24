@@ -662,10 +662,10 @@ function renderMBTI(){
 
 function toast(msg,ms){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),ms||2200);}
 function genImage(){
-  if(window.Sfx)Sfx.play('click');
-  if(window._genImaging) return;  // 重入锁:截图进行中再点直接忽略,防止连点导致明细块被永久隐藏
+  if(window._genImaging) return;  // 重入锁:截图进行中再点直接忽略,防止连点导致明细块被永久隐藏(音效也须在锁之后,否则连点会重复响)
   if(typeof html2canvas==='undefined'){ toast(CONFIG.text.genImageFail||'截图库未就绪,请稍后再试',3000); return; }  // 库未加载完(慢网首次)直接提示,不抛错
   window._genImaging=true;
+  if(window.Sfx)Sfx.play('click');
   const card=document.getElementById('shareCard');
   // 截图前临时隐藏「二十四年押注轨迹」明细块(页面仍显示,只是不进截图,避免截图过长)
   const rec=document.getElementById('scRecord');
