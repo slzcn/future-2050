@@ -116,10 +116,10 @@
   <div class="footer">🦞 小龙虾出品 · 数值手册+调参器 · 数据=游戏真实配置（config.js / data-periods.js / data-endings.js）</div>
 </div>
 
-<script src="config.js?v=20260625za"></script>
-<script src="data-periods.js?v=20260625za"></script>
-<script src="data-endings.js?v=20260625za"></script>
-<script src="data-mbti.js?v=20260625za"></script>
+<script src="config.js?v=20260625zb"></script>
+<script src="data-periods.js?v=20260625zb"></script>
+<script src="data-endings.js?v=20260625zb"></script>
+<script src="data-mbti.js?v=20260625zb"></script>
 <script>
 "use strict";
 var RUNS=10000;
@@ -457,7 +457,7 @@ function runSim(){
   ['track','aum','network','health','luck'].forEach(function(k){h+='<div class="stat"><div class="k">'+an[k]+'</div><div class="v">'+q(attr[k],0.5)+' <small>/ '+q(attr[k],0.9)+' / '+attr[k][RUNS-1]+'</small></div></div>';});
   h+='</div></div>';
   var tot=lock.aum+lock.track+lock.health+lock.net||1;
-  h+='<div class="panel"><h2>🔒 四门槛触发占比</h2><div class="stat-grid"><div class="stat"><div class="k">算力/影响力/心智/网络</div><div class="v" style="font-size:13px">'+(lock.aum/tot*100).toFixed(0)+'% / '+(lock.track/tot*100).toFixed(0)+'% / '+(lock.health/tot*100).toFixed(0)+'% / '+(lock.net/tot*100).toFixed(0)+'%</div></div></div></div>';
+  h+='<div class="panel"><h2>🔒 四门槛触发占比</h2><div class="stat-grid"><div class="stat" style="grid-column:1/-1"><div class="k">算力 / 影响力 / 心智 / 网络</div><div class="v" style="font-size:14px;white-space:nowrap">'+(lock.aum/tot*100).toFixed(0)+'% / '+(lock.track/tot*100).toFixed(0)+'% / '+(lock.health/tot*100).toFixed(0)+'% / '+(lock.net/tot*100).toFixed(0)+'%</div></div></div></div>';
   // ---- 标的趋势分布(只读, future自己的设定: 风口主导) ----
   var tall={hot:0,up:0,down:0,safe:0},ttot=0;
   DATA_PERIODS.periods.forEach(function(p){p.rounds.forEach(function(r){(r.deals||[]).forEach(function(d){if(tall[d.trend]!=null){tall[d.trend]++;ttot++;}});});});
