@@ -37,16 +37,16 @@
   .deftbl td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;}
   .deftbl tr:last-child td{border-bottom:none;}
   .deftbl td:first-child{font-weight:700;color:var(--blue);white-space:nowrap;width:30%;max-width:120px;word-break:break-all;}
-  code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.92em;background:rgba(26,23,20,.06);padding:1px 5px;border-radius:4px;}
+  code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.92em;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;}
   .txt{font-size:clamp(12px,3vw,13px);color:var(--ink-soft);line-height:1.8;}
   .txt b{color:var(--ink);}
   .row{display:flex;align-items:center;gap:8px;margin-bottom:9px;font-size:clamp(12px,3vw,13px);}
   .row .nm{flex:0 0 clamp(92px,28vw,120px);font-weight:600;}
-  .row .barwrap{flex:1;min-width:40px;height:16px;background:rgba(26,23,20,.06);border-radius:5px;position:relative;overflow:hidden;}
+  .row .barwrap{flex:1;min-width:40px;height:16px;background:rgba(255,255,255,.08);border-radius:5px;position:relative;overflow:hidden;}
   .row .bar{position:absolute;left:0;top:0;height:100%;border-radius:5px;transition:width .3s;}
   .row .pct{flex:0 0 clamp(78px,22vw,96px);text-align:right;font-weight:800;font-variant-numeric:tabular-nums;font-size:12px;}
   .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-  .stat{background:rgba(26,23,20,.03);border-radius:8px;padding:10px 12px;}
+  .stat{background:rgba(255,255,255,.04);border-radius:8px;padding:10px 12px;}
   .stat .k{font-size:11.5px;color:var(--ink-faint);margin-bottom:2px;}
   .stat .v{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;}
   .stat .v small{font-size:11.5px;color:var(--ink-soft);font-weight:600;}
@@ -56,8 +56,8 @@
   .prow label{flex:0 0 clamp(96px,26vw,130px);color:var(--ink-soft);}
   .prow input[type=range]{flex:1;min-width:90px;height:24px;accent-color:var(--accent);background:transparent;cursor:pointer;-webkit-appearance:none;appearance:none;touch-action:manipulation;}
   .prow input[type=range]:focus{outline:none;}
-  .prow input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:rgba(26,23,20,.14);}
-  .prow input[type=range]::-moz-range-track{height:5px;border-radius:3px;background:rgba(26,23,20,.14);}
+  .prow input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:rgba(255,255,255,.14);}
+  .prow input[type=range]::-moz-range-track{height:5px;border-radius:3px;background:rgba(255,255,255,.14);}
   .prow input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.25);margin-top:-7px;cursor:pointer;}
   .prow input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.25);cursor:pointer;}
   .prow .pv input{width:64px;text-align:right;font-family:inherit;font-size:13px;font-weight:800;border:1px solid var(--line);border-radius:5px;padding:5px 6px;background:var(--bg);color:var(--ink);-webkit-appearance:none;appearance:none;-moz-appearance:textfield;}
@@ -116,10 +116,10 @@
   <div class="footer">🦞 小龙虾出品 · 数值手册+调参器 · 数据=游戏真实配置（config.js / data-periods.js / data-endings.js）</div>
 </div>
 
-<script src="config.js?v=20260625e"></script>
-<script src="data-periods.js?v=20260625e"></script>
-<script src="data-endings.js?v=20260625e"></script>
-<script src="data-mbti.js?v=20260625e"></script>
+<script src="config.js?v=20260625f"></script>
+<script src="data-periods.js?v=20260625f"></script>
+<script src="data-endings.js?v=20260625f"></script>
+<script src="data-mbti.js?v=20260625f"></script>
 <script>
 "use strict";
 var RUNS=10000;
