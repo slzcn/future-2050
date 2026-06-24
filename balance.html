@@ -8,8 +8,8 @@
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   :root{
     --bg:#070b14; --paper:#0d1320; --ink:#e6f0fa; --ink-soft:#9fb3c8;
-    --ink-faint:#8c857a; --line:#d6cfc0; --good:#3c6b4f; --bad:#a8453a;
-    --warn:#9a7b3a; --card:#faf7ef; --gold:#b8860b; --blue:#3a6b8c;
+    --ink-faint:#8a9bb3; --line:#1e2a3d; --good:#3fd9a8; --bad:#ff5a6e;
+    --warn:#f0a83a; --card:#101828; --gold:#27d3e0; --blue:#7b9cf0;
     --accent:#27d3e0;
   }
   html,body{background:var(--paper);color:var(--ink);
@@ -23,14 +23,14 @@
   .game-name{font-family:"PingFang SC","Microsoft YaHei",sans-serif;font-weight:900;font-size:clamp(15px,3.6vw,18px);letter-spacing:.14em;text-align:center;color:var(--gold);margin-bottom:6px;}
   h1{font-family:"PingFang SC","Microsoft YaHei",sans-serif;font-weight:900;font-size:clamp(24px,5.5vw,36px);letter-spacing:.05em;text-align:center;margin-bottom:5px;}
   .sub{text-align:center;font-size:clamp(11.5px,2.8vw,13px);color:var(--ink-faint);margin-bottom:16px;letter-spacing:.02em;}
-  .tabs{display:flex;gap:8px;margin-bottom:18px;position:sticky;top:0;background:linear-gradient(var(--paper) 78%,rgba(245,241,232,0));padding:10px 0 12px;z-index:10;}
+  .tabs{display:flex;gap:8px;margin-bottom:18px;position:sticky;top:0;background:linear-gradient(var(--paper) 78%,transparent);padding:10px 0 12px;z-index:10;}
   .tab{flex:1;text-align:center;padding:11px 4px;font-size:clamp(12.5px,3.2vw,14px);font-weight:700;border:1.5px solid var(--line);border-radius:9px;cursor:pointer;background:var(--card);color:var(--ink-soft);transition:all .2s;user-select:none;-webkit-user-select:none;letter-spacing:.03em;touch-action:manipulation;}
   @media(hover:hover){.tab:hover{border-color:var(--accent);color:var(--accent);}}
   .tab.on{background:var(--accent);color:var(--paper);border-color:var(--accent);box-shadow:0 4px 14px color-mix(in srgb,var(--accent) 32%,transparent);}
   .page{display:none;animation:fade .4s ease;}
   .page.on{display:block;}
   @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(26,23,20,.04);}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.2);}
   .panel h2{font-size:clamp(14px,3.6vw,15.5px);font-weight:800;letter-spacing:.04em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;}
   .formula{background:rgba(39,211,224,.06);border-left:3px solid var(--accent);border-radius:0 7px 7px 0;padding:11px 14px;margin:8px 0;font-size:clamp(12px,3vw,13px);line-height:1.95;font-family:"SF Mono",Menlo,Consolas,"Courier New",monospace;color:var(--ink);overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:pre-wrap;word-break:break-word;}
   .deftbl{width:100%;font-size:clamp(12px,3vw,13px);border-collapse:collapse;}
@@ -60,7 +60,7 @@
   .prow input[type=range]::-moz-range-track{height:5px;border-radius:3px;background:rgba(26,23,20,.14);}
   .prow input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.25);margin-top:-7px;cursor:pointer;}
   .prow input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.25);cursor:pointer;}
-  .prow .pv input{width:64px;text-align:right;font-family:inherit;font-size:13px;font-weight:800;border:1px solid var(--line);border-radius:5px;padding:5px 6px;background:#fff;color:var(--ink);-webkit-appearance:none;appearance:none;-moz-appearance:textfield;}
+  .prow .pv input{width:64px;text-align:right;font-family:inherit;font-size:13px;font-weight:800;border:1px solid var(--line);border-radius:5px;padding:5px 6px;background:var(--bg);color:var(--ink);-webkit-appearance:none;appearance:none;-moz-appearance:textfield;}
   .prow .pv input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 22%,transparent);}
   .btnrow{display:flex;gap:10px;margin-top:10px;}
   .btn{flex:1;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font-family:inherit;font-size:13.5px;font-weight:700;padding:12px 0;cursor:pointer;border-radius:7px;letter-spacing:.05em;transition:all .15s;touch-action:manipulation;-webkit-user-select:none;user-select:none;}
@@ -116,10 +116,10 @@
   <div class="footer">🦞 小龙虾出品 · 数值手册+调参器 · 数据=游戏真实配置（config.js / data-periods.js / data-endings.js）</div>
 </div>
 
-<script src="config.js?v=20260624z"></script>
-<script src="data-periods.js?v=20260624z"></script>
-<script src="data-endings.js?v=20260624z"></script>
-<script src="data-mbti.js?v=20260624z"></script>
+<script src="config.js?v=20260625a"></script>
+<script src="data-periods.js?v=20260625a"></script>
+<script src="data-endings.js?v=20260625a"></script>
+<script src="data-mbti.js?v=20260625a"></script>
 <script>
 "use strict";
 var RUNS=10000;
@@ -144,42 +144,42 @@ function renderDoc(){
   var h='';
   // 综合评分公式
   h+='<div class="panel"><h2>🎯 综合评分公式</h2>';
-  h+='<div class="formula">综合评分 = (资本 − '+C.start.aum+' − 累计投入) × '+C.scoreCoef.a+'\n         + (业绩 − '+C.start.track+') × '+C.scoreCoef.b+'\n         + (人脉 − '+C.start.network+') × '+C.scoreCoef.c+'</div>';
-  h+='<div class="txt"><b>净值制</b>：每项减去起始值（资本还减累计投入），所以"什么都没积累 = 0 分"。系数 资本:业绩:人脉 ≈ <b>2:3:1</b>，业绩贡献最大。结果封顶 <b>1000</b> 分；健康归零再 ×'+C.deadPenalty+'。运气、健康不直接进总分（通过影响投资过程间接作用）。</div></div>';
+  h+='<div class="formula">综合评分 = (算力 − '+C.start.aum+' − 累计投入) × '+C.scoreCoef.a+'\n         + (影响力 − '+C.start.track+') × '+C.scoreCoef.b+'\n         + (网络 − '+C.start.network+') × '+C.scoreCoef.c+'</div>';
+  h+='<div class="txt"><b>净值制</b>：每项减去起始值（算力还减累计投入），所以"什么都没积累 = 0 分"。系数 算力:影响力:网络 ≈ <b>2:3:1</b>，影响力贡献最大。结果封顶 <b>1000</b> 分；心智归零再 ×'+C.deadPenalty+'。运气、心智不直接进总分（通过影响投资过程间接作用）。</div></div>';
   // 单站属性变化
   h+='<div class="panel"><h2>📊 单站属性变化</h2>';
   h+='<div class="formula">本站某属性增减 = 项目权重w × 档位倍率 × 趋势修正tg × 小额系数sf</div>';
-  h+='<div class="txt"><b>档位倍率</b>：SS '+C.outcomeTiers.SS.mult+' / S '+C.outcomeTiers.S.mult+' / A '+C.outcomeTiers.A.mult+' / B '+C.outcomeTiers.B.mult+' / C '+C.outcomeTiers.C.mult+'<br><b>趋势修正tg</b>（仅正收益）：顺势up = '+C.trendReturn.upDecay+'^(已选up次数)，下限'+C.trendReturn.upFloor+'；过热hot/逆势down博中 = ×'+C.trendReturn.hotGain+'<br><b>小额系数sf</b> = '+C.smallTicketFactor+'（资本不足小额参投时）</div></div>';
+  h+='<div class="txt"><b>档位倍率</b>：SS '+C.outcomeTiers.SS.mult+' / S '+C.outcomeTiers.S.mult+' / A '+C.outcomeTiers.A.mult+' / B '+C.outcomeTiers.B.mult+' / C '+C.outcomeTiers.C.mult+'<br><b>趋势修正tg</b>（仅正收益）：主流叙事up = '+C.trendReturn.upDecay+'^(已选up次数)，下限'+C.trendReturn.upFloor+'；泡沫狂热hot/逆共识down博中 = ×'+C.trendReturn.hotGain+'<br><b>小额系数sf</b> = '+C.smallTicketFactor+'（算力不足小额参投时）</div></div>';
   // 投资结果概率
   h+='<div class="panel"><h2>🎲 投资结果概率</h2>';
   h+='<div class="formula">实际胜率 p = clamp(base + 运气加成 + 趋势加成, 0, 1)\n表现值 perf = p×'+C.probability.perfWeight.base+' + 随机×'+C.probability.perfWeight.dice+'\nperf ≥'+C.probability.tierCuts.SS+'→SS / ≥'+C.probability.tierCuts.S+'→S / ≥'+C.probability.tierCuts.A+'→A / ≥'+C.probability.tierCuts.B+'→B / 否则C</div>';
   h+='<div class="txt"><b>运气加成</b> = (运气−50)/50 × '+C.luckEffect+'（运气满 +'+C.luckEffect+' 胜率）<br><b>趋势加成</b>：hot +'+(C.probability.trendBoost.hot||0)+'、down +'+(C.probability.trendBoost.down||0)+'<br>运气随档位升降：SS+'+C.luckDelta.SS+' / S+'+C.luckDelta.S+' / A '+C.luckDelta.A+' / B'+C.luckDelta.B+' / C'+C.luckDelta.C+'</div></div>';
-  // 健康衰减
-  h+='<div class="panel"><h2>❤️ 健康衰减公式</h2>';
-  h+='<div class="formula">本站健康变化 = −取整(' +C.health.baseDecay+' + 时代序号×'+C.health.rampPerPeriod+') + 结果附加</div>';
-  h+='<div class="txt">时代序号 0~4（平滑递增，越后期越耗）。结果附加：C档 <b>−'+C.health.extraOnVeryBad+'</b>、B档 <b>−'+C.health.extraOnBad+'</b>、SS档 <b>+'+C.health.bonusOnGreat+'</b>。健康始终取整。<br><b>健康归零</b>：综合评分 ×'+C.deadPenalty+'；若同时业绩<'+C.healthDeath.earlyOutTrackCap+' → 触发「健康透支」结局。出局率约 5-6%。</div></div>';
+  // 心智衰减
+  h+='<div class="panel"><h2>❤️ 心智衰减公式</h2>';
+  h+='<div class="formula">本站心智变化 = −取整(' +C.health.baseDecay+' + 时代序号×'+C.health.rampPerPeriod+') + 结果附加</div>';
+  h+='<div class="txt">时代序号 0~4（平滑递增，越后期越耗）。结果附加：C档 <b>−'+C.health.extraOnVeryBad+'</b>、B档 <b>−'+C.health.extraOnBad+'</b>、SS档 <b>+'+C.health.bonusOnGreat+'</b>。心智始终取整。<br><b>心智归零</b>：综合评分 ×'+C.deadPenalty+'；若同时影响力<'+C.healthDeath.earlyOutTrackCap+' → 触发「心智透支」结局。出局率约 5-6%。</div></div>';
   // 门槛系统
   h+='<div class="panel"><h2>🔒 门槛系统</h2>';
-  h+='<div class="txt">每个项目最多 1 个门槛，<b>三种类型全部硬门槛</b>（属性 < 门槛即锁，所见即所得）：资本门槛(aum) / 业绩门槛(track) / 健康门槛(health)。全67项中 20 项有门槛（资本7/业绩7/健康6），每站保证≥1个无门槛退路。<br><b>投入约束</b>：资本 ≥ 投入正常投；资本 < 投入 → 小额参投（回报×'+C.smallTicketFactor+'）。</div></div>';
+  h+='<div class="txt">每个项目最多 1 个门槛，<b>三种类型全部硬门槛</b>（属性 < 门槛即锁，所见即所得）：算力门槛(aum) / 影响力门槛(track) / 心智门槛(health)。全67项中 20 项有门槛（算力7/影响力7/心智6），每站保证≥1个无门槛退路。<br><b>投入约束</b>：算力 ≥ 投入正常投；算力 < 投入 → 小额参投（回报×'+C.smallTicketFactor+'）。</div></div>';
   // 结局称号
   h+='<div class="panel"><h2>🏆 结局称号（按综合评分分档）</h2><table class="deftbl">';
   var endNm={legend:'👑 封神级',master:'🌟 一线传奇',veteran:'💼 资深合伙人',steady:'⚖️ 稳进玩家',rollercoaster:'🎢 过山车',exit:'📉 离场'};
   cuts.forEach(function(t){ if(t.key==='exit'){h+='<tr><td>'+endNm[t.key]+'</td><td>< '+tierMin('rollercoaster')+'</td></tr>';} else {h+='<tr><td>'+(endNm[t.key]||t.key)+'</td><td>≥ '+t.min+'</td></tr>';} });
-  h+='<tr><td>🏥 健康透支</td><td>健康归零且业绩<'+C.healthDeath.earlyOutTrackCap+'</td></tr>';
+  h+='<tr><td>🏥 心智透支</td><td>心智归零且影响力<'+C.healthDeath.earlyOutTrackCap+'</td></tr>';
   h+='</table></div>';
   // 参数定义
   h+='<div class="panel"><h2>📋 名词与参数定义</h2><table class="deftbl">';
   var defs=[
-    ['资本 AUM','真金白银（管理资产规模）。投资要花钱，评分时减累计投入。起始'+C.start.aum],
-    ['业绩 FAME','专业声望/战绩名气。投中好项目就涨，投资人地位核心。起始'+C.start.track],
-    ['人脉 NET','资源网络，辅助维度。起始'+C.start.network],
+    ['算力 AUM','真金白银（管理资产规模）。投资要花钱，评分时减累计投入。起始'+C.start.aum],
+    ['影响力 FAME','专业影响力/战绩名气。投中好项目就涨，投资人地位核心。起始'+C.start.track],
+    ['网络 NET','资源网络，辅助维度。起始'+C.start.network],
     ['运气 LUCK','影响投资胜率（不进总分）。起始'+C.start.luck+'，0-100'],
-    ['健康 HP','精力。影响能否投高强度项目（不进总分），每站衰减。起始'+C.start.health],
+    ['心智 HP','精力。影响能否投高强度项目（不进总分），每站衰减。起始'+C.start.health],
     ['base','项目基础胜率（趋势×角色推导）'],
     ['权重w','投中时各属性涨多少的基数（aum/track/net）'],
-    ['投入amt','投这个项目需花的资本'],
-    ['statMax','进度条满格基准：资本'+C.statMax.aum+'/业绩'+C.statMax.track+'/人脉'+C.statMax.network],
-    ['趋势','up顺势/hot过热/down逆势/safe稳健'],
+    ['投入amt','投这个项目需花的算力'],
+    ['statMax','进度条满格基准：算力'+C.statMax.aum+'/影响力'+C.statMax.track+'/网络'+C.statMax.network],
+    ['趋势','up主流叙事/hot泡沫狂热/down逆共识/safe稳健'],
     ['角色','暴利(低胜率高回报)/均衡/稳健(高胜率低回报)']
   ];
   defs.forEach(function(d){h+='<tr><td>'+d[0]+'</td><td>'+d[1]+'</td></tr>';});
@@ -214,7 +214,7 @@ function renderConfig(){
     eorder.forEach(function(k){
       var m=EM[k]; if(!m)return;
       var to=ET.find(function(t){return t.key===k;});
-      var cut=(k==="earlyout")?"健康归零且业绩偏低":(to?("综合评分 \u2265 "+to.min):"");
+      var cut=(k==="earlyout")?"心智归零且影响力偏低":(to?("综合评分 \u2265 "+to.min):"");
       var col=esc(m.color||"#b8860b");
       h+='<div class="formula" style="border-left-color:'+col+'">';
       h+='<b style="color:'+col+';font-size:14px">'+esc(m.emoji)+" "+esc(m.title)+'</b>';
@@ -324,11 +324,11 @@ function snapshot(){
   };
 }
 var PARAM_DEFS=[
-  ['评分系数（资本:业绩:人脉=2:3:1）',[['coefA','资本系数a',0,0.5,0.001],['coefB','业绩系数b',0,0.6,0.001],['coefC','人脉系数c',0,0.3,0.001]]],
-  ['起始值',[['sAum','初始资本',0,300,5],['sTrack','初始业绩',0,300,5],['sNet','初始人脉',0,200,5],['sLuck','初始运气',0,100,5],['sHealth','初始健康',0,100,5]]],
+  ['评分系数（算力:影响力:网络=2:3:1）',[['coefA','算力系数a',0,0.5,0.001],['coefB','影响力系数b',0,0.6,0.001],['coefC','网络系数c',0,0.3,0.001]]],
+  ['起始值',[['sAum','初始算力',0,300,5],['sTrack','初始影响力',0,300,5],['sNet','初始网络',0,200,5],['sLuck','初始运气',0,100,5],['sHealth','初始心智',0,100,5]]],
   ['档位倍率',[['mSS','SS传奇',1,3,0.1],['mS','S成功',0.5,2,0.1],['mA','A保本',0,1,0.05],['mB','B失利',-2,0,0.1],['mC','C惨败',-2.5,0,0.1]]],
-  ['健康衰减',[['hBase','基础衰减/站',0,4,0.5],['hRamp','时代加重',0,2,0.1],['hB','B档额外扣',0,15,1],['hC','C档额外扣',0,25,1]]],
-  ['其他',[['luckEff','运气影响胜率±',0,0.6,0.05],['deadPen','健康归零打折',0.3,1,0.05]]],
+  ['心智衰减',[['hBase','基础衰减/站',0,4,0.5],['hRamp','时代加重',0,2,0.1],['hB','B档额外扣',0,15,1],['hC','C档额外扣',0,25,1]]],
+  ['其他',[['luckEff','运气影响胜率±',0,0.6,0.05],['deadPen','心智归零打折',0.3,1,0.05]]],
   ['结局门槛',[['cutLegend','封神≥',400,1000,10],['cutMaster','一线≥',300,900,10],['cutVeteran','资深≥',200,800,10],['cutSteady','稳进≥',100,700,10],['cutRoller','过山车≥',50,500,10]]]
 ];
 function rollOutcome(d,state){
@@ -405,7 +405,7 @@ function play(strat){
 function runSim(){
   var strats=['greedy','safe','trend','random'];
   var order=['legend','master','veteran','steady','rollercoaster','exit','earlyout'];
-  var nm={legend:'👑 封神级',master:'🌟 一线传奇',veteran:'💼 资深合伙人',steady:'⚖️ 稳进玩家',rollercoaster:'🎢 过山车',exit:'📉 离场',earlyout:'🏥 健康透支'};
+  var nm={legend:'👑 封神级',master:'🌟 一线传奇',veteran:'💼 资深合伙人',steady:'⚖️ 稳进玩家',rollercoaster:'🎢 过山车',exit:'📉 离场',earlyout:'🏥 心智透支'};
   var tcut={legend:P.cutLegend,master:P.cutMaster,veteran:P.cutVeteran,steady:P.cutSteady,rollercoaster:P.cutRoller};
   var endCnt={};order.forEach(function(k){endCnt[k]=0;});
   var scores=[],attr={aum:[],track:[],network:[],health:[],luck:[]},dead=0,lock={aum:0,track:0,health:0};
@@ -428,14 +428,14 @@ function runSim(){
   h+='<div class="stat"><div class="k">平均/中位</div><div class="v">'+Math.round(scores.reduce(function(a,b){return a+b;},0)/RUNS)+' <small>/ '+q(scores,0.5)+'</small></div></div>';
   h+='<div class="stat"><div class="k">最高/最低</div><div class="v">'+scores[RUNS-1]+' <small>/ '+scores[0]+'</small></div></div>';
   h+='<div class="stat"><div class="k">P10/P90</div><div class="v">'+q(scores,0.1)+' <small>/ '+q(scores,0.9)+'</small></div></div>';
-  h+='<div class="stat"><div class="k">健康出局率</div><div class="v">'+(dead/RUNS*100).toFixed(1)+'%</div></div>';
+  h+='<div class="stat"><div class="k">心智出局率</div><div class="v">'+(dead/RUNS*100).toFixed(1)+'%</div></div>';
   h+='</div></div>';
   h+='<div class="panel"><h2>📊 各属性终局（中位/P90/最高）</h2><div class="stat-grid">';
-  var an={aum:'💰资本',track:'🏆业绩',network:'🤝人脉',health:'❤️健康',luck:'🍀运气'};
+  var an={aum:'💰算力',track:'🏆影响力',network:'🤝网络',health:'❤️心智',luck:'🍀运气'};
   ['track','aum','network','health','luck'].forEach(function(k){h+='<div class="stat"><div class="k">'+an[k]+'</div><div class="v">'+q(attr[k],0.5)+' <small>/ '+q(attr[k],0.9)+' / '+attr[k][RUNS-1]+'</small></div></div>';});
   h+='</div></div>';
   var tot=lock.aum+lock.track+lock.health||1;
-  h+='<div class="panel"><h2>🔒 三门槛触发占比</h2><div class="stat-grid"><div class="stat"><div class="k">资本/业绩/健康</div><div class="v" style="font-size:13px">'+(lock.aum/tot*100).toFixed(0)+'% / '+(lock.track/tot*100).toFixed(0)+'% / '+(lock.health/tot*100).toFixed(0)+'%</div></div></div></div>';
+  h+='<div class="panel"><h2>🔒 三门槛触发占比</h2><div class="stat-grid"><div class="stat"><div class="k">算力/影响力/心智</div><div class="v" style="font-size:13px">'+(lock.aum/tot*100).toFixed(0)+'% / '+(lock.track/tot*100).toFixed(0)+'% / '+(lock.health/tot*100).toFixed(0)+'%</div></div></div></div>';
   document.getElementById('dist').innerHTML=h;
   document.getElementById('live').textContent='✅ 模拟 '+RUNS+' 局（4策略混合）';
   window.__simDone=true;
