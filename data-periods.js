@@ -72,7 +72,7 @@ const DATA_PERIODS = {
               "val": "6亿",
               "amt": 9,
               "trend": "hot",
-              "base": 0.34,
+              "base": 0.38,
               "w": {
                 "aum": 30,
                 "track": 110,
@@ -89,7 +89,7 @@ const DATA_PERIODS = {
               "val": "4亿",
               "amt": 8,
               "trend": "hot",
-              "base": 0.34,
+              "base": 0.38,
               "w": {
                 "aum": 40,
                 "track": 50,
@@ -134,7 +134,7 @@ const DATA_PERIODS = {
               "val": "15亿",
               "amt": 13,
               "trend": "hot",
-              "base": 0.38,
+              "base": 0.42,
               "w": {
                 "aum": 42,
                 "track": 120,
@@ -151,7 +151,7 @@ const DATA_PERIODS = {
               "val": "8亿",
               "amt": 10,
               "trend": "hot",
-              "base": 0.36,
+              "base": 0.4,
               "w": {
                 "aum": 38,
                 "track": 70,
@@ -192,8 +192,8 @@ const DATA_PERIODS = {
               "round": "A轮",
               "val": "10亿",
               "amt": 14,
-              "trend": "hot",
-              "base": 0.42,
+              "trend": "down",
+              "base": 0.46,
               "w": {
                 "aum": 45,
                 "track": 105,
@@ -209,8 +209,8 @@ const DATA_PERIODS = {
               "round": "A轮",
               "val": "9亿",
               "amt": 12,
-              "trend": "hot",
-              "base": 0.38,
+              "trend": "down",
+              "base": 0.42,
               "w": {
                 "aum": 42,
                 "track": 85,
@@ -254,8 +254,8 @@ const DATA_PERIODS = {
               "round": "A轮",
               "val": "20亿",
               "amt": 15,
-              "trend": "hot",
-              "base": 0.3,
+              "trend": "down",
+              "base": 0.34,
               "w": {
                 "aum": 48,
                 "track": 115,
@@ -272,7 +272,7 @@ const DATA_PERIODS = {
               "val": "5亿",
               "amt": 11,
               "trend": "down",
-              "base": 0.22,
+              "base": 0.26,
               "w": {
                 "aum": 40,
                 "track": 90,
@@ -333,7 +333,7 @@ const DATA_PERIODS = {
               "val": "40亿",
               "amt": 11,
               "trend": "hot",
-              "base": 0.34,
+              "base": 0.38,
               "w": {
                 "aum": 55,
                 "track": 60,
@@ -350,7 +350,7 @@ const DATA_PERIODS = {
               "val": "8亿",
               "amt": 9,
               "trend": "hot",
-              "base": 0.38,
+              "base": 0.42,
               "w": {
                 "aum": 32,
                 "track": 70,
@@ -395,7 +395,7 @@ const DATA_PERIODS = {
               "val": "35亿",
               "amt": 12,
               "trend": "hot",
-              "base": 0.37,
+              "base": 0.41,
               "w": {
                 "aum": 42,
                 "track": 75,
@@ -412,7 +412,7 @@ const DATA_PERIODS = {
               "val": "12亿",
               "amt": 10,
               "trend": "hot",
-              "base": 0.32,
+              "base": 0.36,
               "w": {
                 "aum": 36,
                 "track": 95,
@@ -453,8 +453,8 @@ const DATA_PERIODS = {
               "round": "A轮",
               "val": "60亿",
               "amt": 14,
-              "trend": "hot",
-              "base": 0.42,
+              "trend": "down",
+              "base": 0.46,
               "w": {
                 "aum": 58,
                 "track": 105,
@@ -470,8 +470,8 @@ const DATA_PERIODS = {
               "round": "天使",
               "val": "15亿",
               "amt": 10,
-              "trend": "hot",
-              "base": 0.36,
+              "trend": "down",
+              "base": 0.4,
               "w": {
                 "aum": 40,
                 "track": 88,
@@ -515,8 +515,8 @@ const DATA_PERIODS = {
               "round": "C轮",
               "val": "900亿",
               "amt": 24,
-              "trend": "hot",
-              "base": 0.46,
+              "trend": "down",
+              "base": 0.5,
               "w": {
                 "aum": 80,
                 "track": 125,
@@ -532,8 +532,8 @@ const DATA_PERIODS = {
               "round": "B轮",
               "val": "200亿",
               "amt": 16,
-              "trend": "hot",
-              "base": 0.38,
+              "trend": "down",
+              "base": 0.42,
               "w": {
                 "aum": 62,
                 "track": 118,
@@ -594,7 +594,7 @@ const DATA_PERIODS = {
               "val": "120亿",
               "amt": 18,
               "trend": "hot",
-              "base": 0.36,
+              "base": 0.4,
               "w": {
                 "aum": 55,
                 "track": 110,
@@ -614,7 +614,7 @@ const DATA_PERIODS = {
               "val": "15亿",
               "amt": 9,
               "trend": "hot",
-              "base": 0.36,
+              "base": 0.4,
               "w": {
                 "aum": 35,
                 "track": 60,
@@ -659,7 +659,7 @@ const DATA_PERIODS = {
               "val": "300亿",
               "amt": 26,
               "trend": "hot",
-              "base": 0.32,
+              "base": 0.36,
               "w": {
                 "aum": 70,
                 "track": 140,
@@ -676,7 +676,7 @@ const DATA_PERIODS = {
               "val": "45亿",
               "amt": 16,
               "trend": "hot",
-              "base": 0.34,
+              "base": 0.38,
               "w": {
                 "aum": 50,
                 "track": 98,
@@ -717,8 +717,8 @@ const DATA_PERIODS = {
               "round": "A轮",
               "val": "50亿",
               "amt": 24,
-              "trend": "hot",
-              "base": 0.38,
+              "trend": "down",
+              "base": 0.42,
               "w": {
                 "aum": 58,
                 "track": 118,
@@ -734,8 +734,8 @@ const DATA_PERIODS = {
               "round": "Pre-IPO",
               "val": "220亿",
               "amt": 28,
-              "trend": "hot",
-              "base": 0.3,
+              "trend": "down",
+              "base": 0.34,
               "w": {
                 "aum": 75,
                 "track": 150,
@@ -782,8 +782,8 @@ const DATA_PERIODS = {
               "round": "B轮",
               "val": "130亿",
               "amt": 25,
-              "trend": "hot",
-              "base": 0.38,
+              "trend": "down",
+              "base": 0.42,
               "w": {
                 "aum": 78,
                 "track": 155,
@@ -800,7 +800,7 @@ const DATA_PERIODS = {
               "val": "40亿",
               "amt": 22,
               "trend": "down",
-              "base": 0.22,
+              "base": 0.26,
               "w": {
                 "aum": 60,
                 "track": 138,
@@ -861,7 +861,7 @@ const DATA_PERIODS = {
               "val": "95亿",
               "amt": 18,
               "trend": "hot",
-              "base": 0.34,
+              "base": 0.38,
               "w": {
                 "aum": 110,
                 "track": 180,
@@ -878,7 +878,7 @@ const DATA_PERIODS = {
               "val": "60亿",
               "amt": 15,
               "trend": "down",
-              "base": 0.24,
+              "base": 0.28,
               "w": {
                 "aum": 120,
                 "track": 160,
@@ -923,7 +923,7 @@ const DATA_PERIODS = {
               "val": "70亿",
               "amt": 16,
               "trend": "hot",
-              "base": 0.3,
+              "base": 0.34,
               "w": {
                 "aum": 120,
                 "track": 190,
@@ -940,7 +940,7 @@ const DATA_PERIODS = {
               "val": "40亿",
               "amt": 14,
               "trend": "hot",
-              "base": 0.36,
+              "base": 0.4,
               "w": {
                 "aum": 115,
                 "track": 175,
@@ -985,7 +985,7 @@ const DATA_PERIODS = {
               "val": "260亿",
               "amt": 26,
               "trend": "hot",
-              "base": 0.4,
+              "base": 0.44,
               "w": {
                 "aum": 150,
                 "track": 240,
@@ -1001,8 +1001,8 @@ const DATA_PERIODS = {
               "round": "A轮",
               "val": "85亿",
               "amt": 20,
-              "trend": "hot",
-              "base": 0.32,
+              "trend": "down",
+              "base": 0.36,
               "w": {
                 "aum": 140,
                 "track": 220,
@@ -1046,8 +1046,8 @@ const DATA_PERIODS = {
               "round": "B轮",
               "val": "330亿",
               "amt": 30,
-              "trend": "hot",
-              "base": 0.36,
+              "trend": "down",
+              "base": 0.4,
               "w": {
                 "aum": 165,
                 "track": 258,
@@ -1064,7 +1064,7 @@ const DATA_PERIODS = {
               "val": "120亿",
               "amt": 24,
               "trend": "down",
-              "base": 0.2,
+              "base": 0.24,
               "w": {
                 "aum": 155,
                 "track": 245,
@@ -1125,7 +1125,7 @@ const DATA_PERIODS = {
               "val": "60亿",
               "amt": 18,
               "trend": "hot",
-              "base": 0.34,
+              "base": 0.38,
               "w": {
                 "aum": 150,
                 "track": 260,
@@ -1142,7 +1142,7 @@ const DATA_PERIODS = {
               "val": "45亿",
               "amt": 15,
               "trend": "hot",
-              "base": 0.36,
+              "base": 0.4,
               "w": {
                 "aum": 155,
                 "track": 255,
@@ -1187,7 +1187,7 @@ const DATA_PERIODS = {
               "val": "90亿",
               "amt": 20,
               "trend": "hot",
-              "base": 0.3,
+              "base": 0.34,
               "w": {
                 "aum": 165,
                 "track": 290,
@@ -1204,7 +1204,7 @@ const DATA_PERIODS = {
               "val": "55亿",
               "amt": 17,
               "trend": "down",
-              "base": 0.22,
+              "base": 0.26,
               "w": {
                 "aum": 170,
                 "track": 295,
@@ -1249,7 +1249,7 @@ const DATA_PERIODS = {
               "val": "260亿",
               "amt": 26,
               "trend": "hot",
-              "base": 0.4,
+              "base": 0.44,
               "w": {
                 "aum": 190,
                 "track": 340,
@@ -1265,8 +1265,8 @@ const DATA_PERIODS = {
               "round": "A轮",
               "val": "70亿",
               "amt": 20,
-              "trend": "hot",
-              "base": 0.34,
+              "trend": "down",
+              "base": 0.38,
               "w": {
                 "aum": 185,
                 "track": 350,
@@ -1310,8 +1310,8 @@ const DATA_PERIODS = {
               "round": "B轮",
               "val": "600亿",
               "amt": 35,
-              "trend": "hot",
-              "base": 0.28,
+              "trend": "down",
+              "base": 0.32,
               "w": {
                 "aum": 205,
                 "track": 380,

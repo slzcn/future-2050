@@ -46,7 +46,7 @@ const CONFIG = {
   luckDelta: { SS:4, S:2, A:0, B:-2, C:-4 },
 
   // 健康衰减规则
-  health: { baseDecay:1.5, rampPerPeriod:0.7, extraOnBad:7, extraOnVeryBad:14, bonusOnGreat:1, minHealth:0, maxHealth:100 },
+  health: { baseDecay:1.2, rampPerPeriod:0.7, extraOnBad:6, extraOnVeryBad:13, bonusOnGreat:1, minHealth:0, maxHealth:100 },
 
   // 健康死亡相关
   healthDeath: {
