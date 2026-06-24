@@ -42,10 +42,11 @@
     .btn.ghost:hover{background:transparent;color:var(--accent);border-color:var(--accent);transform:translateY(-1px);box-shadow:none;}
     /* 首页按钮专属:用中枢银蓝,不借用纪元色 */
     #cover .btn:hover{background:var(--home-accent);color:#0a0e1a;border-color:var(--home-accent);box-shadow:0 6px 20px color-mix(in srgb,var(--home-accent) 30%,transparent);}
-    #cover .btn.ghost:hover{background:transparent;color:var(--home-accent-bright);border-color:var(--home-accent-bright);}
+    #cover .btn.ghost:hover{background:transparent;color:var(--home-accent-bright);border-color:var(--home-accent-bright);transform:translateY(-1px);box-shadow:0 4px 14px color-mix(in srgb,var(--home-accent) 18%,transparent);}
   }
   .btn:active{transform:scale(.97);background:rgba(39,211,224,.16);color:var(--accent);border-color:var(--accent);box-shadow:0 0 16px rgba(39,211,224,.3);}
   .btn.ghost{padding:12px 28px;font-size:14px;}
+  #cover .btn.ghost{color:var(--ink-soft);border-color:var(--line);}
   /* ===== 点击灵动效果 ===== */
   .btn,.scenario .sc-opt,.deal,.undo-icon,.music-btn,.info-btn,.tip-close{position:relative;overflow:hidden;}
   .ripple{position:absolute;border-radius:50%;transform:scale(0);pointer-events:none;background:rgba(39,211,224,.3);animation:rippleExpand .6s ease-out forwards;z-index:0;}
