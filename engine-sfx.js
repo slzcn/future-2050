@@ -172,15 +172,18 @@ const Sfx = (function(){
       if(!ensure()) return;
       const fn=lib[name];
       if(!fn) return;
-      // ctx 刚解锁可能还是 suspended(resume 是异步)。
-      // 关键:resume.then 的回调已脱离用户手势上下文,首声 oscillator 会被浏览器静音/丢弃。
-      // 解法:resume 后轮询等 ctx.state 真正变 running 再播,确保振荡器在激活管线上发声。
+      // ctx 刚解锁/失焦后被浏览器自动挂起时,resume 是异步的,需等真正变 running 才能发声,
+      // 否则振荡器被丢弃=丢音(PC偶发"点了没声、再点就有"的根因)。
+      // 双保险:① resume().then 完成即播 ② 同时轮询兜底;played 标志保证只播一次,且只在 running 后播。
       if(ctx.state!=='running'){
-        try{ ctx.resume(); }catch(e){}
+        let played=false;
+        const fire=()=>{ if(played) return; if(ctx.state==='running'){ played=true; try{ fn(); }catch(e){} } };
+        try{ const p=ctx.resume(); if(p&&p.then) p.then(fire).catch(()=>{}); }catch(e){}
         let tries=0;
         (function waitRun(){
-          if(ctx.state==='running'){ try{ fn(); }catch(e){} return; }
-          if(tries++>20){ try{ fn(); }catch(e){} return; }  // 兜底:最多等~400ms仍播
+          if(played) return;
+          if(ctx.state==='running'){ fire(); return; }
+          if(tries++>30){ played=true; try{ fn(); }catch(e){} return; }  // 终极兜底:等~600ms仍盲播(极少到这)
           try{ ctx.resume(); }catch(e){}
           setTimeout(waitRun, 20);
         })();
