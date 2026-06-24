@@ -683,7 +683,10 @@ const DATA_PERIODS = {
                 "net": 33
               },
               "why": "记忆读取保真度不足三成，被斥为高级伪科学",
-              "gate": null
+              "gate": {
+                "type": "health",
+                "min": 50
+              }
             }
           ]
         },
@@ -790,7 +793,10 @@ const DATA_PERIODS = {
                 "net": 52
               },
               "why": "意识续航引发人格漂移，伦理与技术双重失控",
-              "gate": null
+              "gate": {
+                "type": "health",
+                "min": 42
+              }
             },
             {
               "tag": "永生伦理",
@@ -868,7 +874,10 @@ const DATA_PERIODS = {
                 "net": 60
               },
               "why": "运回成本远超氦三现价，采矿权炒成了击鼓传花的纸面富贵",
-              "gate": null
+              "gate": {
+                "type": "health",
+                "min": 38
+              }
             },
             {
               "tag": "旧能源",
@@ -992,7 +1001,10 @@ const DATA_PERIODS = {
                 "net": 80
               },
               "why": "标准化模块的良品率上不去，产能爬坡失败，估值被腰斩",
-              "gate": null
+              "gate": {
+                "type": "health",
+                "min": 30
+              }
             },
             {
               "tag": "地表能源",
@@ -1035,8 +1047,8 @@ const DATA_PERIODS = {
               },
               "why": "地表监管联手冻结落地通道，清算网络被切断，流动性枯竭",
               "gate": {
-                "type": "net",
-                "min": 85
+                "type": "track",
+                "min": 250
               }
             },
             {
@@ -1071,7 +1083,10 @@ const DATA_PERIODS = {
                 "net": 80
               },
               "why": "轨道经济体已自给自足，旧势力的管辖权落了空，联盟形同虚设",
-              "gate": null
+              "gate": {
+                "type": "net",
+                "min": 420
+              }
             }
           ]
         }
@@ -1132,7 +1147,10 @@ const DATA_PERIODS = {
                 "net": 80
               },
               "why": "脑力租赁市场被认知过载与监管叫停击穿",
-              "gate": null
+              "gate": {
+                "type": "health",
+                "min": 20
+              }
             },
             {
               "tag": "神经安全",
@@ -1273,7 +1291,10 @@ const DATA_PERIODS = {
                 "net": 98
               },
               "why": "过早押注上传失败，而首批迁徙者仍在云端稳定运行",
-              "gate": null
+              "gate": {
+                "type": "health",
+                "min": 12
+              }
             }
           ]
         },

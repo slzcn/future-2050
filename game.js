@@ -362,14 +362,15 @@ function showChoices(preselectIdx){
   if(window.Sfx)Sfx.play('swipe');
   const r=GAME.periods[pIdx].rounds[rIdx]; selDeal=null;
   shuffleOnce(r.deals);  // 随机展示标的顺序(首次进入本轮时洗一次,重选保持同序)
-  // ===== 统一门槛系统 gate:{type:'aum'|'track'|'health', min} 每项最多1个 =====
-  // 资本/业绩=硬门槛(属性<min直接锁); 健康=软门槛(运气降门槛+随机扰动,精力波动感)
-  // gateLock[i]: 0=不锁 / 'aum' / 'track' / 'health'(锁定原因)
+  // ===== 统一门槛系统 gate:{type:'aum'|'track'|'health'|'net', min} 每项最多1个 =====
+  // 全部硬门槛:属性<min直接锁,所见即所得
+  // gateLock[i]: 0=不锁 / 'aum' / 'track' / 'health' / 'net'(锁定原因)
   let gateLock=r.deals.map((d,i)=>{
     const g=d.gate; if(!g) return 0;
     if(g.type==='aum')   return state.aum   < g.min ? 'aum'   : 0;
     if(g.type==='track') return state.track < g.min ? 'track' : 0;
-    if(g.type==='health') return state.health < g.min ? 'health' : 0;  // 硬门槛:所见即所得(健康<显示门槛就锁)
+    if(g.type==='health') return state.health < g.min ? 'health' : 0;
+    if(g.type==='net')   return state.network < g.min ? 'net'  : 0;  // 网络门槛:政商/资源网络不够,进不了这类联盟局
     return 0;
   });
   // 防死局铁律1：全锁 → 强制解锁"门槛最低"的1个(总能投点什么)
@@ -391,7 +392,7 @@ function showChoices(preselectIdx){
     const lk = gateLock[i];
     const small = smallSet[i];
     const afford = !lk;
-    const lockTxt = lk==='aum'?(CONFIG.text.lockNoAum||'资本不足') : lk==='track'?(CONFIG.text.lockNoTrack||'声望不足') : lk==='health'?(CONFIG.text.lockNoHealth||'精力不足') : '';
+    const lockTxt = lk==='aum'?(CONFIG.text.lockNoAum||'资本不足') : lk==='track'?(CONFIG.text.lockNoTrack||'声望不足') : lk==='health'?(CONFIG.text.lockNoHealth||'精力不足') : lk==='net'?(CONFIG.text.lockNoNet||'网络不足') : '';
     const lockNote = lk ? `<div class="lock-note" style="color:var(--bad)">${lockTxt}</div>` : (small?`<div class="lock-note" style="color:var(--warn)">${CONFIG.text.lockSmall}</div>`:'');
     return `
     <div class="deal ${afford?'':'locked'}" data-i="${i}" ${afford?`onclick="pickDeal(${i})"`:''}>

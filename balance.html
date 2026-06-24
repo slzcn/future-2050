@@ -170,7 +170,7 @@ function renderDoc(){
   h+='<div class="txt">时代序号 0~4（平滑递增，越后期越耗）。结果附加：C档 <b>−'+C.health.extraOnVeryBad+'</b>、B档 <b>−'+C.health.extraOnBad+'</b>、SS档 <b>+'+C.health.bonusOnGreat+'</b>。心智始终取整。<br><b>心智归零</b>：综合评分 ×'+C.deadPenalty+'；若同时影响力<'+C.healthDeath.earlyOutTrackCap+' → 触发「心智透支」结局。出局率约 5-6%。</div></div>';
   // 门槛系统
   h+='<div class="panel"><h2>🔒 门槛系统</h2>';
-  h+='<div class="txt">每个项目最多 1 个门槛，<b>三种类型全部硬门槛</b>（属性 < 门槛即锁，所见即所得）：算力门槛(aum) / 影响力门槛(track) / 心智门槛(health)。全67项中 20 项有门槛（算力7/影响力7/心智6），每站保证≥1个无门槛退路。<br><b>投入约束</b>：算力 ≥ 投入正常投；算力 < 投入 → 小额参投（回报×'+C.smallTicketFactor+'）。</div></div>';
+  h+='<div class="txt">每个项目最多 1 个门槛，<b>四类硬门槛</b>（属性 < 门槛即锁，所见即所得）：算力门槛(aum) / 影响力门槛(track) / 心智门槛(health) / 网络门槛(net)。全67项中 21 项有门槛（算力6/影响力8/心智6/网络1），每站保证≥1个无门槛退路。<br><b>投入约束</b>：算力 ≥ 投入正常投；算力 < 投入 → 小额参投（回报×'+C.smallTicketFactor+'）。</div></div>';
   // 结局称号
   h+='<div class="panel"><h2>🏆 结局称号（按综合评分分档）</h2><table class="deftbl">';
   var endNm={legend:'👑 文明设计师',master:'🌌 新世界缔造者',veteran:'🛰️ 未来合伙人',steady:'⚖️ 清醒的幸存者',rollercoaster:'🎢 过山车赌徒',exit:'🪐 时代的祭品'};
@@ -362,7 +362,7 @@ function rollOutcome(d,state){
   if(perf>=P.cutSS)return'SS';if(perf>=P.cutS)return'S';if(perf>=P.cutA)return'A';if(perf>=P.cutB)return'B';return'C';
 }
 function gateLock(deals,state,pi,ri){
-  var g=deals.map(function(d){var gt=d.gate;if(!gt)return 0;if(gt.type==='aum')return state.aum<gt.min?'aum':0;if(gt.type==='track')return state.track<gt.min?'track':0;if(gt.type==='health')return state.health<gt.min?'health':0;return 0;});
+  var g=deals.map(function(d){var gt=d.gate;if(!gt)return 0;if(gt.type==='aum')return state.aum<gt.min?'aum':0;if(gt.type==='track')return state.track<gt.min?'track':0;if(gt.type==='health')return state.health<gt.min?'health':0;if(gt.type==='net')return state.network<gt.min?'net':0;return 0;});
   if(g.every(function(x){return x;})){var m=1e9,u=0;deals.forEach(function(d,i){var mn=(d.gate&&d.gate.min)||0;if(mn<m){m=mn;u=i;}});g[u]=0;}
   return g;
 }
@@ -391,7 +391,7 @@ function pickDeal(deals,state,strat,pi,ri){
 }
 function play(strat){
   var state={aum:P.sAum,track:P.sTrack,network:P.sNet,luck:P.sLuck,health:P.sHealth,spent:0};
-  var up=0,lock={aum:0,track:0,health:0};
+  var up=0,lock={aum:0,track:0,health:0,net:0};
   var MU={SS:P.mSS,S:P.mS,A:P.mA,B:P.mB,C:P.mC};
   var periods=DATA_PERIODS.periods;
   for(var pi=0;pi<periods.length;pi++){
@@ -429,13 +429,13 @@ function runSim(){
   var nm={legend:'👑 文明设计师',master:'🌌 新世界缔造者',veteran:'🛰️ 未来合伙人',steady:'⚖️ 清醒的幸存者',rollercoaster:'🎢 过山车赌徒',exit:'🪐 时代的祭品',earlyout:'🧠 心智透支'};
   var tcut={legend:P.cutLegend,master:P.cutMaster,veteran:P.cutVeteran,steady:P.cutSteady,rollercoaster:P.cutRoller};
   var endCnt={};order.forEach(function(k){endCnt[k]=0;});
-  var scores=[],attr={aum:[],track:[],network:[],health:[],luck:[]},dead=0,lock={aum:0,track:0,health:0};
+  var scores=[],attr={aum:[],track:[],network:[],health:[],luck:[]},dead=0,lock={aum:0,track:0,health:0,net:0};
   for(var i=0;i<RUNS;i++){
     var r=play(strats[i%4]);
     endCnt[r.ending]++;scores.push(r.score);
     for(var k in attr)attr[k].push(Math.round(r.state[k]));
     if(r.dead)dead++;
-    lock.aum+=r.lock.aum;lock.track+=r.lock.track;lock.health+=r.lock.health;
+    lock.aum+=r.lock.aum;lock.track+=r.lock.track;lock.health+=r.lock.health;lock.net+=r.lock.net;
   }
   scores.sort(function(a,b){return a-b;});for(var k2 in attr)attr[k2].sort(function(a,b){return a-b;});
   var q=function(arr,p){return arr[Math.floor(arr.length*p)];};
@@ -456,8 +456,8 @@ function runSim(){
   var an={aum:'💰算力',track:'🏆影响力',network:'🤝网络',health:'❤️心智',luck:'🍀运气'};
   ['track','aum','network','health','luck'].forEach(function(k){h+='<div class="stat"><div class="k">'+an[k]+'</div><div class="v">'+q(attr[k],0.5)+' <small>/ '+q(attr[k],0.9)+' / '+attr[k][RUNS-1]+'</small></div></div>';});
   h+='</div></div>';
-  var tot=lock.aum+lock.track+lock.health||1;
-  h+='<div class="panel"><h2>🔒 三门槛触发占比</h2><div class="stat-grid"><div class="stat"><div class="k">算力/影响力/心智</div><div class="v" style="font-size:13px">'+(lock.aum/tot*100).toFixed(0)+'% / '+(lock.track/tot*100).toFixed(0)+'% / '+(lock.health/tot*100).toFixed(0)+'%</div></div></div></div>';
+  var tot=lock.aum+lock.track+lock.health+lock.net||1;
+  h+='<div class="panel"><h2>🔒 四门槛触发占比</h2><div class="stat-grid"><div class="stat"><div class="k">算力/影响力/心智/网络</div><div class="v" style="font-size:13px">'+(lock.aum/tot*100).toFixed(0)+'% / '+(lock.track/tot*100).toFixed(0)+'% / '+(lock.health/tot*100).toFixed(0)+'% / '+(lock.net/tot*100).toFixed(0)+'%</div></div></div></div>';
   // ---- 标的趋势分布(只读, future自己的设定: 风口主导) ----
   var tall={hot:0,up:0,down:0,safe:0},ttot=0;
   DATA_PERIODS.periods.forEach(function(p){p.rounds.forEach(function(r){(r.deals||[]).forEach(function(d){if(tall[d.trend]!=null){tall[d.trend]++;ttot++;}});});});
