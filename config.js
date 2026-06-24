@@ -61,7 +61,7 @@ const CONFIG = {
   // 运气影响胜率: 实际胜率 = clamp(base + (运气-50)/50 * luckEffect, 0, 1)
   luckEffect: 0.3,        // 平滑曲线指数(未达目标也能拿大部分分)
   deadPenalty: 0.6,        // 健康归零时总分打折(唯一权威值,calcScore 引用)
-  // 结局音效门槛(跟 endingTiers 对齐:winBig=封神/一线传奇, winMid=资深/稳进, neutral=过山车, 以下lose)
+  // 结局音效门槛(跟 endingTiers 对齐:winBig=文明设计师/新世界缔造者, winMid=未来合伙人/清醒的幸存者, neutral=过山车赌徒, 以下lose)
   scoreTiersForSfx: { big: 550, mid: 250, neutral: 150 },
 
   // 小额参投(资本不够时兜底)回报系数

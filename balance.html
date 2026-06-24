@@ -173,7 +173,7 @@ function renderDoc(){
   h+='<div class="txt">每个项目最多 1 个门槛，<b>三种类型全部硬门槛</b>（属性 < 门槛即锁，所见即所得）：算力门槛(aum) / 影响力门槛(track) / 心智门槛(health)。全67项中 20 项有门槛（算力7/影响力7/心智6），每站保证≥1个无门槛退路。<br><b>投入约束</b>：算力 ≥ 投入正常投；算力 < 投入 → 小额参投（回报×'+C.smallTicketFactor+'）。</div></div>';
   // 结局称号
   h+='<div class="panel"><h2>🏆 结局称号（按综合评分分档）</h2><table class="deftbl">';
-  var endNm={legend:'👑 封神级',master:'🌟 一线传奇',veteran:'💼 资深合伙人',steady:'⚖️ 稳进玩家',rollercoaster:'🎢 过山车',exit:'📉 离场'};
+  var endNm={legend:'👑 文明设计师',master:'🌌 新世界缔造者',veteran:'🛰️ 未来合伙人',steady:'⚖️ 清醒的幸存者',rollercoaster:'🎢 过山车赌徒',exit:'🪐 时代的祭品'};
   cuts.forEach(function(t){ if(t.key==='exit'){h+='<tr><td>'+endNm[t.key]+'</td><td>< '+tierMin('rollercoaster')+'</td></tr>';} else {h+='<tr><td>'+(endNm[t.key]||t.key)+'</td><td>≥ '+t.min+'</td></tr>';} });
   h+='<tr><td>🏥 心智透支</td><td>心智归零且影响力<'+C.healthDeath.earlyOutTrackCap+'</td></tr>';
   h+='</table></div>';
@@ -344,7 +344,7 @@ var PARAM_DEFS=[
   ['档位倍率',[['mSS','SS传奇',1,3,0.1],['mS','S成功',0.5,2,0.1],['mA','A保本',0,1,0.05],['mB','B失利',-2,0,0.1],['mC','C惨败',-2.5,0,0.1]]],
   ['心智衰减',[['hBase','基础衰减/站',0,4,0.5],['hRamp','时代加重',0,2,0.1],['hB','B档额外扣',0,15,1],['hC','C档额外扣',0,25,1]]],
   ['其他',[['luckEff','运气影响胜率±',0,0.6,0.05],['deadPen','心智归零打折',0.3,1,0.05]]],
-  ['结局门槛',[['cutLegend','封神≥',400,1000,10],['cutMaster','一线≥',300,900,10],['cutVeteran','资深≥',200,800,10],['cutSteady','稳进≥',100,700,10],['cutRoller','过山车≥',50,500,10]]],
+  ['结局门槛',[['cutLegend','文明设计师≥',400,1000,10],['cutMaster','新世界缔造者≥',300,900,10],['cutVeteran','未来合伙人≥',200,800,10],['cutSteady','清醒的幸存者≥',100,700,10],['cutRoller','过山车赌徒≥',50,500,10]]],
   ['落档线(perf≥)',[['cutSS','SS传奇',0.6,0.95,0.01],['cutS','S成功',0.45,0.8,0.01],['cutA','A保本',0.3,0.6,0.01],['cutB','B失利',0.1,0.45,0.01]]],
   ['胜率与趋势',[['baseAdj','全局胜率±',-0.1,0.1,0.005],['boostHot','风口加成',0,0.2,0.01],['boostDown','逆势加成',0,0.2,0.01]]],
   ['趋势回报',[['upDecay','顺势衰减率',0.6,1,0.01],['upFloor','顺势衰减下限',0.2,0.8,0.05],['hotGain','博中超额×',1,2,0.05]]],
@@ -426,7 +426,7 @@ function play(strat){
 function runSim(){
   var strats=['greedy','safe','trend','random'];
   var order=['legend','master','veteran','steady','rollercoaster','exit','earlyout'];
-  var nm={legend:'👑 封神级',master:'🌟 一线传奇',veteran:'💼 资深合伙人',steady:'⚖️ 稳进玩家',rollercoaster:'🎢 过山车',exit:'📉 离场',earlyout:'🏥 心智透支'};
+  var nm={legend:'👑 文明设计师',master:'🌌 新世界缔造者',veteran:'🛰️ 未来合伙人',steady:'⚖️ 清醒的幸存者',rollercoaster:'🎢 过山车赌徒',exit:'🪐 时代的祭品',earlyout:'🧠 心智透支'};
   var tcut={legend:P.cutLegend,master:P.cutMaster,veteran:P.cutVeteran,steady:P.cutSteady,rollercoaster:P.cutRoller};
   var endCnt={};order.forEach(function(k){endCnt[k]=0;});
   var scores=[],attr={aum:[],track:[],network:[],health:[],luck:[]},dead=0,lock={aum:0,track:0,health:0};
@@ -442,7 +442,7 @@ function runSim(){
   var endColor={legend:'#b8860b',master:'#2c5282',veteran:'#3c6b4f',steady:'#5a6470',rollercoaster:'#9a7b3a',exit:'#a8453a',earlyout:'#7d5a3a'};
   var h='';
   h+='<div class="panel"><h2>🏆 结局称号分布</h2>';
-  h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">目标比例: 封神10% / 一线20% / 资深20% / 稳进20% / 过山车15% / 离场5% / 心智透支10%</div>';
+  h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">目标比例: 文明设计师10% / 新世界缔造者20% / 未来合伙人20% / 清醒的幸存者20% / 过山车赌徒15% / 时代的祭品5% / 心智透支10%</div>';
   order.forEach(function(k){var c=endCnt[k],pct=(c/RUNS*100);var cut=(k==='exit')?('<'+P.cutRoller):(k==='earlyout'?'特殊':'≥'+tcut[k]);
     h+='<div class="row"><div class="nm">'+nm[k]+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*2.5)+'%;background:'+endColor[k]+'"></div></div><div class="pct">'+pct.toFixed(1)+'% <small style="color:#8c857a">'+cut+'</small></div></div>';});
   h+='</div>';
