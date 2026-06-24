@@ -10,12 +10,13 @@ const CONFIG = {
   statMax: { aum:1200, track:1900, network:750, luck:100, health:100 },
 
   // 5档结果对应的属性变动倍率 + 显示样式
+  // 2026-06-24 结局分布平衡: SS上调2.1(撑右尾封神), B/C翻车更狠(-0.6/-2.1, 让踩雷者跌进过山车带), A略升0.35
   outcomeTiers: {
-    SS: { mult: 2.0,  label:'范式级回报', cls:'ss', emoji:'🚀' },
+    SS: { mult: 2.1,  label:'范式级回报', cls:'ss', emoji:'🚀' },
     S:  { mult: 1.0,  label:'押注命中', cls:'s',  emoji:'✅' },
-    A:  { mult: 0.3,  label:'勉强保本', cls:'a',  emoji:'➖' },
+    A:  { mult: 0.35, label:'勉强保本', cls:'a',  emoji:'➖' },
     B:  { mult:-0.6,  label:'押注落空', cls:'b',  emoji:'⚠️' },
-    C:  { mult:-1.2,  label:'彻底归零', cls:'c',  emoji:'💀' },
+    C:  { mult:-2.1,  label:'彻底归零', cls:'c',  emoji:'💀' },
   },
 
   // === 概率结算参数 ===
@@ -29,8 +30,8 @@ const CONFIG = {
     luckBase: 50,                     // 运气中位基准(0-100制)
     luckPerPoint: 0.004,              // 每点运气对胜率影响
     luckClamp: { min:-0.16, max:0.20 },
-    perfWeight: { base:0.68, dice:0.32 },  // 运气适度参与:同样选择运气影响约上下一档，又能拉开分数
-    tierCuts: { SS:0.80, S:0.62, A:0.44, B:0.28 },  // 低于B的就是C
+    perfWeight: { base:0.54, dice:0.46 },  // 2026-06-24:随机占比32→46%,结果更两极,掏空中段(资深)、补厚两端(过山车/封神)
+    tierCuts: { SS:0.77, S:0.63, A:0.44, B:0.22 },  // 2026-06-24:SS降0.77(撑封神10%),B降0.22(放更多落C档翻车)
     trendBoost: { hot:0.08, down:0.08 },  // 风口/逆势 可博性加成(让博风口不至于纯送死)
   },
 
@@ -39,28 +40,29 @@ const CONFIG = {
   trendReturn: {
     upDecay: 0.85,    // 顺应时代:每多选一次,后续顺势回报×0.85^(已选次数)，边际递减(风口红利越吃越薄)
     upFloor: 0.4,     // 顺势回报衰减下限(至少保留40%)
-    hotGain: 1.4,     // 风口/逆势 博中(正收益)时的超额回报倍数
+    hotGain: 1.3,     // 2026-06-24:1.4→1.3,风口/逆势博中超额回报略降(配合整体分布下压)
   },
 
   // 运气增减（按结果档位）
   luckDelta: { SS:4, S:2, A:0, B:-2, C:-4 },
 
-  // 健康衰减规则
-  health: { baseDecay:1.2, rampPerPeriod:0.7, extraOnBad:6, extraOnVeryBad:13, bonusOnGreat:1, minHealth:0, maxHealth:100 },
+  // 健康衰减规则。2026-06-24:baseDecay 1.2→1.0(略放缓基础消耗), extraOnVeryBad 13→12(C档扣血微调)
+  health: { baseDecay:1.0, rampPerPeriod:0.7, extraOnBad:6, extraOnVeryBad:12, bonusOnGreat:1, minHealth:0, maxHealth:100 },
 
   // 健康死亡相关
   healthDeath: {
-    earlyOutTrackCap: 800,   // 健康死亡且业绩低于此 → 触发"健康透支"特殊结局
+    earlyOutTrackCap: 650,   // 2026-06-24:800→650,影响力门槛降低,让部分"心智死且影响力中等"者按低分落入过山车而非全判透支,使心智透支贴近10%
   },
 
   // === 综合评分（五属性归一化构成1000分，2026-06-21重设计）===
   // === 净值线性评分(2026-06-22重构)===  综合分 = (资本-100-累计投入)*a + (业绩-100)*b + (人脉-100)*c
   // 系数 a:b:c 守 资本:业绩:人脉=2:3:1 的"对分贡献",并经模拟反解让满分落1000+命中档位比例
-  scoreCoef: { a: 0.206, b: 0.309, c: 0.103 },  // 资本:业绩:人脉=2:3:1, 模拟反解满分落1000
+  // 2026-06-24 结局分布平衡: 系数整体下压(峰左移,缓解资深超额), 维持 资本:业绩:人脉≈2:3:1
+  scoreCoef: { a: 0.192, b: 0.227, c: 0.089 },  // 资本:业绩:人脉≈2:3:1, 模拟反解贴七档目标分布
   scoreClampMax: 1000,                          // 总分上限
   // 运气影响胜率: 实际胜率 = clamp(base + (运气-50)/50 * luckEffect, 0, 1)
-  luckEffect: 0.3,        // 平滑曲线指数(未达目标也能拿大部分分)
-  deadPenalty: 0.6,        // 健康归零时总分打折(唯一权威值,calcScore 引用)
+  luckEffect: 0.4,        // 2026-06-24:0.3→0.4,运气影响加大,提升结果方差(配合两极化分布)
+  deadPenalty: 0.48,       // 2026-06-24:0.6→0.48,心智归零打折更狠,压低透支者分数避免其落入高档
   // 结局音效门槛(跟 endingTiers 对齐:winBig=文明设计师/新世界缔造者, winMid=未来合伙人/清醒的幸存者, neutral=过山车赌徒, 以下lose)
   scoreTiersForSfx: { big: 550, mid: 250, neutral: 150 },
 
