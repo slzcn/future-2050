@@ -3,6 +3,8 @@
     --bg:#070b14; --paper:#0d1320; --ink:#e6f0fa; --ink-soft:#9fb3c8;
     --ink-faint:#8a9bb3; --line:#1e2a3d; --good:#3fd9a8; --bad:#ff5a6e;
     --warn:#f0a83a; --card:#101828; --gold:#27d3e0; --accent:#27d3e0;
+    /* 首页(封面)专属中枢色:冷银蓝,独立于各纪元主题,不借用P1青色 */
+    --home-accent:#aebfd4; --home-accent-bright:#dce6f5;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{background:var(--paper);color:var(--ink);
@@ -38,6 +40,9 @@
     .btn:hover{background:var(--accent,#27d3e0);color:var(--paper);border-color:var(--accent,#27d3e0);transform:translateY(-2px);box-shadow:0 6px 18px rgba(26,23,20,.18);box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 35%,transparent);}
     /* ghost 轻量钮(返回/复制/查看):描边提亮,不填充(更像链接) */
     .btn.ghost:hover{background:transparent;color:var(--accent);border-color:var(--accent);transform:translateY(-1px);box-shadow:none;}
+    /* 首页按钮专属:用中枢银蓝,不借用纪元色 */
+    #cover .btn:hover{background:var(--home-accent);color:#0a0e1a;border-color:var(--home-accent);box-shadow:0 6px 20px color-mix(in srgb,var(--home-accent) 30%,transparent);}
+    #cover .btn.ghost:hover{background:transparent;color:var(--home-accent-bright);border-color:var(--home-accent-bright);}
   }
   .btn:active{transform:scale(.97);background:rgba(39,211,224,.16);color:var(--accent);border-color:var(--accent);box-shadow:0 0 16px rgba(39,211,224,.3);}
   .btn.ghost{padding:12px 28px;font-size:14px;}
@@ -316,10 +321,10 @@
 
 /* ===== 下滑提示 + 介绍首页 ===== */
 /* 首页右上角 i 信息图标 + tip 弹层 */
-.info-btn{position:fixed;top:max(18px,env(safe-area-inset-top));right:max(18px,env(safe-area-inset-right));z-index:150;width:34px;height:34px;color:var(--accent,#27d3e0);background:rgba(16,24,40,.55);border:1px solid var(--line);border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;opacity:.7;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:opacity .25s ease,transform .2s ease,background .25s ease,box-shadow .25s ease,border-color .25s ease,color .25s ease;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
+.info-btn{position:fixed;top:max(18px,env(safe-area-inset-top));right:max(18px,env(safe-area-inset-right));z-index:150;width:34px;height:34px;color:var(--home-accent);background:rgba(16,24,40,.55);border:1px solid var(--line);border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;opacity:.7;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:opacity .25s ease,transform .2s ease,background .25s ease,box-shadow .25s ease,border-color .25s ease,color .25s ease;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
 .info-btn svg{width:18px;height:18px;display:block;pointer-events:none;}
 @media (hover: hover) {
-.info-btn:hover{opacity:1;transform:scale(1.06) rotate(4deg);background:color-mix(in srgb,var(--accent) 16%,rgba(16,24,40,.7));border-color:var(--accent);color:var(--accent);box-shadow:0 0 14px color-mix(in srgb,var(--accent) 35%,transparent);}
+.info-btn:hover{opacity:1;transform:scale(1.06) rotate(4deg);background:color-mix(in srgb,var(--home-accent) 14%,rgba(16,24,40,.7));border-color:var(--home-accent-bright);color:var(--home-accent-bright);box-shadow:0 0 14px color-mix(in srgb,var(--home-accent) 40%,transparent);}
 }
 .info-btn:active{transform:scale(.92);}
 /* i图标只在首页(cover可见)显示,其他页面隐藏 */
