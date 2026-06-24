@@ -2,7 +2,7 @@
 :root{
     --bg:#070b14; --paper:#0d1320; --ink:#e6f0fa; --ink-soft:#9fb3c8;
     --ink-faint:#8a9bb3; --line:#1e2a3d; --good:#3fd9a8; --bad:#ff5a6e;
-    --warn:#f0a83a; --card:#101828; --gold:#27d3e0;
+    --warn:#f0a83a; --card:#101828; --gold:#27d3e0; --accent:#27d3e0;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{background:var(--paper);color:var(--ink);
@@ -35,7 +35,7 @@
   .btn-ic svg{width:17px;height:17px;display:block;}
   @media (hover: hover) {
     /* 主按钮:填充主题色+上浮+光晕(强动作反馈) */
-    .btn:hover{background:var(--accent,#8a5a3a);color:var(--paper);border-color:var(--accent,#8a5a3a);transform:translateY(-2px);box-shadow:0 6px 18px rgba(26,23,20,.18);box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 35%,transparent);}
+    .btn:hover{background:var(--accent,#27d3e0);color:var(--paper);border-color:var(--accent,#27d3e0);transform:translateY(-2px);box-shadow:0 6px 18px rgba(26,23,20,.18);box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 35%,transparent);}
     /* ghost 轻量钮(返回/复制/查看):描边提亮,不填充(更像链接) */
     .btn.ghost:hover{background:transparent;color:var(--accent);border-color:var(--accent);transform:translateY(-1px);box-shadow:none;}
   }
@@ -43,8 +43,8 @@
   .btn.ghost{padding:12px 28px;font-size:14px;}
   /* ===== 点击灵动效果 ===== */
   .btn,.scenario .sc-opt,.deal,.undo-icon,.music-btn,.info-btn,.tip-close{position:relative;overflow:hidden;}
-  .ripple{position:absolute;border-radius:50%;transform:scale(0);pointer-events:none;background:rgba(138,90,58,.35);animation:rippleExpand .6s ease-out forwards;z-index:0;}
-  .btn .ripple{background:rgba(245,241,232,.45);}
+  .ripple{position:absolute;border-radius:50%;transform:scale(0);pointer-events:none;background:rgba(39,211,224,.3);animation:rippleExpand .6s ease-out forwards;z-index:0;}
+  .btn .ripple{background:rgba(39,211,224,.4);}
   @keyframes rippleExpand{to{transform:scale(2.6);opacity:0;}}
   /* 主按钮按下:下沉回弹 */
   .btn.tapped{animation:tapBtn .3s ease;}
@@ -129,7 +129,7 @@
   .cover-stats b{color:var(--ink-soft);font-weight:700;}
   .cover-stats .sep{margin:0 8px;color:var(--line);}
   /* 音乐开关 - 精致SVG图标，右上角独立呼吸区 */
-  .music-btn{position:fixed;top:max(18px,env(safe-area-inset-top));right:max(18px,env(safe-area-inset-right));z-index:150;width:34px;height:34px;color:var(--accent,#8a5a3a);
+  .music-btn{position:fixed;top:max(18px,env(safe-area-inset-top));right:max(18px,env(safe-area-inset-right));z-index:150;width:34px;height:34px;color:var(--accent,#27d3e0);
     background:rgba(16,24,40,.55);border:1px solid var(--line);border-radius:50%;
     display:flex;align-items:center;justify-content:center;padding:0;
     cursor:pointer;opacity:.7;
@@ -142,7 +142,7 @@
   }
   .music-btn:active{transform:scale(.94);}
   .music-btn.on{opacity:.8;}
-  .music-btn.on svg{color:var(--accent,#c2693a);}
+  .music-btn.on svg{color:var(--accent,#27d3e0);}
   .topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 0 14px;border-bottom:1px solid var(--line);flex-wrap:nowrap;gap:8px;}
   .topbar .left{display:flex;align-items:center;gap:10px;font-size:14px;flex-wrap:nowrap;min-width:0;flex:1;}
   .topbar .round-no{color:var(--ink-faint);font-size:13px;white-space:nowrap;flex-shrink:0;} .topbar .round-no b{color:var(--ink);}
@@ -316,7 +316,7 @@
 
 /* ===== 下滑提示 + 介绍首页 ===== */
 /* 首页右上角 i 信息图标 + tip 弹层 */
-.info-btn{position:fixed;top:max(18px,env(safe-area-inset-top));right:max(18px,env(safe-area-inset-right));z-index:150;width:34px;height:34px;color:var(--accent,#8a5a3a);background:rgba(16,24,40,.55);border:1px solid var(--line);border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;opacity:.7;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:opacity .25s ease,transform .2s ease,background .25s ease,box-shadow .25s ease,border-color .25s ease,color .25s ease;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
+.info-btn{position:fixed;top:max(18px,env(safe-area-inset-top));right:max(18px,env(safe-area-inset-right));z-index:150;width:34px;height:34px;color:var(--accent,#27d3e0);background:rgba(16,24,40,.55);border:1px solid var(--line);border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;opacity:.7;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:opacity .25s ease,transform .2s ease,background .25s ease,box-shadow .25s ease,border-color .25s ease,color .25s ease;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
 .info-btn svg{width:18px;height:18px;display:block;pointer-events:none;}
 @media (hover: hover) {
 .info-btn:hover{opacity:1;transform:scale(1.06) rotate(4deg);background:color-mix(in srgb,var(--accent) 16%,rgba(16,24,40,.7));border-color:var(--accent);color:var(--accent);box-shadow:0 0 14px color-mix(in srgb,var(--accent) 35%,transparent);}
