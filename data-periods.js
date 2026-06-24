@@ -1,28 +1,6 @@
 // ===== 2050未来投资模拟器 · 5纪元剧情数据 =====
 // 引擎契约同原版(aum/track/net + trend up/hot/down/safe), 仅内容为未来题材
 const DATA_PERIODS = {
-  "titles": [
-    {
-      "min": 0,
-      "name": "观察员"
-    },
-    {
-      "min": 1,
-      "name": "押注人"
-    },
-    {
-      "min": 2,
-      "name": "未来合伙人"
-    },
-    {
-      "min": 3,
-      "name": "文明操盘手"
-    },
-    {
-      "min": 4,
-      "name": "时代设计师"
-    }
-  ],
   "periods": [
     {
       "id": "P1",
