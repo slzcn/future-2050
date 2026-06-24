@@ -56,7 +56,7 @@
   </div>
 </div>
 
-<script src="engine-sfx.js?v=20260625b"></script>
+<script src="engine-sfx.js?v=20260625c"></script>
 <script>
 // 分组定义。type: 'play'=Sfx.play(name); 'hover'=Sfx.playHover(kind)
 const GROUPS=[
@@ -113,8 +113,9 @@ GROUPS.forEach(g=>{
   list.appendChild(grp);
 });
 
-// ===== 背景音乐 · 多版本分组试听(新旧分开,不交错) =====
-const TIMES={P1:'Ⅰ 门户泡沫(00-04)',P2:'Ⅱ Web2.0(05-09)',P3:'Ⅲ 移动互联(10-15)',P4:'Ⅳ 硬科技(16-22)',P5:'Ⅴ AI新纪元(23-26)'};
+// ===== 背景音乐 · 5纪元试听 =====
+const TIMES={P1:'Ⅰ AGI临界 (2026—2030)',P2:'Ⅱ 具身爆发 (2031—2035)',P3:'Ⅲ 长生时代 (2036—2040)',P4:'Ⅳ 星地经济 (2041—2045)',P5:'Ⅴ 意识纪元 (2046—2050)'};
+const BGM_DS={P1:'冷峻合成器,AI临界的悬疑感',P2:'机械律动,具身工业感',P3:'生命律动与暗涌,生物伦理张力',P4:'空灵深空,星地辽阔感',P5:'迷离电子,意识纪元终章'};
 let bgmAudio=null, bgmPlaying=null;
 function stopBgm(){ if(bgmAudio){bgmAudio.pause();bgmAudio.currentTime=0;} if(bgmPlaying){bgmPlaying.classList.remove('playing');bgmPlaying=null;} }
 function makeMusicRow(file,label,ds){
@@ -124,38 +125,20 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260625b';
+    bgmAudio.src='audio/'+file+'?v=20260625c';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
   return row;
 }
-function musicGroupNamed(title, suffix, names){
+(function bgmGroup(){
   const g=document.createElement('div'); g.className='grp';
-  g.innerHTML='<div class="grp-t">'+title+'</div>';
+  g.innerHTML='<div class="grp-t">🎵 纪元背景音乐</div>';
   ['P1','P2','P3','P4','P5'].forEach(function(k){
-    g.appendChild(makeMusicRow(k+suffix+'.mp3', TIMES[k], '改编自《'+names[k]+'》'));
+    g.appendChild(makeMusicRow(k+'.mp3', TIMES[k], BGM_DS[k]));
   });
   list.appendChild(g);
-}
-function musicGroup(title, suffix, ds){
-  const g=document.createElement('div'); g.className='grp';
-  g.innerHTML='<div class="grp-t">'+title+'</div>';
-  ['P1','P2','P3','P4','P5'].forEach(k=>{
-    g.appendChild(makeMusicRow(k+suffix+'.mp3', TIMES[k], ds));
-  });
-  list.appendChild(g);
-}
-// 时代代表选曲(主人要的:按时代选标志性曲目)2版 + 之前的原版 + 手作对比
-const NAMES_S1={P1:'老鼠爱大米',P2:'青花瓷',P3:'最炫民族风',P4:'海阔天空',P5:'赛博朋克电子'};
-const NAMES_S2={P1:'2002年的第一场雪',P2:'七里香',P3:'小苹果',P4:'孤勇者',P5:'Time·Inception'};
-const NAMES_R={P1:'清晨',P2:'天空之城',P3:'起风了',P4:'夜空中最亮的星',P5:'Time·HansZimmer'};
-musicGroupNamed('🎵 时代代表 · 选曲1','s1',NAMES_S1);
-musicGroupNamed('🎵 时代代表 · 选曲2','s2',NAMES_S2);
-musicGroupNamed('🎵 真实改编 · 原版(第一版)','r',NAMES_R);
-musicGroup('🎵 手作A(五声中国风)','v2','古筝/笛/弦乐');
-musicGroup('🎵 手作B(轻柔现代)','v3','钢琴/pad');
-musicGroup('🎵 旧版(对比用)','','原中国风轻音乐');
+})();
 // 整页首次触摸/点击即解锁
 ['pointerdown','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{try{window.Sfx&&Sfx.unlock();}catch(e){}},{once:true,passive:true}));
 

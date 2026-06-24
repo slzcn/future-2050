@@ -9,7 +9,7 @@
   :root{
     --bg:#070b14; --paper:#0d1320; --ink:#e6f0fa; --ink-soft:#9fb3c8;
     --ink-faint:#8a9bb3; --line:#1e2a3d; --good:#3fd9a8; --bad:#ff5a6e;
-    --warn:#f0a83a; --card:#101828; --gold:#27d3e0; --blue:#7b9cf0;
+    --warn:#f0a83a; --card:#101828; --gold:#aebfd4; --blue:#7b9cf0;
     --accent:#aebfd4; --home-accent:#aebfd4;
   }
   html,body{background:var(--paper);color:var(--ink);
@@ -32,7 +32,7 @@
   @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.2);}
   .panel h2{font-size:clamp(14px,3.6vw,15.5px);font-weight:800;letter-spacing:.04em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;}
-  .formula{background:rgba(39,211,224,.06);border-left:3px solid var(--accent);border-radius:0 7px 7px 0;padding:11px 14px;margin:8px 0;font-size:clamp(12px,3vw,13px);line-height:1.95;font-family:"SF Mono",Menlo,Consolas,"Courier New",monospace;color:var(--ink);overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:pre-wrap;word-break:break-word;}
+  .formula{background:color-mix(in srgb,var(--accent) 6%,transparent);border-left:3px solid var(--accent);border-radius:0 7px 7px 0;padding:11px 14px;margin:8px 0;font-size:clamp(12px,3vw,13px);line-height:1.95;font-family:"SF Mono",Menlo,Consolas,"Courier New",monospace;color:var(--ink);overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:pre-wrap;word-break:break-word;}
   .deftbl{width:100%;font-size:clamp(12px,3vw,13px);border-collapse:collapse;}
   .deftbl td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;}
   .deftbl tr:last-child td{border-bottom:none;}
@@ -116,10 +116,10 @@
   <div class="footer">🦞 小龙虾出品 · 数值手册+调参器 · 数据=游戏真实配置（config.js / data-periods.js / data-endings.js）</div>
 </div>
 
-<script src="config.js?v=20260625b"></script>
-<script src="data-periods.js?v=20260625b"></script>
-<script src="data-endings.js?v=20260625b"></script>
-<script src="data-mbti.js?v=20260625b"></script>
+<script src="config.js?v=20260625c"></script>
+<script src="data-periods.js?v=20260625c"></script>
+<script src="data-endings.js?v=20260625c"></script>
+<script src="data-mbti.js?v=20260625c"></script>
 <script>
 "use strict";
 var RUNS=10000;
