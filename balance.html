@@ -437,6 +437,7 @@ function play(strat){
   return{score:score,ending:pickEnding(score,state),dead:state.health<=0,state:state,lock:lock};
 }
 function runSim(){
+  if(!P){return;}  // P(参数快照)未就绪时不跑,避免提前触发崩在"模拟中"
   var strats=['greedy','safe','trend','random'];
   var order=['legend','master','veteran','steady','rollercoaster','exit','earlyout'];
   var nm={legend:'👑 文明设计师',master:'🌌 新世界缔造者',veteran:'🛰️ 未来合伙人',steady:'⚖️ 清醒的幸存者',rollercoaster:'🎢 过山车赌徒',exit:'🪐 时代的祭品',earlyout:'🧠 心智透支'};
@@ -528,6 +529,7 @@ setTimeout(function(){
     renderDoc();
     BASE=snapshot();P=JSON.parse(JSON.stringify(BASE));
     renderParams();markDirty();
+    if(!window.__simDone && document.querySelector('#page-tune.on')){ runSim(); }
   }catch(e){document.getElementById('live').textContent='❌ 出错:'+e.message;console.error(e);}
 },120);
 
