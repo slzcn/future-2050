@@ -131,8 +131,8 @@
 <script src="data-periods.js?v=20260625zg"></script>
 <script src="data-endings.js?v=20260625zg"></script>
 <script src="data-mbti.js?v=20260627p5"></script>
-<script src="data-persona5.js?v=20260627p5"></script>
-<script src="data-profile6.js?v=20260627p5"></script>
+<script src="data-persona5.js?v=20260627opt2"></script>
+<script src="data-profile6.js?v=20260627opt2"></script>
 <script>
 "use strict";
 var RUNS=10000;
@@ -507,24 +507,25 @@ function runSim(){
   // ===== 五维人格分布(随机答5题→最近人格原型, 与大师匹配同源) =====
   if(typeof PERSONA5!=="undefined" && typeof PROFILE!=="undefined"){
     (function(){
-      var sc=PROFILE.scenarios, keys=Object.keys(sc), norm=PROFILE.norm||4;
-      var SN=30000, cnt={};
+      var DIM=PERSONA5.DIM, LV=[0,50,100], cnt={};   // 玩家每维落点只可能是 0/50/100(每题±4,norm4)
       PERSONA5.archetypes.forEach(function(a){cnt[a.key]=0;});
-      var DIM=PERSONA5.DIM;
-      for(var i=0;i<SN;i++){
-        var raw={risk:0,data:0,horizon:0,focus:0,decisive:0};
-        keys.forEach(function(k){var o=sc[k].opts[Math.floor(Math.random()*sc[k].opts.length)];if(o.e){for(var dk in o.e){raw[dk]=(raw[dk]||0)+o.e[dk];}}});
-        var ps={};DIM.forEach(function(dk){var v=raw[dk]||0; ps[dk]=Math.max(0,Math.min(100, 50 + v/norm*50));});
-        var bestKey=null,bd=1e9;
-        PERSONA5.archetypes.forEach(function(a){
-          var ss=0;
-          DIM.forEach(function(dk){ var av=(P&&P['pa_'+a.key+'_'+dk]!=null)?P['pa_'+a.key+'_'+dk]:a.anchor[dk]; var dd=(ps[dk]||50)-av; ss+=dd*dd; });
-          var dist=Math.sqrt(ss); if(dist<bd){bd=dist;bestKey=a.key;}
-        });
-        cnt[bestKey]++;
+      // 枚举全部 3^5=243 种等概率人格组合(而非随机抽样 —— 随机抽样会向中间聚集、低估极端型)
+      function rec(idx,ps){
+        if(idx===5){
+          var bestKey=null,bd=1e9;
+          PERSONA5.archetypes.forEach(function(a){
+            var ss=0;
+            DIM.forEach(function(dk,di){ var av=(P&&P['pa_'+a.key+'_'+dk]!=null)?P['pa_'+a.key+'_'+dk]:a.anchor[dk]; var dd=ps[di]-av; ss+=dd*dd; });
+            if(ss<bd){bd=ss;bestKey=a.key;}
+          });
+          cnt[bestKey]++; return;
+        }
+        for(var j=0;j<3;j++){ ps[idx]=LV[j]; rec(idx+1,ps); }
       }
-      h+='<div class="panel"><h2>\ud83c\udfad 五维人格分布 <span style="font-size:11px;font-weight:600;color:#8c857a">随机答5题\u00d7'+(SN/1000)+'k局 \u2192 最近人格</span></h2>';
-      h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">6人格\u2194\u21946大师 \u00b7 玩家五维到最近原型(与大师匹配同源)</div>';
+      rec(0,[0,0,0,0,0]);
+      var SN=243;
+      h+='<div class="panel"><h2>\ud83c\udfad 五维人格分布 <span style="font-size:11px;font-weight:600;color:#8c857a">243种人格组合等概率 \u2192 最近原型</span></h2>';
+      h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">6人格\u2194\u21946大师 \u00b7 枚举所有五维组合(0/50/100)到最近原型·衡量势力范围均衡度(与大师匹配同源)</div>';
       PERSONA5.archetypes.forEach(function(a){var pct=cnt[a.key]/SN*100;
         h+='<div class="row"><div class="nm">'+a.emoji+a.title+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*2.5)+'%;background:'+a.color+'"></div></div><div class="pct">'+pct.toFixed(1)+'%</div></div>';});
       h+='</div>';
