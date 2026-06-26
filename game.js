@@ -175,6 +175,11 @@ function viewLastResult(){
   el.innerHTML=r.html;
   // 【修复】存档HTML里的 #scQr 只是空容器，二维码需运行时重新绘制，否则空白
   renderShareQR();
+  // 【修复】雷达图是 canvas，像素不随 innerHTML 保存，回看时从存档 radar 数据重绘，否则雷达图消失
+  if(r.radar && typeof drawRadar==='function'){
+    const cv=document.getElementById('radarCanvas');
+    if(cv){ requestAnimationFrame(()=>drawRadar(cv, r.radar.ps, r.radar.mp, r.radar.accent)); }
+  }
   // 重新挂载渲染(MBTI block 已在html里)
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -777,7 +782,8 @@ function showEnding(healthDead){
   const sty=calcStyle();
   saveResult({
     html: $ending.innerHTML,
-    title: meta.title, score: score, styleTitle: sty.title, ts: Date.now()
+    title: meta.title, score: score, styleTitle: sty.title, ts: Date.now(),
+    radar: window._lastRadar || null   // 存雷达数据供回看重绘
   });
   initCover(); // 刷新封面按钮(下次回来能回看)
   window.scrollTo({top:0,behavior:'smooth'});
@@ -841,6 +847,8 @@ function renderMBTI(){
   if(cv && typeof PROFILE!=='undefined'){
     requestAnimationFrame(()=>drawRadar(cv, ps, b?b.p6:null, accent));
   }
+  // 暂存本局雷达数据(供存档/回看重绘 canvas, 因 canvas 像素不随 innerHTML 保存)
+  window._lastRadar = { ps: ps, mp: (b?b.p6:null), accent: accent };
 }
 
 function toast(msg,ms){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),ms||2200);}
