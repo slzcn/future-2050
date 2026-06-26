@@ -131,8 +131,9 @@ function render(R,V){
   var total=R.length;
   var players={}; R.forEach(function(r){if(r.player_id)players[r.player_id]=1;});
   var nPlayers=Object.keys(players).length;
-  var today=new Date(); today.setHours(0,0,0,0);
-  var todayN=R.filter(function(r){return new Date(r.created_at)>=today;}).length;
+  // created_at 已存北京时间(墙钟值),取北京今天日期串,与created_at前10位纯字符串比对(避免Date二次时区偏移)
+  var bjToday=new Date(Date.now()+8*3600*1000).toISOString().slice(0,10);
+  var todayN=R.filter(function(r){return String(r.created_at||'').slice(0,10)===bjToday;}).length;
   var visitN=V.length;
   var invited=R.filter(function(r){return r.is_invited;}).length;
 
