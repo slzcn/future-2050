@@ -130,7 +130,9 @@
 <script src="config.js?v=20260625zg"></script>
 <script src="data-periods.js?v=20260625zg"></script>
 <script src="data-endings.js?v=20260625zg"></script>
-<script src="data-mbti.js?v=20260625zg"></script>
+<script src="data-mbti.js?v=20260627p5"></script>
+<script src="data-persona5.js?v=20260627p5"></script>
+<script src="data-profile6.js?v=20260627p5"></script>
 <script>
 "use strict";
 var RUNS=10000;
@@ -247,41 +249,43 @@ function renderConfig(){
     h+='</div>';
   }
 
-  // 投资风格画像(从 data-mbti.js 读)
-  if(typeof MBTI!=="undefined" && MBTI.styles){
-    var sorder=["steady_rational","steady_emotional","aggressive_rational","aggressive_emotional","balanced"];
-    h+='<div class="panel"><h2>\u{1F3AD} 投资风格画像 · 称号文案 <span style="font-size:11px;color:#8c857a;font-weight:600">data-mbti.js</span></h2>';
-    sorder.forEach(function(k){
-      var s=MBTI.styles[k]; if(!s)return;
-      var col=esc(s.color||"#5a6470");
+  // 五维投资人格(从 data-persona5.js 读, 6人格<->6大师)
+  if(typeof PERSONA5!=="undefined" && PERSONA5.archetypes){
+    var MNAME=window.PMNAME||{};
+    h+='<div class="panel"><h2>\u{1F3AD} 五维未来人格 \u00b7 6型称号 <span style="font-size:11px;color:#8c857a;font-weight:600">data-persona5.js \u00b7 对应6位未来大师</span></h2>';
+    PERSONA5.archetypes.forEach(function(a){
+      var col=esc(a.color||"#5a6470");
+      var ac=a.anchor||{};
+      var anchorTxt=['risk','data','horizon','focus','decisive'].map(function(k){return k+':'+(ac[k]!=null?ac[k]:'-');}).join(' ');
       h+='<div class="formula" style="border-left-color:'+col+'">';
-      h+='<b style="color:'+col+';font-size:14px">'+esc(s.emoji)+" "+esc(s.title)+'</b>';
-      h+='  <span style="color:#8c857a;font-size:11.5px;font-weight:600">('+esc(s.sub)+')</span>';
-      h+="\n\u{1F3F7}\uFE0F 标签："+esc(s.tag);
-      h+="\n\u{1F4D6} 解读："+showBr(s.desc);
+      h+='<b style="color:'+col+';font-size:14px">'+esc(a.emoji)+" "+esc(a.title)+'</b>';
+      h+='  <span style="color:#8c857a;font-size:11.5px;font-weight:600">(\u2248 '+esc(MNAME[a.master]||a.master)+')</span>';
+      h+="\n\u{1F3F7}\uFE0F 标签："+esc(a.tag);
+      h+="\n\u{1F4CD} 五维锚点："+esc(anchorTxt);
+      h+="\n\u{1F4D6} 解读："+showBr(a.desc);
       h+='</div>';
     });
     h+='</div>';
   }
 
-  // 投资风格 · 维度释义(从 data-mbti.js 读)
-  if(typeof MBTI!=="undefined" && MBTI.dims){
-    h+='<div class="panel"><h2>\u{1F4CA} 风格维度释义 <span style="font-size:11px;color:#8c857a;font-weight:600">data-mbti.js · dims</span></h2>';
-    MBTI.dims.forEach(function(dm){
+  // 五维释义(从 data-profile6.js 读)
+  if(typeof PROFILE!=="undefined" && PROFILE.dims){
+    h+='<div class="panel"><h2>\u{1F4CA} 五维释义 <span style="font-size:11px;color:#8c857a;font-weight:600">data-profile6.js \u00b7 dims</span></h2>';
+    PROFILE.dims.forEach(function(dm){
       h+='<div class="formula" style="border-left-color:var(--blue)">';
-      h+='<b>'+esc(dm.neg)+' \u2190 '+esc(dm.key)+' \u2192 '+esc(dm.pos)+'</b>';
-      h+="\n\u2796 "+esc(dm.neg)+"："+showBr(dm.negDesc);
-      h+="\n\u2795 "+esc(dm.pos)+"："+showBr(dm.posDesc);
+      h+='<b>'+esc(dm.axis)+'：'+esc(dm.low)+' \u2190 '+esc(dm.key)+' \u2192 '+esc(dm.high)+'</b>';
+      h+="\n\u2796 "+esc(dm.low)+"："+showBr(dm.lowDesc);
+      h+="\n\u2795 "+esc(dm.high)+"："+showBr(dm.highDesc);
       h+='</div>';
     });
     h+='</div>';
   }
 
-  // 投资风格 · 情境测试题(从 data-mbti.js 读)
-  if(typeof MBTI!=="undefined" && MBTI.scenarios){
-    h+='<div class="panel"><h2>\u2753 风格测试 · 情境题 <span style="font-size:11px;color:#8c857a;font-weight:600">data-mbti.js · scenarios</span></h2>';
-    Object.keys(MBTI.scenarios).forEach(function(pk){
-      var sc=MBTI.scenarios[pk];
+  // 五维测试 · 情境题(从 data-profile6.js 读, P1-P5 单维)
+  if(typeof PROFILE!=="undefined" && PROFILE.scenarios){
+    h+='<div class="panel"><h2>\u2753 五维测试 \u00b7 情境题 <span style="font-size:11px;color:#8c857a;font-weight:600">data-profile6.js \u00b7 scenarios</span></h2>';
+    Object.keys(PROFILE.scenarios).forEach(function(pk){
+      var sc=PROFILE.scenarios[pk];
       h+='<div class="formula" style="border-left-color:var(--blue)">';
       h+='<b>'+esc(pk)+'：'+esc(sc.q)+'</b>';
       (sc.opts||[]).forEach(function(o,i){
@@ -350,6 +354,15 @@ function snapshot(){
     cutLegend:tierMin('legend'),cutMaster:tierMin('master'),cutVeteran:tierMin('veteran'),cutSteady:tierMin('steady'),cutRoller:tierMin('rollercoaster')
   };
 }
+// 人格锚点 key 形如 pa_<archKey>_<dim>，从 PERSONA5 读初始值合并进 snapshot
+function snapshotPersona(base){
+  if(typeof PERSONA5==='undefined'||!PERSONA5.archetypes)return base;
+  PERSONA5.archetypes.forEach(function(a){
+    PERSONA5.DIM.forEach(function(dk){ base['pa_'+a.key+'_'+dk]=a.anchor[dk]; });
+  });
+  return base;
+}
+window.PMNAME={hassabis:'冷算先知',simons:'量子量化师',altman:'奇点信徒',musk:'星际布道者',thiel:'范式猎手',johnson:'长存守护者'};
 var PARAM_DEFS=[
   ['评分系数（算力:影响力:网络≈2.2:2.5:1）',[['coefA','算力系数a',0,0.5,0.001],['coefB','影响力系数b',0,0.6,0.001],['coefC','网络系数c',0,0.3,0.001]]],
   ['起始值',[['sAum','初始算力',0,300,5],['sTrack','初始影响力',0,300,5],['sNet','初始网络',0,200,5],['sLuck','初始运气',0,100,5],['sHealth','初始心智',0,100,5]]],
@@ -365,6 +378,15 @@ var PARAM_DEFS=[
   ['其他机制',[['smallF','小额参投×',0.2,1,0.05],['earlyCap','心智透支影响力线',400,1200,50]]],
   ['风格画像',[['mbtiMid','均衡型阈值',0,5,1]]]
 ];
+// 动态追加：6 人格 × 5 维锚点滑块（拖动看人格分布实时变化，与 P 同步）
+(function(){
+  if(typeof PERSONA5==='undefined'||!PERSONA5.archetypes)return;
+  var DLAB={risk:'风险偏好(审慎↔加速)',data:'决策依据(信念↔理性)',horizon:'时间视野(短线↔长期)',focus:'下注集中(分散↔集中)',decisive:'行动节奏(观望↔果断)'};
+  PERSONA5.archetypes.forEach(function(a){
+    var rows=PERSONA5.DIM.map(function(dk){ return ['pa_'+a.key+'_'+dk, DLAB[dk], 0, 100, 1]; });
+    PARAM_DEFS.push([a.emoji+' '+a.title+' 锚点 · '+'对应'+(window.PMNAME?window.PMNAME[a.master]:a.master), rows]);
+  });
+})();
 function rollOutcome(d,state){
   if(d.trend==='safe')return'A';
   var Pr=CONFIG.probability;
@@ -482,16 +504,32 @@ function runSim(){
   ['hot','up','down','safe'].forEach(function(k){var pct=tall[k]/ttot*100;
     h+='<div class="row"><div class="nm">'+tnm[k]+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*1.6)+'%;background:'+tcol2[k]+'"></div></div><div class="pct">'+pct.toFixed(0)+'%</div></div>';});
   h+='</div>';
-  // ---- 风格画像分布(完整调参, 随机答5题×30k局, future 5型) ----
-  var sc=MBTI.scenarios,skeys=Object.keys(sc),SN=30000,scnt={steady_rational:0,steady_emotional:0,aggressive_rational:0,aggressive_emotional:0,balanced:0};
-  for(var si=0;si<SN;si++){var rr=0,mm=0;skeys.forEach(function(kk){var opt=sc[kk].opts[Math.floor(Math.random()*sc[kk].opts.length)];if(opt&&opt.e){rr+=opt.e.risk||0;mm+=opt.e.mind||0;}});
-    var rMid=Math.abs(rr)<=P.mbtiMid,mMid=Math.abs(mm)<=P.mbtiMid;var sk=(rMid&&mMid)?'balanced':((rr>=0?'aggressive':'steady')+'_'+(mm>=0?'emotional':'rational'));scnt[sk]++;}
-  var sorder=['steady_rational','steady_emotional','aggressive_rational','aggressive_emotional','balanced'];
-  h+='<div class="panel"><h2>🎭 风格画像分布 <span style="font-size:11px;color:#8c857a;font-weight:600">data-mbti.js</span></h2>';
-  h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">随机答5题×30k局 · 5型各约20% · 调下方「均衡型阈值」滑块看实时变化(阈值越大·平衡型越多)</div>';
-  sorder.forEach(function(k){var pct=scnt[k]/SN*100;
-    h+='<div class="row"><div class="nm">'+MBTI.styles[k].emoji+MBTI.styles[k].title+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*2.5)+'%;background:'+MBTI.styles[k].color+'"></div></div><div class="pct">'+pct.toFixed(1)+'%</div></div>';});
-  h+='</div>';
+  // ===== 五维人格分布(随机答5题→最近人格原型, 与大师匹配同源) =====
+  if(typeof PERSONA5!=="undefined" && typeof PROFILE!=="undefined"){
+    (function(){
+      var sc=PROFILE.scenarios, keys=Object.keys(sc), norm=PROFILE.norm||4;
+      var SN=30000, cnt={};
+      PERSONA5.archetypes.forEach(function(a){cnt[a.key]=0;});
+      var DIM=PERSONA5.DIM;
+      for(var i=0;i<SN;i++){
+        var raw={risk:0,data:0,horizon:0,focus:0,decisive:0};
+        keys.forEach(function(k){var o=sc[k].opts[Math.floor(Math.random()*sc[k].opts.length)];if(o.e){for(var dk in o.e){raw[dk]=(raw[dk]||0)+o.e[dk];}}});
+        var ps={};DIM.forEach(function(dk){var v=raw[dk]||0; ps[dk]=Math.max(0,Math.min(100, 50 + v/norm*50));});
+        var bestKey=null,bd=1e9;
+        PERSONA5.archetypes.forEach(function(a){
+          var ss=0;
+          DIM.forEach(function(dk){ var av=(P&&P['pa_'+a.key+'_'+dk]!=null)?P['pa_'+a.key+'_'+dk]:a.anchor[dk]; var dd=(ps[dk]||50)-av; ss+=dd*dd; });
+          var dist=Math.sqrt(ss); if(dist<bd){bd=dist;bestKey=a.key;}
+        });
+        cnt[bestKey]++;
+      }
+      h+='<div class="panel"><h2>\ud83c\udfad 五维人格分布 <span style="font-size:11px;font-weight:600;color:#8c857a">随机答5题\u00d7'+(SN/1000)+'k局 \u2192 最近人格</span></h2>';
+      h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">6人格\u2194\u21946大师 \u00b7 玩家五维到最近原型(与大师匹配同源)</div>';
+      PERSONA5.archetypes.forEach(function(a){var pct=cnt[a.key]/SN*100;
+        h+='<div class="row"><div class="nm">'+a.emoji+a.title+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*2.5)+'%;background:'+a.color+'"></div></div><div class="pct">'+pct.toFixed(1)+'%</div></div>';});
+      h+='</div>';
+    })();
+  }
   document.getElementById('dist').innerHTML=h;
   document.getElementById('live').textContent='✅ 模拟 '+RUNS+' 局（4策略混合）';
   window.__simDone=true;
@@ -527,7 +565,7 @@ setTimeout(function(){
   if(typeof CONFIG==='undefined'||typeof DATA_PERIODS==='undefined'){document.getElementById('live').textContent='❌ 配置加载失败';return;}
   try{
     renderDoc();
-    BASE=snapshot();P=JSON.parse(JSON.stringify(BASE));
+    BASE=snapshotPersona(snapshot());P=JSON.parse(JSON.stringify(BASE));
     renderParams();markDirty();
     if(!window.__simDone && document.querySelector('#page-tune.on')){ runSim(); }
   }catch(e){document.getElementById('live').textContent='❌ 出错:'+e.message;console.error(e);}
