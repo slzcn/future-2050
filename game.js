@@ -850,10 +850,10 @@ function genImage(){
   window._genImaging=true;
   if(window.Sfx)Sfx.play('click');
   const card=document.getElementById('shareCard');
-  // 截图前临时隐藏「二十四年押注轨迹」明细块(页面仍显示,只是不进截图,避免截图过长)
-  const rec=document.getElementById('scRecord');
-  if(rec) rec.style.display='none';
-  const restore=()=>{ if(rec) rec.style.display=''; window._genImaging=false; };  // 恢复为CSS默认,不依赖快照值
+  // 截图前临时隐藏「二十四年押注轨迹」整章(章节标题+明细块都带 data-chapter=3),页面仍显示,只是不进截图,避免截图过长 + 残留孤立标题
+  const ch3=[].slice.call(card.querySelectorAll('[data-chapter="3"]'));
+  ch3.forEach(function(el){ el.style.display='none'; });
+  const restore=()=>{ ch3.forEach(function(el){ el.style.display=''; }); window._genImaging=false; };  // 恢复为CSS默认,不依赖快照值
   // 二维码异步生成(白边重绘),截图时若还没就绪(回看页秒点)会截到空/半成品,先确保就绪
   const qrReady=()=>{ const i=document.querySelector('#scQr img'); return i && i.src && i.src.indexOf('data:image')===0; };
   if(!qrReady() && typeof renderShareQR==='function'){ renderShareQR(); }
