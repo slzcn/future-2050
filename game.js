@@ -105,9 +105,32 @@ function reportApi(kind, row){
   }catch(e){}
 }
 function reportResult(payload){
+  // 采集全套局况:基础+风格两维+终局五维属性+胜负数+出局+最佳/最差一投+完整轨迹+是否被邀请+UA
+  var s=state||{};
+  var hist=Array.isArray(fullHistory)?fullHistory:[];
+  var winList=hist.filter(function(h){return h.tier==='SS'||h.tier==='S';});
+  var loseList=hist.filter(function(h){return h.tier==='C'||h.tier==='B';});
+  var ord={SS:5,S:4,A:3,B:2,C:1};
+  var best=winList.slice().sort(function(a,b){return ord[b.tier]-ord[a.tier];})[0];
+  var worst=loseList.slice().sort(function(a,b){return ord[a.tier]-ord[b.tier];})[0];
+  var inv=null; try{inv=getInviter();}catch(e){}
   reportApi('result',{
     player_id:getPlayerId(), player_name:getPlayerName()||null,
-    score:payload.score, title:payload.title, style:payload.styleTitle
+    score:payload.score, title:payload.title, style:payload.styleTitle,
+    mbti_risk:(typeof mbti==='object'&&mbti)?mbti.risk:null,
+    mbti_mind:(typeof mbti==='object'&&mbti)?mbti.mind:null,
+    win_count:winList.length, lose_count:loseList.length,
+    final_aum:s.aum!=null?Math.round(s.aum):null,
+    final_track:s.track!=null?Math.round(s.track):null,
+    final_net:s.network!=null?Math.round(s.network):null,
+    final_health:s.health!=null?Math.round(s.health):null,
+    final_luck:s.luck!=null?Math.round(s.luck):null,
+    health_dead:(s.health!=null?s.health<=0:null),
+    best_deal:best?(best.tag+' · '+best.name):null,
+    worst_deal:worst?(worst.tag+' · '+worst.name):null,
+    picks:hist.map(function(h){return {year:h.year, tag:h.tag, name:h.name, tier:h.tier};}),
+    is_invited:!!inv,
+    ua:(navigator&&navigator.userAgent)?navigator.userAgent.slice(0,200):null
   });
 }
 function reportVisit(){
