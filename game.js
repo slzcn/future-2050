@@ -32,7 +32,7 @@ function shuffleOnce(arr){
 // 开新一局时清掉所有 _sh 标记,让新局重新随机(否则同一浏览器会话内多局顺序会一样)
 function resetShuffle(){
   try{
-    Object.keys(MBTI.scenarios||{}).forEach(k=>{const a=MBTI.scenarios[k].opts;if(a)delete a._sh;});
+    Object.keys((typeof PROFILE!=='undefined'?PROFILE.scenarios:MBTI.scenarios)||{}).forEach(k=>{const sc=(typeof PROFILE!=='undefined'?PROFILE.scenarios:MBTI.scenarios)[k];const a=sc&&sc.opts;if(a)delete a._sh;});
     (GAME.periods||[]).forEach(p=>(p.rounds||[]).forEach(r=>{if(r.deals)delete r.deals._sh;}));
   }catch(e){}
 }
@@ -155,7 +155,7 @@ function continueGame(){
   if(window.Sfx)Sfx.play('swipe');
   const s=lsGet(SAVE_KEY); if(!s){startGame();return;}
   state={...GAME.start,...s.state}; upPicks=s.upPicks||0; pIdx=s.pIdx; rIdx=s.rIdx; stagedThisPeriod=s.stagedThisPeriod||[];
-  fullHistory=s.fullHistory||[]; mbti=s.mbti||{risk:0,mind:0}; selDeal=null; gameOver=false;
+  fullHistory=s.fullHistory||[]; mbti=Object.assign({risk:0,data:0,horizon:0,focus:0,decisive:0,mind:0}, s.mbti||{}); selDeal=null; gameOver=false;
   document.getElementById('cover').classList.add('hidden');
   $ending.classList.add('hidden');
   $ending.innerHTML='';
@@ -249,7 +249,7 @@ function startGame(){
   state.spent=0;  // 累计投入(方案A:资本照常涨,评分时减此值体现钱花出去了)
   upPicks=0;
   pIdx=0; rIdx=0; selDeal=null; stagedThisPeriod=[]; fullHistory=[]; gameOver=false;
-  mbti={risk:0,mind:0};
+  mbti={risk:0,data:0,horizon:0,focus:0,decisive:0,mind:0};
   resetShuffle();  // 新局重新洗牌,每局选项顺序不同
   document.getElementById('cover').classList.add('hidden');
   $ending.classList.add('hidden');
@@ -333,7 +333,7 @@ function enterPeriod(){
 }
 function showScenario(){
   const p=GAME.periods[pIdx];
-  const sc=MBTI.scenarios[p.id];
+  const sc=(typeof PROFILE!=='undefined'&&PROFILE.scenarios&&PROFILE.scenarios[p.id])?PROFILE.scenarios[p.id]:MBTI.scenarios[p.id];
   if(!sc){ showStory(); return; }
   shuffleOnce(sc.opts);  // 随机展示选项顺序(首次进入本题时洗一次)
   const opts=sc.opts.map((o,i)=>`<div class="sc-opt" data-i="${i}" onclick="pickScenario(${i})">${o.t}</div>`).join('');
@@ -348,8 +348,9 @@ function showScenario(){
 function pickScenario(i){
   if(window.Sfx)Sfx.play('pick');
   const p=GAME.periods[pIdx];
-  const o=MBTI.scenarios[p.id].opts[i];
-  if(o.e){for(const k in o.e)mbti[k]+=o.e[k];}
+  const SC=(typeof PROFILE!=='undefined'&&PROFILE.scenarios&&PROFILE.scenarios[p.id])?PROFILE.scenarios[p.id]:MBTI.scenarios[p.id];
+  const o=SC.opts[i];
+  if(o.e){for(const k in o.e){ if(mbti[k]==null) mbti[k]=0; mbti[k]+=o.e[k]; } }
   // 选中反馈:仅选中的选项出波纹+弹入效果
   document.querySelectorAll('.sc-opt').forEach(el=>el.classList.toggle('picked',+el.dataset.i===i));
   const sel=document.querySelector('.sc-opt[data-i="'+i+'"]');
@@ -606,25 +607,103 @@ function afterPeriod(healthDead){
 
 
 function calcStyle(){
-  const TH=CONFIG.mbtiMidThreshold;
-  const r=mbti.risk, m=mbti.mind;
-  const rMid=Math.abs(r)<=TH, mMid=Math.abs(m)<=TH;
-  let key;
-  if(rMid && mMid) key='balanced';        // 两维都模糊 → 均衡型
-  else {
-    const rk=r>=0?'aggressive':'steady';
-    const mk=m>=0?'emotional':'rational';
-    key=rk+'_'+mk;
+  // 五维人格：玩家五维(0-100) → 最近人格原型(与未来大师匹配同源)
+  const ps = (typeof profile6Scores==='function') ? profile6Scores() : null;
+  if(ps && typeof PERSONA5!=='undefined'){
+    const a = PERSONA5.match(ps);
+    const sub = PERSONA5.subFromDims(ps, (typeof PROFILE!=='undefined'&&PROFILE.dims)?PROFILE.dims:[]);
+    return { key:a.key, emoji:a.emoji, title:a.title, sub:sub, color:a.color, tag:a.tag, desc:a.desc };
   }
-  return MBTI.styles[key];
+  // 兜底(PERSONA5/PROFILE 未加载)：返回均衡型(沿用旧 MBTI 文案)
+  if(typeof MBTI!=='undefined' && MBTI.styles && MBTI.styles.balanced) return MBTI.styles.balanced;
+  return { key:'balanced', emoji:'⚖️', title:'平衡预言家', sub:'攻守兼备 · 理信并重', color:'#8a93a8',
+    tag:'灵活 · 不走极端', desc:'你没有明显的偏科，能稳能进、能算账也懂得为愿景留温度，像老练的舵手随风浪调整航向。' };
 }
 function mbtiDimBars(){
-  // 返回两维度偏向百分比(50中点)。单维度极端累计≈5题×3=15，取 14 为归一化分母
+  // 兼容旧调用：保留二维风险/感性条(不再使用,新版用 5 维雷达)
   const norm=(v,max)=>clamp(50+v/max*50,6,94);
   return {
-    risk:{val:mbti.risk, pct:norm(mbti.risk,14)},
-    mind:{val:mbti.mind, pct:norm(mbti.mind,14)},
+    risk:{val:mbti.risk||0, pct:norm(mbti.risk||0,14)},
+    mind:{val:mbti.mind||0, pct:norm(mbti.mind||0,14)},
   };
+}
+function profile6Scores(){
+  // 把累积的 5 维原始分(单题±4)归一化到 0~100，50 中点
+  if(typeof PROFILE==='undefined') return null;
+  const N = PROFILE.norm || 4;
+  const out = {};
+  PROFILE.dims.forEach(d=>{
+    const v = (mbti[d.key]||0);
+    out[d.key] = Math.round(Math.max(4, Math.min(96, 50 + v / N * 50)));
+  });
+  return out;
+}
+// 画雷达图：playerScores 实线，masterScores 虚线
+function drawRadar(canvas, playerScores, masterScores, accent){
+  if(typeof PROFILE==='undefined') return;
+  const dims = PROFILE.dims;
+  const n = dims.length;
+  const dpr = window.devicePixelRatio || 2;
+  const W = canvas.clientWidth || 320, H = W;
+  canvas.width = W*dpr; canvas.height = H*dpr;
+  canvas.style.height = H+'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const cx = W/2, cy = H/2, R = W*0.34;
+  // 未来叙事配色:深底浅墨
+  const ink = 'rgba(255,255,255,0.78)', line = 'rgba(255,255,255,0.18)';
+  // 同心网格(4 圈)
+  ctx.lineWidth = 1;
+  for(let ring=1; ring<=4; ring++){
+    const r = R*ring/4;
+    ctx.beginPath();
+    for(let i=0;i<n;i++){
+      const ang = -Math.PI/2 + i*2*Math.PI/n;
+      const x = cx + r*Math.cos(ang), y = cy + r*Math.sin(ang);
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = line; ctx.globalAlpha = ring===4?0.9:0.5; ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  // 轴线 + 轴标签
+  ctx.font = '600 12px -apple-system,"PingFang SC",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  for(let i=0;i<n;i++){
+    const ang = -Math.PI/2 + i*2*Math.PI/n;
+    const x = cx + R*Math.cos(ang), y = cy + R*Math.sin(ang);
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y);
+    ctx.strokeStyle=line; ctx.globalAlpha=0.6; ctx.stroke(); ctx.globalAlpha=1;
+    const lx = cx + (R+20)*Math.cos(ang), ly = cy + (R+20)*Math.sin(ang);
+    ctx.fillStyle = ink;
+    ctx.fillText(dims[i].axis, lx, ly);
+  }
+  function poly(scores, color, dashed, fill){
+    ctx.beginPath();
+    for(let i=0;i<n;i++){
+      const ang = -Math.PI/2 + i*2*Math.PI/n;
+      const v = (scores[dims[i].key]||50)/100;
+      const x = cx + R*v*Math.cos(ang), y = cy + R*v*Math.sin(ang);
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    if(fill){ ctx.fillStyle=color; ctx.globalAlpha=0.14; ctx.fill(); ctx.globalAlpha=1; }
+    ctx.lineWidth = dashed?1.8:2.4;
+    ctx.setLineDash(dashed?[5,4]:[]);
+    ctx.strokeStyle = color; ctx.stroke();
+    ctx.setLineDash([]);
+    if(!dashed){
+      for(let i=0;i<n;i++){
+        const ang = -Math.PI/2 + i*2*Math.PI/n;
+        const v = (scores[dims[i].key]||50)/100;
+        const x = cx + R*v*Math.cos(ang), y = cy + R*v*Math.sin(ang);
+        ctx.beginPath(); ctx.arc(x,y,3,0,2*Math.PI); ctx.fillStyle=color; ctx.fill();
+      }
+    }
+  }
+  // 先画大师(虚线) 再画玩家(实线在上)；两者同色(流派色),靠线型区分
+  if(masterScores) poly(masterScores, accent, true, false);
+  poly(playerScores, accent, false, true);
 }
 function calcScore(){
   // 净值线性评分(2026-06-22重构): 总分 = (资本-100-累计投入)*a + (业绩-100)*b + (人脉-100)*c
@@ -664,8 +743,10 @@ function showEnding(healthDead){
     <div class="share-card" id="shareCard" style="--accent-c:${meta.color};--ending-bg:${meta.bg||'#0d1320'};--ending-glow:${meta.glow||'rgba(39,211,224,.12)'}">
       <div class="sc-head"><div class="emoji">${meta.emoji}</div><div class="rank-label">${CONFIG.text.endingRankLabel}</div><h1>${meta.title}</h1></div>
       <div class="sc-quote">「${meta.quote}」</div>
+
+      <div class="sc-chapter"><span class="ch-name">我的二十四年</span></div>
       <div class="sc-summary">${meta.summary}</div>
-      <div class="sc-stats">
+      <div class="sc-panel sc-stats">
         <div class="fs"><div class="k">${CONFIG.text.endingStatScore}</div><div class="v">${score}</div></div>
         <div class="fs"><div class="k">${CONFIG.text.endingStatAum}</div><div class="v">${Math.round(state.aum)}</div></div>
         <div class="fs"><div class="k">${CONFIG.text.endingStatTrack}</div><div class="v">${Math.round(state.track)}</div></div>
@@ -675,8 +756,12 @@ function showEnding(healthDead){
         <div class="hl-box win"><div class="t">${CONFIG.text.endingBestTitle}</div>${best?`<div class="nm">${best.name}</div><div class="yr">${best.year} · ${best.tag} · ${ocL[best.tier]}</div>`:`<div class="none">${CONFIG.text.endingBestNone}</div>`}</div>
         <div class="hl-box lose"><div class="t">${CONFIG.text.endingWorstTitle}</div>${worst?`<div class="nm">${worst.name}</div><div class="yr">${worst.year} · ${worst.tag} · ${ocL[worst.tier]}</div>`:`<div class="none">${CONFIG.text.endingWorstNone}</div>`}</div>
       </div>
+
+      <div class="sc-chapter"><span class="ch-name">我是怎样的未来投资人</span></div>
       <div class="mbti-block" id="mbtiBlock"></div>
-      <div class="sc-record" id="scRecord"><h3>${CONFIG.text.endingRecordHead}</h3>${recRows}</div>
+
+      <div class="sc-chapter" data-chapter="3"><span class="ch-name">二十四年押注轨迹</span></div>
+      <div class="sc-record" id="scRecord" data-chapter="3">${recRows}</div>
       <div class="sc-foot"><div class="sc-qr" id="scQr"></div><div class="sc-foot-txt">${CONFIG.text.endingFootBrand}<div class="qr-tip">${CONFIG.text.endingFootQrTip}</div></div></div>
     </div>
     <div class="share-actions">
@@ -699,27 +784,63 @@ function showEnding(healthDead){
 }
 function renderMBTI(){
   const sty=calcStyle();
-  const bars=mbtiDimBars();
   const el=document.getElementById('mbtiBlock'); if(!el)return;
-  // 双向刻度条：左端=neg(稳健/理性)，右端=pos(激进/感性)，圆点落在pct处
-  const dimRows=MBTI.dims.map(dm=>{
-    const b=bars[dm.key];
-    return `<div class="dm2-row">
-      <div class="dm2-left">${dm.neg}</div>
-      <div class="dm2-track"><div class="dm2-fill" style="left:${Math.min(50,b.pct)}%;width:${Math.abs(b.pct-50)}%"></div><div class="dm2-dot" style="left:${b.pct}%"></div></div>
-      <div class="dm2-right">${dm.pos}</div>
+  const ps = (typeof profile6Scores==='function') ? profile6Scores() : null;
+  let mt=null, b=null;
+  if(ps && typeof MASTERS!=='undefined'){ mt=MASTERS.match(ps); b=mt.best; }
+  // 第二部分跟随人格气质色(对齐大师流派色)
+  const accent = sty.color || (mt?mt.school.color:'#27d3e0');
+  el.style.setProperty('--sc', accent);  // 容器主题色=人格色,子元素(人格卡/大师卡/雷达/图例/数值条)全继承
+  const others = mt ? mt.others.map(o=>`<span class="mm-other">${o.emoji} ${o.name.replace(/\(.*\)/,'')}</span>`).join('') : '';
+  // 图例 + 5 维数值条
+  const legend = mt ? `<div class="radar-legend">
+      <span class="lg lg-you"><i></i>你</span>
+      <span class="lg lg-master"><i></i>${b.name.replace(/\(.*\)/,'')}</span>
+    </div>` : '';
+  const dimList = (typeof PROFILE!=='undefined') ? PROFILE.dims.map(d=>{
+    const v = ps[d.key];
+    const label = v>=58?d.high : (v<=42?d.low : '均衡');
+    return `<div class="p6-row"><span class="p6-axis">${d.axis}</span><div class="p6-bar"><i style="width:${v}%"></i></div><span class="p6-val">${label}</span></div>`;
+  }).join('') : '';
+
+  let masterHTML='';
+  if(mt){
+    const pSrc=(window.PORTRAITS_INLINE&&window.PORTRAITS_INLINE[b.id])||('portraits/'+b.id+'.jpg');
+    const pctTxt=(typeof mt.bestPct==='number')?mt.bestPct:'';
+    masterHTML=`
+    <div class="master-card">
+      <div class="mm-portrait" style="background-image:url('${pSrc}')"><span class="mm-emoji-mini">${b.emoji}</span></div>
+      <div class="mm-name">${b.name}</div>
+      <div class="mm-en">${b.en}</div>
+      ${pctTxt!==''?`<div class="mm-pct"><span class="mm-pct-num">${pctTxt}%</span> 匹配度</div>`:''}
+      <div class="mm-school">${mt.school.name} · ${b.tags}</div>
+      <div class="mm-blurb"><span class="mm-bridge">${(typeof PERSONA5!=='undefined')?PERSONA5.bridge(ps, b.p6, b.name, (typeof PROFILE!=='undefined'&&PROFILE.dims)?PROFILE.dims:[]):''}</span>${b.blurb}</div>
+      <div class="mm-others-wrap"><span class="mm-others-label">你也有点像</span>${others}</div>
     </div>`;
-  }).join('');
+  }
+
   el.innerHTML=`
-    <div class="mbti-head"><h3>${CONFIG.text.mbtiHead}</h3></div>
-    <div class="mbti-card" style="--mc:${sty.color}">
+    <div class="sc-sub-head"><span class="sh-emoji">🎭</span>未来观人格画像<span class="sh-emoji">🎭</span></div>
+    <div class="mbti-card">
       <div class="mc-emoji">${sty.emoji}</div>
       <div class="mc-title">${sty.title}</div>
       <div class="mc-sub">${sty.sub}</div>
       <div class="mc-tag">${sty.tag}</div>
       <div class="mc-desc">${sty.desc}</div>
     </div>
-    <div class="mbti-dims2">${dimRows}</div>`;
+    <div class="sc-sub-head"><span class="sh-emoji">🌟</span>你最像的未来大师<span class="sh-emoji">🌟</span></div>
+    ${masterHTML}
+    <div class="sc-sub-head"><span class="sh-emoji">📊</span>五维人格对比<span class="sh-emoji">📊</span></div>
+    <div class="radar-wrap">
+      <canvas id="radarCanvas" class="radar-canvas"></canvas>
+      ${legend}
+    </div>
+    <div class="p6-list">${dimList}</div>`;
+  // 画雷达图(canvas 需在 DOM 后绘制)
+  const cv = document.getElementById('radarCanvas');
+  if(cv && typeof PROFILE!=='undefined'){
+    requestAnimationFrame(()=>drawRadar(cv, ps, b?b.p6:null, accent));
+  }
 }
 
 function toast(msg,ms){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),ms||2200);}

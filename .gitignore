@@ -1,0 +1,10 @@
+# 备份文件
+*.bak
+*.bak.*
+# 临时部署目录
+miaoda_deploy/
+f2050_miaoda/
+# 原始大图（只提交裁好的 480x480 小图）
+portraits/*_raw.jpg
+# 系统文件
+.DS_Store
