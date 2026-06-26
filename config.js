@@ -3,6 +3,13 @@
 // 作者 小龙虾
 
 const CONFIG = {
+  // === 数据上报(Supabase,GitHub Pages纯静态直连) ===
+  // 留空则不上报。publishable key 公开安全。future-2050 专属项目(与vc-simulator独立)。
+  supabase: {
+    url: 'https://kctfmnejpfnazvklfzny.supabase.co',
+    key: 'sb_publishable_hGFEHW-2uNW9rggG5TQ6bQ_ixz6Gl5b',
+  },
+
   // 玩家初始属性
   start: { aum:100, track:100, network:100, health:100, luck:50 },
 
