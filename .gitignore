@@ -8,3 +8,4 @@ f2050_miaoda/
 portraits/*_raw.jpg
 # 系统文件
 .DS_Store
+.cleanup_backup/

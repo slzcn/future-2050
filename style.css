@@ -103,24 +103,6 @@
     .scenario .sc-opt:hover{border-color:var(--accent);border-left-color:var(--accent);transform:translateX(4px);box-shadow:0 4px 14px rgba(26,23,20,.08);box-shadow:0 4px 14px color-mix(in srgb,var(--accent) 14%,transparent);}
   }
   .scenario .sc-opt.picked{border-color:var(--accent);border-width:1.5px;background:rgba(39,217,224,.14);background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-weight:700;box-shadow:0 0 18px color-mix(in srgb,var(--accent) 25%,transparent),inset 0 0 12px color-mix(in srgb,var(--accent) 8%,transparent);}
-  /* MBTI 模块 */
-  .mbti-block{margin:30px 0 26px;}
-  .mbti-head h3{font-size:13px;letter-spacing:.14em;color:var(--ink-faint);text-align:center;margin-bottom:18px;font-weight:700;}
-  .mbti-card{border:1.5px solid var(--mc,#27d3e0);border-radius:4px;padding:24px 22px;text-align:center;background:var(--card);position:relative;}
-  .mbti-card .mc-title{font-family:"PingFang SC","Microsoft YaHei",sans-serif;font-size:26px;font-weight:900;letter-spacing:.04em;color:var(--mc);margin-bottom:8px;}
-  .mbti-card .mc-tag{font-size:13px;color:var(--ink-faint);letter-spacing:.1em;margin-bottom:16px;}
-  .mbti-card .mc-desc{font-size:14px;color:var(--ink);line-height:2.05;text-align:left;text-indent:2em;}
-  /* 投资风格画像 - 新增样式 */
-  .mbti-card .mc-emoji{font-size:46px;line-height:1;margin-bottom:8px;}
-  .mbti-card .mc-sub{font-size:13.5px;color:var(--mc,#27d3e0);letter-spacing:.16em;font-weight:700;margin-bottom:6px;}
-  .mbti-dims2{margin-top:20px;display:flex;flex-direction:column;gap:18px;}
-  .dm2-row{display:flex;align-items:center;gap:12px;}
-  .dm2-left,.dm2-right{font-size:13px;font-weight:700;color:var(--ink-soft);min-width:34px;}
-  .dm2-left{text-align:right;} .dm2-right{text-align:left;}
-  .dm2-track{flex:1;height:6px;background:var(--line);border-radius:4px;position:relative;}
-  .dm2-fill{position:absolute;top:0;height:100%;background:var(--mc,#27d3e0);opacity:.3;border-radius:4px;}
-  .dm2-track::before{content:"";position:absolute;left:50%;top:-3px;width:1px;height:12px;background:var(--ink-faint);opacity:.4;}
-  .dm2-dot{position:absolute;top:50%;width:13px;height:13px;border-radius:50%;background:var(--mc,#27d3e0);border:2px solid var(--paper);transform:translate(-50%,-50%);box-shadow:0 1px 4px rgba(0,0,0,.2);}
   .cover-btns{display:flex;flex-direction:column;gap:13px;align-items:center;}
   .cover-stats{margin-top:26px;font-size:12px;color:var(--ink-faint);line-height:1.9;letter-spacing:.03em;}
   .cover-stats b{color:var(--ink-soft);font-weight:700;}
@@ -377,14 +359,6 @@ body:has(#cover:not(.hidden)) .info-btn{display:flex;}
   /* 投资风格画像 - 新增样式 */
   .mbti-card .mc-emoji{font-size:46px;line-height:1;margin-bottom:8px;}
   .mbti-card .mc-sub{font-size:13.5px;color:var(--sc,#b8860b);letter-spacing:.16em;font-weight:700;margin-bottom:6px;}
-  .mbti-dims2{margin-top:20px;display:flex;flex-direction:column;gap:18px;}
-  .dm2-row{display:flex;align-items:center;gap:12px;}
-  .dm2-left,.dm2-right{font-size:13px;font-weight:700;color:var(--ink-soft);min-width:34px;}
-  .dm2-left{text-align:right;} .dm2-right{text-align:left;}
-  .dm2-track{flex:1;height:6px;background:var(--line);border-radius:4px;position:relative;}
-  .dm2-fill{position:absolute;top:0;height:100%;background:var(--sc,#b8860b);opacity:.3;border-radius:4px;}
-  .dm2-track::before{content:"";position:absolute;left:50%;top:-3px;width:1px;height:12px;background:var(--ink-faint);opacity:.4;}
-  .dm2-dot{position:absolute;top:50%;width:13px;height:13px;border-radius:50%;background:var(--sc,#b8860b);border:2px solid var(--paper);transform:translate(-50%,-50%);box-shadow:0 1px 4px rgba(0,0,0,.2);}
   /* 投资大师匹配卡 */
   .master-card .mm-pct{font-size:13px;color:var(--ink-faint);letter-spacing:.08em;margin-bottom:14px;}
   .master-card .mm-pct .mm-pct-num{font-size:22px;font-weight:900;color:var(--sc,#b8860b);font-variant-numeric:tabular-nums;letter-spacing:0;}

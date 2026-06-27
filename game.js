@@ -86,7 +86,7 @@ function clearProgress(){ lsDel(SAVE_KEY); }
 // 2) GitHub Pages纯静态版:直连 Supabase REST 插表(配置了 CONFIG.supabase 才走)
 // kind: 'result' → results表 / 'visit' → visits表; row 已是对应表的字段(下划线命名)
 function reportApi(kind, row){
-  try{ if(window.parent && window.parent!==window){ window.parent.postMessage(Object.assign({__vcsim__:kind}, row), '*'); } }catch(e){}
+  try{ if(window.parent && window.parent!==window){ window.parent.postMessage(Object.assign({__future2050__:kind}, row), '*'); } }catch(e){}
   try{
     var sb=(CONFIG&&CONFIG.supabase)||{};
     if(!sb.url||!sb.key)return;
@@ -118,7 +118,6 @@ function reportResult(payload){
     player_id:getPlayerId(), player_name:getPlayerName()||null,
     score:payload.score, title:payload.title, style:payload.styleTitle,
     mbti_risk:(typeof mbti==='object'&&mbti)?mbti.risk:null,
-    mbti_mind:(typeof mbti==='object'&&mbti)?mbti.mind:null,
     win_count:winList.length, lose_count:loseList.length,
     final_aum:s.aum!=null?Math.round(s.aum):null,
     final_track:s.track!=null?Math.round(s.track):null,
@@ -155,7 +154,7 @@ function continueGame(){
   if(window.Sfx)Sfx.play('swipe');
   const s=lsGet(SAVE_KEY); if(!s){startGame();return;}
   state={...GAME.start,...s.state}; upPicks=s.upPicks||0; pIdx=s.pIdx; rIdx=s.rIdx; stagedThisPeriod=s.stagedThisPeriod||[];
-  fullHistory=s.fullHistory||[]; mbti=Object.assign({risk:0,data:0,horizon:0,focus:0,decisive:0,mind:0}, s.mbti||{}); selDeal=null; gameOver=false;
+  fullHistory=s.fullHistory||[]; mbti=Object.assign({risk:0,data:0,horizon:0,focus:0,decisive:0}, s.mbti||{}); selDeal=null; gameOver=false;
   document.getElementById('cover').classList.add('hidden');
   $ending.classList.add('hidden');
   $ending.innerHTML='';
@@ -194,7 +193,7 @@ function initCover(){
   document.getElementById('coverCredit').innerHTML=U.coverCredit;
   // 被邀请横幅
   const inv=getInviter(); const ib=document.getElementById('inviteBanner');
-  if(inv){ ib.innerHTML=CONFIG.text.invited.replace(/\$\{name\}/g,inv.name); ib.style.display='block'; lsSet('vcsim_invited_by',inv); }
+  if(inv){ ib.innerHTML=CONFIG.text.invited.replace(/\$\{name\}/g,inv.name); ib.style.display='block'; lsSet('future2050_invited_by',inv); }
   else ib.style.display='none';
   getPlayerId(); // 确保本机有专属ID
   reportVisit(); // 上报访问(含邀请人)
@@ -254,7 +253,9 @@ function startGame(){
   state.spent=0;  // 累计投入(方案A:资本照常涨,评分时减此值体现钱花出去了)
   upPicks=0;
   pIdx=0; rIdx=0; selDeal=null; stagedThisPeriod=[]; fullHistory=[]; gameOver=false;
-  mbti={risk:0,data:0,horizon:0,focus:0,decisive:0,mind:0};
+// 投资选择不主导风格(会被「想赢选顺势」带偏),风格纯由情境题决定
+const TREND_MBTI = { up:{}, hot:{}, down:{}, safe:{} };
+  mbti={risk:0,data:0,horizon:0,focus:0,decisive:0};
   resetShuffle();  // 新局重新洗牌,每局选项顺序不同
   document.getElementById('cover').classList.add('hidden');
   $ending.classList.add('hidden');
@@ -623,16 +624,7 @@ function calcStyle(){
   if(typeof MBTI!=='undefined' && MBTI.styles && MBTI.styles.balanced) return MBTI.styles.balanced;
   return { key:'balanced', emoji:'⚖️', title:'平衡预言家', sub:'攻守兼备 · 理信并重', color:'#8a93a8',
     tag:'灵活 · 不走极端', desc:'你没有明显的偏科，能稳能进、能算账也懂得为愿景留温度，像老练的舵手随风浪调整航向。' };
-}
-function mbtiDimBars(){
-  // 兼容旧调用：保留二维风险/感性条(不再使用,新版用 5 维雷达)
-  const norm=(v,max)=>clamp(50+v/max*50,6,94);
-  return {
-    risk:{val:mbti.risk||0, pct:norm(mbti.risk||0,14)},
-    mind:{val:mbti.mind||0, pct:norm(mbti.mind||0,14)},
-  };
-}
-function profile6Scores(){
+}function profile6Scores(){
   // 把累积的 5 维原始分(单题±4)归一化到 0~100，50 中点
   if(typeof PROFILE==='undefined') return null;
   const N = PROFILE.norm || 4;
