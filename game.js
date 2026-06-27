@@ -245,6 +245,10 @@ function toggleMusic(){
   lsSet(CONFIG.storage.music, isOn?1:0);
 }
 
+// 投资选择不主导风格(会被「想赢选顺势」带偏),风格纯由情境题决定
+// (顶层常量:confirmDeal/undoStaged 等多个函数都要访问,必须在函数外,否则块级作用域报 TREND_MBTI is not defined)
+const TREND_MBTI = { up:{}, hot:{}, down:{}, safe:{} };
+
 function startGame(){
   if(window.Sfx)Sfx.play('start');
   clearProgress();
@@ -253,8 +257,6 @@ function startGame(){
   state.spent=0;  // 累计投入(方案A:资本照常涨,评分时减此值体现钱花出去了)
   upPicks=0;
   pIdx=0; rIdx=0; selDeal=null; stagedThisPeriod=[]; fullHistory=[]; gameOver=false;
-// 投资选择不主导风格(会被「想赢选顺势」带偏),风格纯由情境题决定
-const TREND_MBTI = { up:{}, hot:{}, down:{}, safe:{} };
   mbti={risk:0,data:0,horizon:0,focus:0,decisive:0};
   resetShuffle();  // 新局重新洗牌,每局选项顺序不同
   document.getElementById('cover').classList.add('hidden');
