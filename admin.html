@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中国创业投资模拟器 · 后台</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  :root{
+    --bg:#f0ece2;--paper:#f5f1e8;--ink:#1a1714;--ink-soft:#4a443c;--ink-faint:#8c857a;
+    --line:#d6cfc0;--good:#3c6b4f;--bad:#a8453a;--warn:#9a7b3a;--card:#faf7ef;
+    --gold:#b8860b;--blue:#3a6b8c;--accent:#8a5a3a;
+  }
+  html,body{background:var(--paper);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Songti SC",serif;
+    line-height:1.7;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;}
+  body{padding:18px 0 44px;min-height:100vh;min-height:100dvh;}
+  .wrap{max-width:860px;margin:0 auto;padding:0 20px;
+    padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right));}
+
+  /* ── 顶部 ── */
+  .game-name{font-family:"Kaiti SC","STKaiti","Songti SC",serif;font-weight:900;font-size:clamp(15px,3.6vw,18px);letter-spacing:.14em;text-align:center;color:var(--gold);margin-bottom:3px;}
+  h1{font-family:"Kaiti SC","STKaiti","Songti SC",serif;font-weight:900;font-size:clamp(20px,5vw,30px);letter-spacing:.05em;text-align:center;margin-bottom:4px;}
+  .sub{text-align:center;font-size:clamp(11.5px,2.8vw,13px);color:var(--ink-faint);margin-bottom:14px;}
+  .logout{color:var(--blue);cursor:pointer;margin-left:8px;}
+
+  /* ── Tab 导航 ── */
+  .tabs{display:flex;gap:6px;margin-bottom:18px;position:sticky;top:0;
+    background:linear-gradient(var(--paper) 80%,rgba(245,241,232,0));padding:10px 0 12px;z-index:20;flex-wrap:wrap;}
+  .tab{flex:1 1 auto;min-width:72px;text-align:center;padding:10px 4px;font-size:clamp(12px,3vw,13.5px);font-weight:700;
+    border:1.5px solid var(--line);border-radius:9px;cursor:pointer;background:var(--card);color:var(--ink-soft);
+    transition:all .2s;user-select:none;-webkit-user-select:none;letter-spacing:.02em;touch-action:manipulation;}
+  @media(hover:hover){.tab:hover{border-color:var(--accent);color:var(--accent);}}
+  .tab.on{background:var(--accent);color:var(--paper);border-color:var(--accent);box-shadow:0 4px 14px color-mix(in srgb,var(--accent) 32%,transparent);}
+  .page{display:none;animation:fade .35s ease;}
+  .page.on{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ── 通用面板/卡片(三页统一) ── */
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(26,23,20,.04);}
+  .panel h2{font-size:clamp(14px,3.6vw,15.5px);font-weight:800;letter-spacing:.04em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;}
+  .panel h2 .hint{font-size:11px;color:var(--ink-faint);font-weight:600;}
+  .loading{text-align:center;color:var(--ink-faint);padding:30px;}
+  .note{font-size:11.5px;color:var(--ink-faint);margin-top:9px;line-height:1.65;}
+
+  /* 横条统计(称号/风格/趋势分布等,stats+tune 共用) */
+  .row{display:flex;align-items:center;gap:8px;margin-bottom:9px;font-size:clamp(12px,3vw,13px);}
+  .row .nm{flex:0 0 clamp(92px,28vw,140px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
+  .row .barwrap{flex:1;min-width:40px;height:17px;background:rgba(26,23,20,.06);border-radius:5px;position:relative;overflow:hidden;}
+  .row .bar{position:absolute;left:0;top:0;height:100%;border-radius:5px;background:var(--accent);transition:width .4s;min-width:2px;}
+  .row .pct{flex:0 0 clamp(78px,22vw,96px);text-align:right;font-weight:800;font-variant-numeric:tabular-nums;font-size:12px;}
+  .row .pct small{color:var(--ink-faint);font-weight:600;}
+
+  /* KPI 网格(stats 核心指标 / scoreStats) */
+  .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .kpi .box{background:rgba(26,23,20,.03);border-radius:9px;padding:14px 8px;text-align:center;}
+  .kpi .n{font-size:clamp(20px,5vw,26px);font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums;}
+  .kpi .l{font-size:11.5px;color:var(--ink-faint);margin-top:3px;}
+
+  /* stat 双列网格(tune 分布统计) */
+  .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .stat{background:rgba(26,23,20,.03);border-radius:8px;padding:10px 12px;}
+  .stat .k{font-size:11.5px;color:var(--ink-faint);margin-bottom:2px;}
+  .stat .v{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;}
+  .stat .v small{font-size:11.5px;color:var(--ink-soft);font-weight:600;}
+
+  /* 排行榜表格(stats) + 定义表(doc/cfg) */
+  table{width:100%;border-collapse:collapse;font-size:clamp(12px,3vw,13px);}
+  th,td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;}
+  th{font-size:11.5px;color:var(--ink-faint);font-weight:700;}
+  td.sc{text-align:right;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;}
+  .rk{display:inline-flex;width:20px;justify-content:center;font-weight:800;}
+  .rk.g1{color:#d4af37;}.rk.g2{color:#9aa0a6;}.rk.g3{color:#c77b3a;}
+  .deftbl td:first-child{font-weight:700;color:var(--blue);width:30%;max-width:120px;word-break:break-word;overflow-wrap:anywhere;}
+  .deftbl tr:last-child td{border-bottom:none;}
+
+  /* 公式/文案块(doc+cfg) */
+  .formula{background:rgba(26,23,20,.045);border-left:3px solid var(--accent);border-radius:0 7px 7px 0;padding:11px 14px;margin:8px 0;font-size:clamp(12px,3vw,13px);line-height:1.95;font-family:"SF Mono",Menlo,Consolas,monospace;color:var(--ink);overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:pre-wrap;word-break:break-word;}
+.gate-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.gate-item{display:flex;align-items:center;gap:8px;background:rgba(26,23,20,.04);border-radius:9px;padding:10px 12px;}
+.gate-ic{font-size:18px;flex:0 0 auto;}
+.gate-nm{flex:1;font-weight:600;font-size:13px;line-height:1.2;display:flex;flex-direction:column;}
+.gate-nm i{font-style:normal;font-size:10px;color:#a39b8e;font-weight:500;font-family:"SF Mono",Menlo,monospace;}
+.gate-n{flex:0 0 auto;font-weight:800;font-size:15px;color:var(--accent,#b8860b);font-variant-numeric:tabular-nums;}
+.invest-rule{background:rgba(184,134,11,.06);border-radius:10px;padding:11px 13px;}
+.ir-h{font-weight:700;font-size:13px;margin-bottom:8px;color:#8a6d1b;}
+.ir-row{display:flex;align-items:center;gap:9px;font-size:13px;margin:5px 0;}
+.ir-cond{font-weight:600;flex:0 0 auto;font-variant-numeric:tabular-nums;}
+.ir-arr{color:#b8860b;font-weight:800;}
+.ir-res{color:var(--ink-soft,#6b6358);}
+.ir-res.ok{color:#2e7d32;font-weight:600;}
+  .txt{font-size:clamp(12px,3vw,13px);color:var(--ink-soft);line-height:1.8;}
+  .txt b{color:var(--ink);}
+  code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.92em;background:rgba(26,23,20,.06);padding:1px 5px;border-radius:4px;}
+  .pgrp-t{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.05em;border-bottom:1px dashed var(--line);padding-bottom:5px;margin-bottom:11px;margin-top:14px;}
+
+  /* 调参滑块(tune) */
+  .prow{display:flex;align-items:center;gap:10px;margin-bottom:11px;font-size:12.5px;flex-wrap:wrap;}
+  .prow label{flex:0 0 clamp(96px,26vw,130px);color:var(--ink-soft);}
+  .prow input[type=range]{flex:1;min-width:90px;height:24px;accent-color:var(--accent);background:transparent;cursor:pointer;-webkit-appearance:none;appearance:none;touch-action:manipulation;}
+  .prow input[type=range]:focus{outline:none;}
+  .prow input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:rgba(26,23,20,.14);}
+  .prow input[type=range]::-moz-range-track{height:5px;border-radius:3px;background:rgba(26,23,20,.14);}
+  .prow input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.25);margin-top:-7px;cursor:pointer;}
+  .prow input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.25);cursor:pointer;}
+  .prow .pv input{width:64px;text-align:right;font-family:inherit;font-size:13px;font-weight:800;border:1px solid var(--line);border-radius:5px;padding:5px 6px;background:#fff;color:var(--ink);-webkit-appearance:none;appearance:none;-moz-appearance:textfield;}
+  .prow .pv input::-webkit-outer-spin-button,.prow .pv input::-webkit-inner-spin-button{-webkit-appearance:none;appearance:none;margin:0;display:none;}
+  .prow .pv input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 22%,transparent);}
+  .btnrow{display:flex;gap:10px;margin-top:10px;}
+  .btn{flex:1;border:1.5px solid var(--accent);background:transparent;color:var(--accent);font-family:inherit;font-size:13.5px;font-weight:700;padding:12px 0;cursor:pointer;border-radius:7px;letter-spacing:.05em;transition:all .15s;touch-action:manipulation;-webkit-user-select:none;user-select:none;}
+  .btn:active{transform:scale(.97);background:var(--accent);color:var(--paper);}
+  @media(hover:hover){.btn:hover{background:var(--accent);color:var(--paper);transform:translateY(-2px);box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 32%,transparent);}.btn.reset:hover{background:var(--bad);color:#fff;border-color:var(--bad);box-shadow:0 6px 18px color-mix(in srgb,var(--bad) 30%,transparent);}}
+  .btn.reset{border-color:var(--bad);color:var(--bad);}
+  .btn.reset:active{background:var(--bad);color:#fff;}
+  .live{text-align:center;font-size:12px;color:var(--good);margin:10px 0;font-weight:600;}
+  .dirty{color:var(--bad);font-size:11px;font-weight:700;}
+
+  /* 音效行(sfx) */
+  #sfxPanel .srow{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);padding:12px 15px;margin-bottom:9px;cursor:pointer;transition:all .18s ease;}
+  @media(hover:hover){#sfxPanel .srow:hover{border-color:var(--accent);transform:translateX(3px);box-shadow:0 4px 14px color-mix(in srgb,var(--accent) 14%,transparent);}}
+  #sfxPanel .srow:active{transform:scale(.98);}
+  #sfxPanel .play{position:relative;width:34px;height:34px;flex:0 0 34px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;transition:background .2s,box-shadow .2s,transform .1s;}
+  #sfxPanel .play:active{transform:scale(.92);}
+  #sfxPanel .play::before{content:'';display:block;width:0;height:0;border-style:solid;border-width:7px 0 7px 12px;border-color:transparent transparent transparent #fff;margin-left:3px;transition:.15s;}
+  #sfxPanel .srow.playing .play{background:var(--good);animation:pulse 1.6s infinite;}
+  #sfxPanel .srow.playing .play::before{border-width:0;width:11px;height:13px;margin-left:0;border-left:3.5px solid #fff;border-right:3.5px solid #fff;background:transparent;box-sizing:border-box;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(60,107,79,.45);}70%{box-shadow:0 0 0 9px rgba(60,107,79,0);}100%{box-shadow:0 0 0 0 rgba(60,107,79,0);}}
+  #sfxPanel .srow.playing{background:rgba(60,107,79,.08);}
+  #sfxPanel .wave{display:none;gap:2px;align-items:flex-end;height:14px;margin-left:auto;flex:0 0 auto;padding-right:2px;}
+  #sfxPanel .srow.playing .wave{display:flex;}
+  #sfxPanel .wave span{width:2.5px;background:var(--good);border-radius:2px;animation:wv .8s ease-in-out infinite;}
+  #sfxPanel .wave span:nth-child(1){animation-delay:0s;}#sfxPanel .wave span:nth-child(2){animation-delay:.2s;}#sfxPanel .wave span:nth-child(3){animation-delay:.4s;}#sfxPanel .wave span:nth-child(4){animation-delay:.15s;}
+  @keyframes wv{0%,100%{height:4px;}50%{height:14px;}}
+  #sfxPanel .info{flex:1;min-width:0;}
+  #sfxPanel .nm2{font-size:14.5px;font-weight:700;margin-bottom:2px;}
+  #sfxPanel .ds{font-size:12px;color:var(--ink-faint);line-height:1.5;}
+  #sfxPanel .grp-t{font-size:12.5px;font-weight:800;letter-spacing:.1em;color:var(--accent);margin:20px 0 11px;padding-bottom:6px;border-bottom:1px solid var(--line);}
+
+  .footer{text-align:center;font-size:11.5px;color:var(--ink-faint);margin-top:18px;padding-top:16px;border-top:1px solid var(--line);line-height:1.7;}
+
+  @media(max-width:480px){
+    .panel{padding:14px 14px;}
+    .prow{gap:8px;}
+    .prow label{flex:1 1 100%;font-weight:600;color:var(--ink);margin-bottom:-2px;}
+    .stat-grid,.kpi{gap:8px;}
+    .kpi{grid-template-columns:repeat(3,1fr);}
+  }
+
+  /* ── 登录门 ── */
+  #authGate{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+  #authGate .agt{font-size:18px;font-weight:800;margin-bottom:6px;}
+  #authGate .ags{font-size:12.5px;color:var(--ink-faint);margin-bottom:16px;text-align:center;}
+  #authPin{width:240px;max-width:80vw;font-size:18px;text-align:center;letter-spacing:.3em;padding:12px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);}
+  #authBtn{width:240px;max-width:80vw;margin-top:14px;border:1.5px solid var(--accent);background:var(--accent);color:var(--paper);font-family:inherit;font-size:15px;font-weight:700;padding:12px;border-radius:8px;cursor:pointer;letter-spacing:.05em;}
+  #authErr{color:var(--bad);font-size:13px;min-height:18px;margin-top:8px;}
+  #authGate .agtip{color:var(--ink-faint);font-size:11.5px;margin-top:16px;}
+</style>
+</head>
+<body>
+<div id="authGate">
+  <div class="agt">🔐 后台管理</div>
+  <div class="ags">数据统计 · 数值手册 · 调参 · 文案 · 音效 — 需口令访问</div>
+  <input id="authPin" type="password" inputmode="numeric" placeholder="请输入口令" autocomplete="off">
+  <button id="authBtn">进入</button>
+  <div id="authErr"></div>
+  <div class="agtip">登录后 2 小时内免再次验证</div>
+</div>
+
+<div class="wrap" id="mainWrap" style="display:none">
+  <div class="game-name">中国创业投资模拟器</div>
+  <h1>⚙️ 后台管理</h1>
+  <div class="sub" id="topSub">游戏后台<span class="logout" id="logout">退出</span></div>
+  <div class="tabs">
+    <div class="tab on" data-p="stats">📊 数据</div>
+    <div class="tab" data-p="doc">🧮 机制</div>
+    <div class="tab" data-p="tune">🎛 调参</div>
+    <div class="tab" data-p="cfg">📝 文案</div>
+  </div>
+
+  <!-- 📊 数据统计 -->
+  <div class="page on" id="tab-stats">
+    <div id="statsContent"><div class="loading">⏳ 正在拉取数据…</div></div>
+  </div>
+
+  <!-- 📐 数值手册（机制+音效+技术配置） -->
+  <div class="page" id="tab-doc">
+    <div id="docContent"></div>
+    <!-- 🎵 音效试听 -->
+    <div class="panel" id="sfxPanel">
+      <h2>🎵 音效试听</h2>
+      <div id="sfxList"></div>
+    </div>
+  </div>
+
+  <!-- 🎛 调参分布 -->
+  <div class="page" id="tab-tune">
+    <div class="panel">
+      <h2>🎛 参数调整 <span id="dirtyFlag"></span></h2>
+      <div id="params"></div>
+      <div class="btnrow">
+        <button class="btn" id="rerun">▶ 重新模拟</button>
+        <button class="btn reset" id="reset">↺ 重置真实值</button>
+      </div>
+      <div class="note">拖滑块或输入数字改参数 → 自动重跑 10000 局看分布。仅模拟分析，调好的参数需手动写回 config.js / data-endings.js。</div>
+    </div>
+    <div class="live" id="live">⏳ 模拟中…</div>
+    <div id="dist"></div>
+  </div>
+
+  <!-- 📝 文案配置 -->
+  <div class="page" id="tab-cfg"></div>
+
+
+  <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 数据＝游戏真实配置实时读取</div>
+</div>
+
+<script src="config.js?v=20260629futureadmin1"></script>
+<script src="data-periods.js?v=20260629futureadmin1"></script>
+<script src="data-endings.js?v=20260629futureadmin1"></script>
+<script src="data-persona5.js?v=20260629futureadmin1"></script>
+<script src="data-profile6.js?v=20260629futureadmin1"></script>
+<script src="engine-sfx.js?v=20260629futureadmin1"></script>
+<script>
+"use strict";
+/* ===================== 公共 ===================== */
+var AUTH_KEY='dash_auth_ts_future', AUTH_TTL=2*3600*1000;
+var SB=(typeof CONFIG!=='undefined'&&CONFIG.supabase)||{};
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function showBr(s){return esc(s).replace(/&lt;br\s*\/?&gt;/gi,' ⏎ ').replace(/&lt;b&gt;/gi,'').replace(/&lt;\/b&gt;/gi,'');}
+function pct(n,t){return t?(n/t*100):0;}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function tierMin(k){return (DATA_ENDINGS.endingTiers.find(function(t){return t.key===k;})||{}).min||0;}
+function sbGet(pathq){
+  return fetch(SB.url.replace(/\/$/,'')+'/rest/v1/'+pathq,{
+    headers:{'apikey':SB.key,'Authorization':'Bearer '+SB.key}
+  }).then(function(r){return r.json();});
+}
+
+/* Tab 状态(必须在登录门 IIFE 之前定义,因 IIFE 可能立即 boot→activateTab 用 loaded) */
+var TAB_KEY='vc_admin_tab', loaded={};
+
+/* ===================== 登录门 ===================== */
+function loggedIn(){try{var t=+localStorage.getItem(AUTH_KEY);return t&&(Date.now()-t)<AUTH_TTL;}catch(e){return false;}}
+function logout(){try{localStorage.removeItem(AUTH_KEY);}catch(e){}location.reload();}
+(function(){
+  var gate=document.getElementById('authGate'), wrap=document.getElementById('mainWrap');
+  function pass(){gate.style.display='none';wrap.style.display='';boot();}
+  if(loggedIn()){pass();return;}
+  var pin=document.getElementById('authPin'),btn=document.getElementById('authBtn'),err=document.getElementById('authErr');
+  function tryLogin(){
+    var v=(pin.value||'').trim();err.textContent='校验中…';
+    if(!SB.url||!SB.key){err.textContent='未配置 Supabase';return;}
+    sbGet('dashboard_auth?select=pin&limit=1').then(function(rows){
+      var real=(rows&&rows[0]&&rows[0].pin)||'';
+      if(v&&v===real){try{localStorage.setItem(AUTH_KEY,String(Date.now()));}catch(e){}pass();}
+      else err.textContent='口令错误';
+    }).catch(function(){err.textContent='网络错误,稍后重试';});
+  }
+  btn.addEventListener('click',tryLogin);
+  pin.addEventListener('keydown',function(e){if(e.key==='Enter')tryLogin();});
+})();
+
+/* ===================== Tab 调度(懒加载) ===================== */
+function activateTab(p){
+  var tab=document.querySelector('.tab[data-p="'+p+'"]');if(!tab)return;
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  document.querySelectorAll('.page').forEach(function(pg){pg.classList.remove('on');});
+  tab.classList.add('on');
+  document.getElementById('tab-'+p).classList.add('on');
+  if(p==='stats'&&!loaded.stats){loaded.stats=1;loadStats();}
+  if(p==='doc'&&!loaded.doc){loaded.doc=1;renderDoc();initSfx();}
+  if(p==='tune'&&!loaded.tune){loaded.tune=1;initTune();}
+  if(p==='cfg'&&!loaded.cfg){loaded.cfg=1;renderConfig();}
+}
+function boot(){
+  document.getElementById('logout').onclick=logout;
+  Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(tab){
+    tab.addEventListener('click',function(){
+      var p=tab.dataset.p;try{localStorage.setItem(TAB_KEY,p);}catch(e){}activateTab(p);
+    });
+  });
+  var saved=null;try{saved=localStorage.getItem(TAB_KEY);}catch(e){}
+  activateTab(saved&&document.querySelector('.tab[data-p="'+saved+'"]')?saved:'stats');
+}
+
+/* ===================== 📊 数据统计 ===================== */
+function loadStats(){
+  Promise.all([
+    sbGet('results?select=*&order=created_at.desc&limit=5000'),
+    sbGet('visits?select=id,visitor_id,inviter_id&limit=5000')
+  ]).then(function(res){
+    var R=res[0]||[],V=res[1]||[];
+    if(R.code){document.getElementById('statsContent').innerHTML='<div class="loading">读取失败:'+esc(R.message||'')+'</div>';return;}
+    renderStats(R,V);
+  }).catch(function(){document.getElementById('statsContent').innerHTML='<div class="loading">加载出错,请刷新重试</div>';});
+}
+function renderStats(R,V){
+  var total=R.length,players={};R.forEach(function(r){if(r.player_id)players[r.player_id]=1;});
+  var nPlayers=Object.keys(players).length;
+  var bjToday=new Date(Date.now()+8*3600*1000).toISOString().slice(0,10);
+  var todayN=R.filter(function(r){return String(r.created_at||'').slice(0,10)===bjToday;}).length;
+  var visitN=V.length,invited=R.filter(function(r){return r.is_invited;}).length;
+  function box(n,l){return '<div class="box"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>';}
+  function deadRate(){var w=R.filter(function(r){return r.health_dead!=null;});if(!w.length)return '—';var d=w.filter(function(r){return r.health_dead;}).length;return (d/w.length*100).toFixed(0)+'%';}
+  function distBars(key){
+    var cnt={},tot=0;R.forEach(function(r){var v=r[key];if(v){cnt[v]=(cnt[v]||0)+1;tot++;}});
+    var arr=Object.keys(cnt).map(function(k){return [k,cnt[k]];}).sort(function(a,b){return b[1]-a[1];});
+    if(!arr.length)return '<div class="loading">暂无数据</div>';
+    return arr.map(function(x){var p=pct(x[1],tot);return '<div class="row"><div class="nm">'+esc(x[0])+'</div><div class="barwrap"><div class="bar" style="width:'+p+'%"></div></div><div class="pct">'+x[1]+' ('+p.toFixed(0)+'%)</div></div>';}).join('');
+  }
+  function scoreStats(){
+    var sc=R.map(function(r){return r.score;}).filter(function(s){return typeof s==='number';}).sort(function(a,b){return a-b;});
+    if(!sc.length)return '<div class="loading">暂无数据</div>';
+    var sum=sc.reduce(function(a,b){return a+b;},0),q=function(p){return sc[Math.floor(sc.length*p)];};
+    return '<div class="kpi">'+box(Math.round(sum/sc.length),'平均分')+box(q(0.5),'中位数')+box(sc[sc.length-1],'最高分')+box(q(0.1),'P10')+box(q(0.9),'P90')+box(sc[0],'最低分')+'</div>';
+  }
+  function leaderboard(){
+    var top=R.filter(function(r){return typeof r.score==='number';}).sort(function(a,b){return b.score-a.score;}).slice(0,20);
+    if(!top.length)return '<div class="loading">暂无数据</div>';
+    var rows=top.map(function(r,i){var rk=i<3?('<span class="rk g'+(i+1)+'">'+(i+1)+'</span>'):('<span class="rk">'+(i+1)+'</span>');return '<tr><td>'+rk+'</td><td>'+esc(r.player_name||'匿名')+'</td><td>'+esc(r.title||'')+'</td><td class="sc">'+r.score+'</td></tr>';}).join('');
+    return '<table><tr><th>#</th><th>玩家</th><th>称号</th><th style="text-align:right">分数</th></tr>'+rows+'</table>';
+  }
+  function dealHeat(){
+    var pick={},bad={};
+    R.forEach(function(r){var ps=r.picks;if(!Array.isArray(ps))return;ps.forEach(function(p){var name=p&&p.name;if(!name)return;pick[name]=(pick[name]||0)+1;if(p.tier==='C'||p.tier==='B')bad[name]=(bad[name]||0)+1;});});
+    var arr=Object.keys(pick).map(function(k){return [k,pick[k],bad[k]||0];}).sort(function(a,b){return b[1]-a[1];}).slice(0,15);
+    if(!arr.length)return '<div class="loading">暂无轨迹数据(需新版答题记录)</div>';
+    var max=arr[0][1];
+    return arr.map(function(x){var p=pct(x[1],max),badR=x[1]?(x[2]/x[1]*100).toFixed(0):0;return '<div class="row"><div class="nm">'+esc(x[0])+'</div><div class="barwrap"><div class="bar" style="width:'+p+'%"></div></div><div class="pct">'+x[1]+'选/踩'+badR+'%</div></div>';}).join('');
+  }
+  document.getElementById('topSub').innerHTML='共 '+total+' 局 · '+nPlayers+' 位玩家<span class="logout" id="logout">退出</span>';
+  document.getElementById('logout').onclick=logout;
+  var h='';
+  h+='<div class="panel"><h2>核心指标</h2><div class="kpi">'+box(total,'总答题局数')+box(nPlayers,'独立玩家')+box(todayN,'今日新增局')+box(visitN,'总访问')+box(invited,'被邀请来的局')+box(deadRate(),'出局率')+'</div></div>';
+  h+='<div class="panel"><h2>🏆 结局称号分布</h2>'+distBars('title')+'</div>';
+  h+='<div class="panel"><h2>🎭 投资风格分布</h2>'+distBars('style')+'</div>';
+  h+='<div class="panel"><h2>📈 综合评分</h2>'+scoreStats()+'</div>';
+  h+='<div class="panel"><h2>🥇 最高分排行 Top 20</h2>'+leaderboard()+'</div>';
+  h+='<div class="panel"><h2>🎯 项目热度(被押注/踩雷)</h2>'+dealHeat()+'</div>';
+  document.getElementById('statsContent').innerHTML=h;
+}
+
+/* ===================== 📐 数值手册 + 📝 文案配置 ===================== */
+function renderDoc(){
+  var C=CONFIG, cuts=DATA_ENDINGS.endingTiers;
+  var h='';
+  // 综合评分公式
+  h+='<div class="panel"><h2>🎯 综合评分公式</h2>';
+  h+='<div class="formula">综合评分 = (资本 − '+C.start.aum+' − 累计投入) × '+C.scoreCoef.a+'\n         + (业绩 − '+C.start.track+') × '+C.scoreCoef.b+'\n         + (人脉 − '+C.start.network+') × '+C.scoreCoef.c+'</div>';
+  h+='<div class="txt"><b>净值制</b>：每项减去起始值（资本还减累计投入），所以"什么都没积累 = 0 分"。系数 资本:业绩:人脉 ≈ <b>2:3:1</b>，业绩贡献最大。结果封顶 <b>1000</b> 分；健康归零再 ×'+C.deadPenalty+'。运气、健康不直接进总分（通过影响投资过程间接作用）。</div></div>';
+  // 单站属性变化
+  h+='<div class="panel"><h2>📊 单站属性变化</h2>';
+  h+='<div class="formula">本站某属性增减 = 项目权重w × 档位倍率 × 趋势修正tg × 小额系数sf</div>';
+  h+='<div class="txt"><b>档位倍率</b>：SS '+C.outcomeTiers.SS.mult+' / S '+C.outcomeTiers.S.mult+' / A '+C.outcomeTiers.A.mult+' / B '+C.outcomeTiers.B.mult+' / C '+C.outcomeTiers.C.mult+'<br><b>趋势修正tg</b>（仅正收益）：顺势up = '+C.trendReturn.upDecay+'^(已选up次数)，下限'+C.trendReturn.upFloor+'；过热hot/逆势down博中 = ×'+C.trendReturn.hotGain+'<br><b>小额系数sf</b> = '+C.smallTicketFactor+'（资本不足小额参投时）</div></div>';
+  // 投资结果概率
+  h+='<div class="panel"><h2>🎲 投资结果概率</h2>';
+  h+='<div class="formula">实际胜率 p = clamp(base + 运气加成 + 趋势加成, 0, 1)\n表现值 perf = p×'+C.probability.perfWeight.base+' + 随机×'+C.probability.perfWeight.dice+'\nperf ≥'+C.probability.tierCuts.SS+'→SS / ≥'+C.probability.tierCuts.S+'→S / ≥'+C.probability.tierCuts.A+'→A / ≥'+C.probability.tierCuts.B+'→B / 否则C</div>';
+  h+='<div class="txt"><b>运气加成</b> = (运气−50)/50 × '+C.luckEffect+'（运气满 +'+C.luckEffect+' 胜率）<br><b>趋势加成</b>：hot +'+(C.probability.trendBoost.hot||0)+'、down +'+(C.probability.trendBoost.down||0)+'<br>运气随档位升降：SS+'+C.luckDelta.SS+' / S+'+C.luckDelta.S+' / A '+C.luckDelta.A+' / B'+C.luckDelta.B+' / C'+C.luckDelta.C+'</div></div>';
+  // 健康衰减
+  h+='<div class="panel"><h2>❤️ 健康衰减公式</h2>';
+  h+='<div class="formula">本站健康变化 = −取整(' +C.health.baseDecay+' + 时代序号×'+C.health.rampPerPeriod+') + 结果附加</div>';
+  h+='<div class="txt">时代序号 0~4（平滑递增，越后期越耗）。结果附加：C档 <b>−'+C.health.extraOnVeryBad+'</b>、B档 <b>−'+C.health.extraOnBad+'</b>、SS档 <b>+'+C.health.bonusOnGreat+'</b>。健康始终取整。<br><b>健康归零</b>：综合评分 ×'+C.deadPenalty+'；若同时业绩<'+C.healthDeath.earlyOutTrackCap+' → 触发「健康透支」结局。出局率约 12-13%。</div></div>';
+  // 门槛系统(数值从 DATA_PERIODS 动态统计,vc/future 各显示自己真实数据)
+  var gTot=0,gNum=0,gTy={aum:0,track:0,health:0,net:0};
+  try{ (DATA_PERIODS.periods||[]).forEach(function(p){(p.rounds||[]).forEach(function(r){(r.deals||[]).forEach(function(d){gTot++;if(d.gate&&d.gate.type){gNum++;if(gTy[d.gate.type]!=null)gTy[d.gate.type]++;}});});}); }catch(e){}
+  h+='<div class="panel"><h2>🔒 门槛系统</h2>';
+  h+='<div class="txt" style="margin-bottom:12px">每个项目<b>最多 1 个硬门槛</b>：属性 < 门槛即锁定（所见即所得）。全 '+gTot+' 项中 <b>'+gNum+' 项</b>有门槛，每站保证 ≥1 个无门槛退路。</div>';
+  h+='<div class="gate-grid">';
+  h+='<div class="gate-item"><span class="gate-ic">💰</span><span class="gate-nm">资本门槛<i>aum</i></span><span class="gate-n">'+gTy.aum+'</span></div>';
+  h+='<div class="gate-item"><span class="gate-ic">📈</span><span class="gate-nm">业绩门槛<i>track</i></span><span class="gate-n">'+gTy.track+'</span></div>';
+  h+='<div class="gate-item"><span class="gate-ic">❤️</span><span class="gate-nm">健康门槛<i>health</i></span><span class="gate-n">'+gTy.health+'</span></div>';
+  h+='<div class="gate-item"><span class="gate-ic">🤝</span><span class="gate-nm">人脉门槛<i>net</i></span><span class="gate-n">'+gTy.net+'</span></div>';
+  h+='</div>';
+  h+='<div class="invest-rule"><div class="ir-h">💵 投入约束</div>'
+    +'<div class="ir-row"><span class="ir-cond">资本 ≥ 投入</span><span class="ir-arr">→</span><span class="ir-res ok">正常投资</span></div>'
+    +'<div class="ir-row"><span class="ir-cond">资本 &lt; 投入</span><span class="ir-arr">→</span><span class="ir-res">小额参投 ×'+C.smallTicketFactor+'</span></div></div>';
+  h+='</div>';
+  // 结局称号门槛(只数值规则,完整文案在「文案」tab)
+  if(typeof DATA_ENDINGS!=="undefined" && DATA_ENDINGS.endingMeta){
+    var EM=DATA_ENDINGS.endingMeta, ET=DATA_ENDINGS.endingTiers;
+    var eorder=["legend","master","veteran","steady","rollercoaster","exit","earlyout"];
+    h+='<div class="panel"><h2>🏆 结局称号 · 门槛 <span style="font-size:11px;color:#8c857a;font-weight:600">完整文案见「文案」tab</span></h2>';
+    eorder.forEach(function(k){
+      var m=EM[k]; if(!m)return;
+      var to=ET.find(function(t){return t.key===k;});
+      var cut=(k==="earlyout")?("健康归零 且 业绩 < "+C.healthDeath.earlyOutTrackCap):(k==="exit")?("综合评分 < "+tierMin("rollercoaster")):(to?("综合评分 ≥ "+to.min):"—");
+      var col=esc(m.color||"#b8860b");
+      h+='<div class="formula" style="border-left-color:'+col+';display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">';
+      h+='<b style="color:'+col+';font-size:14px">'+esc(m.emoji)+" "+esc(m.title)+'</b>';
+      h+='<span style="color:#8c857a;font-size:12px;font-weight:700;white-space:nowrap">'+esc(cut)+'</span>';
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+  // 参数定义
+  h+='<div class="panel"><h2>📋 名词与参数定义</h2><table class="deftbl">';
+  var defs=[
+    ['资本 AUM','真金白银（管理资产规模）。投资要花钱，评分时减累计投入。起始'+C.start.aum],
+    ['业绩 FAME','专业声望/战绩名气。投中好项目就涨，投资人地位核心。起始'+C.start.track],
+    ['人脉 NET','资源网络，辅助维度。起始'+C.start.network],
+    ['运气 LUCK','影响投资胜率（不进总分）。起始'+C.start.luck+'，0-100'],
+    ['健康 HP','精力。影响能否投高强度项目（不进总分），每站衰减。起始'+C.start.health],
+    ['base','项目基础胜率（趋势×角色推导）'],
+    ['权重w','投中时各属性涨多少的基数（aum/track/net）'],
+    ['投入amt','投这个项目需花的资本'],
+    ['statMax','进度条满格基准：资本'+C.statMax.aum+'/业绩'+C.statMax.track+'/人脉'+C.statMax.network],
+    ['趋势','up顺势/hot过热/down逆势/safe稳健'],
+    ['角色','暴利(低胜率高回报)/均衡/稳健(高胜率低回报)']
+  ];
+  defs.forEach(function(d){h+='<tr><td>'+d[0]+'</td><td>'+d[1]+'</td></tr>';});
+  h+='</table></div>';
+
+  document.getElementById('docContent').innerHTML=h;
+}
+
+
+// ============ 文案与配置页(从真实 CONFIG 动态读) ============
+function kvTable(obj,keys){
+  var h='<table class="deftbl">';
+  (keys||Object.keys(obj)).forEach(function(k){
+    h+='<tr><td>'+esc(k)+'</td><td>'+showBr(obj[k])+'</td></tr>';
+  });
+  return h+'</table>';
+}
+function renderConfig(){
+  var C=CONFIG, h='';
+  h+='<div class="note" style="margin-bottom:14px;">以下全部从游戏真实配置 <b>config.js</b> 实时读取（CONFIG.ui / text / intro / music / storage 等）。改 config.js 后本页自动反映。文案里的 <code>⏎</code> 表示换行符 &lt;br&gt;，<code>${name}</code> 等是运行时变量占位。</div>';
+
+  // 封面/通用 UI 文案
+  h+='<div class="panel"><h2>🖼 封面与通用 UI 文案 <span style="font-size:11px;color:#8c857a;font-weight:600">CONFIG.ui</span></h2>';
+  h+=kvTable(C.ui)+'</div>';
+
+  // 介绍首页卡片
+  h+='<div class="panel"><h2>📖 介绍首页卡片 <span style="font-size:11px;color:#8c857a;font-weight:600">CONFIG.intro</span></h2>';
+  (C.intro||[]).forEach(function(card,i){
+    h+='<div class="formula" style="border-left-color:var(--blue)"><b>'+esc(card.icon)+' '+esc(card.title)+'</b>\n'+showBr(card.body)+'</div>';
+  });
+  h+='</div>';
+
+  // 游戏内文案
+  h+='<div class="panel"><h2>💬 游戏内文案 <span style="font-size:11px;color:#8c857a;font-weight:600">CONFIG.text</span></h2>';
+  var T=C.text;
+  h+='<div class="pgrp-t" style="margin-top:4px">五档揭晓点评</div>';
+  h+=kvTable({SS:T.tierSS,S:T.tierS,A:T.tierA,B:T.tierB,C:T.tierC});
+  h+='<div class="pgrp-t" style="margin-top:12px">流程/页面文案</div>';
+  var skip={tierSS:1,tierS:1,tierA:1,tierB:1,tierC:1,titles:1,btnAfterPeriod:1,outcomeShort:1};
+  var rest={};Object.keys(T).forEach(function(k){if(!skip[k])rest[k]=T[k];});
+  h+=kvTable(rest);
+  if(T.outcomeShort){h+='<div class="pgrp-t" style="margin-top:12px">五档结果简称 · 轨迹表/高光框用 (outcomeShort)</div>'+kvTable(T.outcomeShort);}
+  if(T.btnAfterPeriod){h+='<div class="pgrp-t" style="margin-top:12px">时代落幕按钮文案 (btnAfterPeriod)</div>'+kvTable(T.btnAfterPeriod);}
+  if(T.titles){h+='<div class="pgrp-t" style="margin-top:12px">投资人头衔进阶 (titles)</div><div class="txt">'+T.titles.map(function(t,i){return (i+1)+'. '+esc(t);}).join(' → ')+'</div>';}
+  h+='</div>';
+
+
+
+  // 🏆 结局称号完整文案(名言+解读;门槛数值在「机制」tab)
+  if(typeof DATA_ENDINGS!=="undefined" && DATA_ENDINGS.endingMeta){
+    var EM=DATA_ENDINGS.endingMeta;
+    var eorder=["legend","master","veteran","steady","rollercoaster","exit","earlyout"];
+    h+='<div class="panel"><h2>🏆 结局称号 · 文案 <span style="font-size:11px;color:#8c857a;font-weight:600">data-endings.js · 门槛见「机制」tab</span></h2>';
+    eorder.forEach(function(k){
+      var m=EM[k]; if(!m)return;
+      var col=esc(m.color||"#b8860b");
+      h+='<div class="formula" style="border-left-color:'+col+'">';
+      h+='<b style="color:'+col+';font-size:14px">'+esc(m.emoji)+" "+esc(m.title)+'</b>';
+      h+="\n💬 名言："+showBr(m.quote);
+      h+="\n📖 解读："+showBr(m.summary);
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+
+  // 五维投资人格(从 data-persona5.js 读, 6人格←→6大师)
+  if(typeof PERSONA5!=="undefined" && PERSONA5.archetypes){
+    var MNAME={buffett:'巴菲特',simons:'西蒙斯',soros:'索罗斯',wood:'木头姐',trumpish:'豪赌狂人',muskish:'钢铁狂想家'};
+    h+='<div class="panel"><h2>\u{1F3AD} 五维投资人格 · 6型称号 <span style="font-size:11px;color:#8c857a;font-weight:600">data-persona5.js · 对应6大师</span></h2>';
+    PERSONA5.archetypes.forEach(function(s){
+      var col=esc(s.color||"#5a6470");
+      var ac=s.anchor||{};
+      var anchorTxt=['risk','data','horizon','focus','decisive'].map(function(k){return k+':'+(ac[k]!=null?ac[k]:'-');}).join(' ');
+      h+='<div class="formula" style="border-left-color:'+col+'">';
+      h+='<b style="color:'+col+';font-size:14px">'+esc(s.emoji)+" "+esc(s.title)+'</b>';
+      h+='  <span style="color:#8c857a;font-size:11.5px;font-weight:600">(\u2248 '+esc(MNAME[s.master]||s.master)+')</span>';
+      h+="\n\u{1F3F7}\uFE0F 标签："+esc(s.tag);
+      h+="\n\u{1F4CD} 五维锚点："+esc(anchorTxt);
+      h+="\n\u{1F4D6} 解读："+showBr(s.desc);
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+
+  // 五维释义(从 data-profile6.js 读)
+  if(typeof PROFILE!=="undefined" && PROFILE.dims){
+    h+='<div class="panel"><h2>\u{1F4CA} 五维释义 <span style="font-size:11px;color:#8c857a;font-weight:600">data-profile6.js · dims</span></h2>';
+    PROFILE.dims.forEach(function(dm){
+      h+='<div class="formula" style="border-left-color:var(--blue)">';
+      h+='<b>'+esc(dm.axis)+'：'+esc(dm.low)+' \u2190 '+esc(dm.key)+' \u2192 '+esc(dm.high)+'</b>';
+      h+="\n\u2796 "+esc(dm.low)+"："+showBr(dm.lowDesc);
+      h+="\n\u2795 "+esc(dm.high)+"："+showBr(dm.highDesc);
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+
+  // 五维测试 · 情境题(从 data-profile6.js 读, P1-P5 单维)
+  if(typeof PROFILE!=="undefined" && PROFILE.scenarios){
+    h+='<div class="panel"><h2>\u2753 五维测试 · 情境题 <span style="font-size:11px;color:#8c857a;font-weight:600">data-profile6.js · scenarios</span></h2>';
+    Object.keys(PROFILE.scenarios).forEach(function(pk){
+      var sc=PROFILE.scenarios[pk];
+      h+='<div class="formula" style="border-left-color:var(--blue)">';
+      h+='<b>'+esc(pk)+'：'+esc(sc.q)+'</b>';
+      (sc.opts||[]).forEach(function(o,i){
+        var eff=Object.keys(o.e||{}).map(function(kk){return kk+(o.e[kk]>=0?"+":"")+o.e[kk];}).join(" ")||"无倾向";
+        h+="\n"+(i+1)+". "+esc(o.t)+'  <span style="color:#8c857a;font-size:11px">['+esc(eff)+']</span>';
+      });
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+
+
+
+  // ⚙️ 技术配置(音乐/存档/其他)
+  h+='<div class="panel"><h2>🎵 音乐参数 <span style="font-size:11px;color:#8c857a;font-weight:600">CONFIG.music</span></h2>'+kvTable(C.music)+'</div>';
+  h+='<div class="panel"><h2>💾 本地存档键名 <span style="font-size:11px;color:#8c857a;font-weight:600">CONFIG.storage</span></h2>'+kvTable(C.storage)+'</div>';
+  h+='<div class="panel"><h2>⚙️ 其他配置</h2><table class="deftbl">';
+  h+='<tr><td>mbtiMidThreshold</td><td>'+esc(C.mbtiMidThreshold)+'（MBTI 某维度 |分|≤此值视为接近中点/均衡倾向）</td></tr>';
+  h+='<tr><td>scoreClampMax</td><td>'+esc(C.scoreClampMax)+'（综合评分上限）</td></tr>';
+  h+='<tr><td>scoreTiersForSfx</td><td>结局音效门槛 big≥'+esc(C.scoreTiersForSfx.big)+' / mid≥'+esc(C.scoreTiersForSfx.mid)+' / neutral≥'+esc(C.scoreTiersForSfx.neutral)+'</td></tr>';
+  h+='</table></div>';
+
+  document.getElementById('tab-cfg').innerHTML=h;
+}
+
+
+
+/* ===================== 🏛 调参器 ===================== */
+// ============ 调参器 ============
+var RUNS=10000;
+// 称号目标比例(主人 2026-06-24 定的调参标尺): 封神10/一线20/资深20/稳进20/过山车15/离场5/健康透支10 = 100%
+var TARGET_DIST={legend:10,master:20,veteran:20,steady:20,rollercoaster:15,exit:5,earlyout:10};
+var BASE=null, P=null;
+function snapshot(){
+  return {
+    coefA:CONFIG.scoreCoef.a,coefB:CONFIG.scoreCoef.b,coefC:CONFIG.scoreCoef.c,
+    sAum:CONFIG.start.aum,sTrack:CONFIG.start.track,sNet:CONFIG.start.network,sLuck:CONFIG.start.luck,sHealth:CONFIG.start.health,
+    mSS:CONFIG.outcomeTiers.SS.mult,mS:CONFIG.outcomeTiers.S.mult,mA:CONFIG.outcomeTiers.A.mult,mB:CONFIG.outcomeTiers.B.mult,mC:CONFIG.outcomeTiers.C.mult,
+    hBase:CONFIG.health.baseDecay,hRamp:CONFIG.health.rampPerPeriod,hB:CONFIG.health.extraOnBad,hC:CONFIG.health.extraOnVeryBad,
+    luckEff:CONFIG.luckEffect,deadPen:CONFIG.deadPenalty,mbtiMid:CONFIG.mbtiMidThreshold,
+    cutSS:CONFIG.probability.tierCuts.SS,cutS:CONFIG.probability.tierCuts.S,cutA:CONFIG.probability.tierCuts.A,cutB:CONFIG.probability.tierCuts.B,
+    baseAdj:CONFIG.probability.baseAdjust,boostHot:(CONFIG.probability.trendBoost.hot||0),boostDown:(CONFIG.probability.trendBoost.down||0),
+    perfBase:CONFIG.probability.perfWeight.base,perfDice:CONFIG.probability.perfWeight.dice,
+    upDecay:CONFIG.trendReturn.upDecay,upFloor:CONFIG.trendReturn.upFloor,hotGain:CONFIG.trendReturn.hotGain,
+    ldSS:CONFIG.luckDelta.SS,ldS:CONFIG.luckDelta.S,ldB:CONFIG.luckDelta.B,ldC:CONFIG.luckDelta.C,
+    smallF:CONFIG.smallTicketFactor,earlyCap:CONFIG.healthDeath.earlyOutTrackCap,hSS:CONFIG.health.bonusOnGreat,
+    cutLegend:tierMin('legend'),cutMaster:tierMin('master'),cutVeteran:tierMin('veteran'),cutSteady:tierMin('steady'),cutRoller:tierMin('rollercoaster')
+  };
+}
+// 人格锚点 key 形如 pa_<archKey>_<dim>，从 PERSONA5 读初始值合并进 snapshot
+function snapshotPersona(base){
+  if(typeof PERSONA5==='undefined'||!PERSONA5.archetypes)return base;
+  PERSONA5.archetypes.forEach(function(a){
+    PERSONA5.DIM.forEach(function(dk){ base['pa_'+a.key+'_'+dk]=a.anchor[dk]; });
+  });
+  return base;
+}
+window.PMNAME={buffett:'巴菲特',simons:'西蒙斯',soros:'索罗斯',wood:'木头姐',trumpish:'豪赌狂人',muskish:'钢铁狂想家'};
+var PARAM_DEFS=[
+  ['评分系数（资本:业绩:人脉=2:3:1）',[['coefA','资本系数a',0,0.5,0.001],['coefB','业绩系数b',0,0.6,0.001],['coefC','人脉系数c',0,0.3,0.001]]],
+  ['起始值',[['sAum','初始资本',0,300,5],['sTrack','初始业绩',0,300,5],['sNet','初始人脉',0,200,5],['sLuck','初始运气',0,100,5],['sHealth','初始健康',0,100,5]]],
+  ['档位倍率',[['mSS','SS传奇',1,3,0.1],['mS','S成功',0.5,2,0.1],['mA','A保本',0,1,0.05],['mB','B失利',-2,0,0.1],['mC','C惨败',-2.5,0,0.1]]],
+  ['健康衰减',[['hBase','基础衰减/站',0,4,0.5],['hRamp','时代加重',0,2,0.1],['hB','B档额外扣',0,15,1],['hC','C档额外扣',0,25,1],['hSS','SS档回血',0,5,1]]],
+  ['其他',[['luckEff','运气影响胜率±',0,0.6,0.05],['deadPen','健康归零打折',0.3,1,0.05]]],
+  ['结局门槛',[['cutLegend','封神≥',400,1000,10],['cutMaster','一线≥',300,900,10],['cutVeteran','资深≥',200,800,10],['cutSteady','稳进≥',100,700,10],['cutRoller','过山车≥',50,500,10]]],
+  ['落档线(perf≥)',[['cutSS','SS传奇',0.6,0.95,0.01],['cutS','S成功',0.45,0.8,0.01],['cutA','A保本',0.3,0.6,0.01],['cutB','B失利',0.1,0.45,0.01]]],
+  ['胜率与趋势',[['baseAdj','全局胜率±',-0.1,0.1,0.005],['boostHot','风口加成',0,0.2,0.01],['boostDown','逆势加成',0,0.2,0.01]]],
+  ['表现分权重(base+随机, 越偏随机越两极)',[['perfBase','实力占比',0,1,0.02],['perfDice','随机占比',0,1,0.02]]],
+  ['趋势回报',[['upDecay','顺势衰减率',0.6,1,0.01],['upFloor','顺势衰减下限',0.2,0.8,0.05],['hotGain','博中超额×',1,2,0.05]]],
+  ['运气增减',[['ldSS','SS运气+',0,8,1],['ldS','S运气+',0,6,1],['ldB','B运气',-6,0,1],['ldC','C运气',-8,0,1]]],
+  ['其他机制',[['smallF','小额参投×',0.2,1,0.05],['earlyCap','健康透支业绩线',400,1200,50]]],
+  ['风格画像',[['mbtiMid','均衡型阈值',0,5,1]]]
+];
+// 动态追加：6 人格 × 5 维锚点滑块（拖动看人格分布实时变化，与 P 同步）
+(function(){
+  if(typeof PERSONA5==='undefined'||!PERSONA5.archetypes)return;
+  var DLAB={risk:'风险偏好(稳健↔激进)',data:'决策依据(直觉↔理性)',horizon:'时间视野(短线↔长期)',focus:'下注集中(分散↔集中)',decisive:'行动节奏(观望↔果断)'};
+  PERSONA5.archetypes.forEach(function(a){
+    var rows=PERSONA5.DIM.map(function(dk){ return ['pa_'+a.key+'_'+dk, DLAB[dk], 0, 100, 1]; });
+    PARAM_DEFS.push([a.emoji+' '+a.title+' 锚点 · '+'对应'+(window.PMNAME?window.PMNAME[a.master]:a.master), rows]);
+  });
+})();
+// 大师中文名映射(滑块组标题用)
+
+function rollOutcome(d,state){
+  if(d.trend==='safe')return'A';
+  var Pr=CONFIG.probability;
+  var luckAdj=((state.luck-50)/50)*P.luckEff;
+  var tb=d.trend==='hot'?P.boostHot:(d.trend==='down'?P.boostDown:0);
+  var p=clamp(d.base+P.baseAdj+luckAdj+tb,0,1);
+  var perf=p*P.perfBase+(1-Math.random())*P.perfDice;
+  if(perf>=P.cutSS)return'SS';if(perf>=P.cutS)return'S';if(perf>=P.cutA)return'A';if(perf>=P.cutB)return'B';return'C';
+}
+function gateLock(deals,state,pi,ri){
+  var g=deals.map(function(d){var gt=d.gate;if(!gt)return 0;if(gt.type==='aum')return state.aum<gt.min?'aum':0;if(gt.type==='track')return state.track<gt.min?'track':0;if(gt.type==='health')return state.health<gt.min?'health':0;if(gt.type==='net')return state.network<gt.min?'net':0;return 0;});
+  if(g.every(function(x){return x;})){var m=1e9,u=0;deals.forEach(function(d,i){var mn=(d.gate&&d.gate.min)||0;if(mn<m){m=mn;u=i;}});g[u]=0;}
+  return g;
+}
+function calcScore(state){
+  var aN=Math.max(0,(state.aum||0)-P.sAum-(state.spent||0));
+  var bN=Math.max(0,(state.track||0)-P.sTrack);
+  var cN=Math.max(0,(state.network||0)-P.sNet);
+  var s=aN*P.coefA+bN*P.coefB+cN*P.coefC;
+  if(state.health<=0)s*=P.deadPen;
+  return Math.round(Math.max(0,Math.min(1000,s)));
+}
+function pickEnding(score,state){
+  var dead=state.health<=0;
+  if(dead&&state.track<P.earlyCap)return'earlyout';
+  if(score>=P.cutLegend)return'legend';if(score>=P.cutMaster)return'master';if(score>=P.cutVeteran)return'veteran';
+  if(score>=P.cutSteady)return'steady';if(score>=P.cutRoller)return'rollercoaster';return'exit';
+}
+function pickDeal(deals,state,strat,pi,ri){
+  var gl=gateLock(deals,state,pi,ri);
+  var cand=deals.map(function(d,i){return{d:d,i:i};}).filter(function(x){return!gl[x.i];});
+  if(!cand.length)cand=[{d:deals[0],i:0}];
+  if(strat==='greedy')return cand.reduce(function(a,b){return b.d.w.aum>a.d.w.aum?b:a;}).d;
+  if(strat==='safe')return cand.reduce(function(a,b){return b.d.base>a.d.base?b:a;}).d;
+  if(strat==='trend')return(cand.find(function(x){return x.d.trend==='hot';})||cand[0]).d;
+  return cand[Math.floor(Math.random()*cand.length)].d;
+}
+function play(strat){
+  var state={aum:P.sAum,track:P.sTrack,network:P.sNet,luck:P.sLuck,health:P.sHealth,spent:0};
+  var up=0,lock={aum:0,track:0,health:0,net:0};
+  var MU={SS:P.mSS,S:P.mS,A:P.mA,B:P.mB,C:P.mC};
+  var periods=DATA_PERIODS.periods;
+  for(var pi=0;pi<periods.length;pi++){
+    var p=periods[pi];
+    for(var ri=0;ri<p.rounds.length;ri++){
+      if(state.health<=0)break;
+      var r=p.rounds[ri];
+      gateLock(r.deals,state,pi,ri).forEach(function(x){if(x)lock[x]++;});
+      var d=pickDeal(r.deals,state,strat,pi,ri);
+      var sm=(d.amt||0)>state.aum;
+      state.spent+=(d.amt||0);
+      var tier=rollOutcome(d,state);
+      var mult=MU[tier];
+      var tg=1;
+      if(mult>0){if(d.trend==='up')tg=Math.max(P.upFloor,Math.pow(P.upDecay,up));else if(d.trend==='hot'||d.trend==='down')tg=P.hotGain;}
+      if(d.trend==='up')up++;
+      var sf=sm?P.smallF:1;
+      var eff=mult*tg*sf;
+      state.aum=Math.max(0,state.aum+Math.round(d.w.aum*eff));
+      state.track=Math.max(0,state.track+Math.round(d.w.track*eff));
+      state.network=Math.max(0,state.network+Math.round((d.w.net||0)*Math.max(0.3,eff>0?eff:0.3)*sf));
+      state.luck=clamp(state.luck+({SS:P.ldSS,S:P.ldS,A:0,B:P.ldB,C:P.ldC}[tier]||0),0,100);
+      var dh=-Math.round(P.hBase+pi*P.hRamp);
+      if(tier==='C')dh-=P.hC;else if(tier==='B')dh-=P.hB;else if(tier==='SS')dh+=P.hSS;
+      state.health=clamp(state.health+dh,0,100);
+    }
+    if(state.health<=0)break;
+  }
+  var score=calcScore(state);
+  return{score:score,ending:pickEnding(score,state),dead:state.health<=0,state:state,lock:lock};
+}
+function runSim(){
+  var strats=['greedy','safe','trend','random'];
+  var order=['legend','master','veteran','steady','rollercoaster','exit','earlyout'];
+  var nm={legend:'👑 封神级',master:'🌟 一线传奇',veteran:'💼 资深合伙人',steady:'⚖️ 稳进玩家',rollercoaster:'🎢 过山车',exit:'📉 离场',earlyout:'🏥 健康透支'};
+  var tcut={legend:P.cutLegend,master:P.cutMaster,veteran:P.cutVeteran,steady:P.cutSteady,rollercoaster:P.cutRoller};
+  var endCnt={};order.forEach(function(k){endCnt[k]=0;});
+  var scores=[],attr={aum:[],track:[],network:[],health:[],luck:[]},dead=0,lock={aum:0,track:0,health:0,net:0};
+  for(var i=0;i<RUNS;i++){
+    var r=play(strats[i%4]);
+    endCnt[r.ending]++;scores.push(r.score);
+    for(var k in attr)attr[k].push(Math.round(r.state[k]));
+    if(r.dead)dead++;
+    lock.aum+=r.lock.aum;lock.track+=r.lock.track;lock.health+=r.lock.health;lock.net+=r.lock.net;
+  }
+  scores.sort(function(a,b){return a-b;});for(var k2 in attr)attr[k2].sort(function(a,b){return a-b;});
+  var q=function(arr,p){return arr[Math.floor(arr.length*p)];};
+  var endColor={legend:'#b8860b',master:'#2c5282',veteran:'#3c6b4f',steady:'#5a6470',rollercoaster:'#9a7b3a',exit:'#a8453a',earlyout:'#7d5a3a'};
+  var h='';
+  h+='<div class="panel"><h2>🏆 结局称号分布</h2>';
+  h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">目标比例: 封神10% / 一线20% / 资深20% / 稳进20% / 过山车15% / 离场5% / 健康透支10%</div>';
+  order.forEach(function(k){var c=endCnt[k],pct=(c/RUNS*100);var cut=(k==='exit')?('<'+P.cutRoller):(k==='earlyout'?'特殊':'≥'+tcut[k]);
+    h+='<div class="row"><div class="nm">'+nm[k]+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*2.5)+'%;background:'+endColor[k]+'"></div></div><div class="pct">'+pct.toFixed(1)+'% <small style="color:#8c857a">'+cut+'</small></div></div>';});
+  h+='</div>';
+  h+='<div class="panel"><h2>📈 综合评分</h2><div class="stat-grid">';
+  h+='<div class="stat"><div class="k">平均/中位</div><div class="v">'+Math.round(scores.reduce(function(a,b){return a+b;},0)/RUNS)+' <small>/ '+q(scores,0.5)+'</small></div></div>';
+  h+='<div class="stat"><div class="k">最高/最低</div><div class="v">'+scores[RUNS-1]+' <small>/ '+scores[0]+'</small></div></div>';
+  h+='<div class="stat"><div class="k">P10/P90</div><div class="v">'+q(scores,0.1)+' <small>/ '+q(scores,0.9)+'</small></div></div>';
+  h+='<div class="stat"><div class="k">健康出局率</div><div class="v">'+(dead/RUNS*100).toFixed(1)+'%</div></div>';
+  h+='</div></div>';
+  h+='<div class="panel"><h2>📊 各属性终局（中位/P90/最高）</h2><div class="stat-grid">';
+  var an={aum:'💰资本',track:'🏆业绩',network:'🤝人脉',health:'❤️健康',luck:'🍀运气'};
+  ['track','aum','network','health','luck'].forEach(function(k){h+='<div class="stat"><div class="k">'+an[k]+'</div><div class="v">'+q(attr[k],0.5)+' <small>/ '+q(attr[k],0.9)+' / '+attr[k][RUNS-1]+'</small></div></div>';});
+  h+='</div></div>';
+  var tot=lock.aum+lock.track+lock.health+lock.net||1;
+  h+='<div class="panel"><h2>🔒 四门槛触发占比</h2><div class="stat-grid"><div class="stat" style="grid-column:1/-1"><div class="k">资本 / 业绩 / 健康 / 人脉</div><div class="v" style="font-size:14px">'+(lock.aum/tot*100).toFixed(0)+'% / '+(lock.track/tot*100).toFixed(0)+'% / '+(lock.health/tot*100).toFixed(0)+'% / '+(lock.net/tot*100).toFixed(0)+'%</div></div></div></div>';
+  // ===== 标的趋势分布(只读+目标对照) =====
+  (function(){
+    var all={hot:0,up:0,down:0,safe:0}, perEra=[];
+    DATA_PERIODS.periods.forEach(function(p){var c={hot:0,up:0,down:0,safe:0},n=0;
+      p.rounds.forEach(function(r){(r.deals||[]).forEach(function(d){if(c[d.trend]!=null)c[d.trend]++;all[d.trend]=(all[d.trend]||0)+1;n++;});});
+      perEra.push({name:p.name,c:c,n:n});});
+    var tot=all.hot+all.up+all.down+all.safe||1;
+    var TT={hot:30,up:50,down:15,safe:5};
+    var tnm={hot:'🔥风口hot',up:'📈顺势up',down:'📉逆势down',safe:'🛡️稳健safe'};
+    var tcol={hot:'#c46a3a',up:'#3c6b4f',down:'#a8453a',safe:'#5a6470'};
+    h+='<div class="panel"><h2>🎯 标的趋势分布 <span style="font-size:11px;font-weight:600;color:#8c857a">共'+tot+'项</span></h2>';
+    h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">目标比例: 风口30% / 顺势50% / 逆势15% / 稳健5% —— 调整需手改 data-periods.js 各标的 trend</div>';
+    ['hot','up','down','safe'].forEach(function(k){var pct=all[k]/tot*100;
+      h+='<div class="row"><div class="nm">'+tnm[k]+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*1.6)+'%;background:'+tcol[k]+'"></div></div><div class="pct">'+pct.toFixed(0)+'%</div></div>';});
+    var eh=perEra.map(function(e){return e.name+' 🔥'+e.c.hot+' 📈'+e.c.up+' 📉'+e.c.down+(e.c.safe?' 🛡️'+e.c.safe:'');}).join(' · ');
+    h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-top:8px;border-top:1px solid var(--line);padding-top:8px;">分时代: '+eh+'</div>';
+    h+='</div>';
+  })();
+  // ===== 五维人格分布(随机答5题→最近人格原型) =====
+  if(typeof PERSONA5!=="undefined" && typeof PROFILE!=="undefined"){
+    (function(){
+      var sc=PROFILE.scenarios, keys=Object.keys(sc), norm=PROFILE.norm||4;
+      var SN=30000, cnt={};
+      PERSONA5.archetypes.forEach(function(a){cnt[a.key]=0;});
+      var DIM=PERSONA5.DIM;
+      for(var i=0;i<SN;i++){
+        var raw={risk:0,data:0,horizon:0,focus:0,decisive:0};
+        keys.forEach(function(k){var o=sc[k].opts[Math.floor(Math.random()*sc[k].opts.length)];if(o.e){for(var dk in o.e){raw[dk]=(raw[dk]||0)+o.e[dk];}}});
+        // 归一化到 0-100 (单题单维±norm, 5题但每维只1题主导→用 ±norm 映射)
+        var ps={};DIM.forEach(function(dk){var v=raw[dk]||0; ps[dk]=Math.max(0,Math.min(100, 50 + v/norm*50));});
+        // 用 P 里(可能被滑块调过)的人格锚点做欧氏最近匹配
+        var bestKey=null,bd=1e9;
+        PERSONA5.archetypes.forEach(function(a){
+          var ss=0;
+          DIM.forEach(function(dk){ var av=(P&&P['pa_'+a.key+'_'+dk]!=null)?P['pa_'+a.key+'_'+dk]:a.anchor[dk]; var dd=(ps[dk]||50)-av; ss+=dd*dd; });
+          var dist=Math.sqrt(ss); if(dist<bd){bd=dist;bestKey=a.key;}
+        });
+        cnt[bestKey]++;
+      }
+      h+='<div class="panel"><h2>🎭 五维人格分布 <span style="font-size:11px;font-weight:600;color:#8c857a">随机答5题×'+(SN/1000)+'k局 → 最近人格</span></h2>';
+      h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">6人格←→6大师 · 玩家五维到最近原型(与大师匹配同源)</div>';
+      PERSONA5.archetypes.forEach(function(a){var pct=cnt[a.key]/SN*100;
+        h+='<div class="row"><div class="nm">'+a.emoji+a.title+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*2.5)+'%;background:'+a.color+'"></div></div><div class="pct">'+pct.toFixed(1)+'%</div></div>';});
+      h+='</div>';
+    })();
+  }
+  document.getElementById('dist').innerHTML=h;
+  document.getElementById('live').textContent='✅ 模拟 '+RUNS+' 局（4策略混合）';
+  window.__simDone=true;
+}
+function renderParams(){
+  var h='';
+  PARAM_DEFS.forEach(function(grp){
+    h+='<div class="pgrp"><div class="pgrp-t">'+grp[0]+'</div>';
+    grp[1].forEach(function(it){
+      var k=it[0];
+      h+='<div class="prow"><label>'+it[1]+'</label><input type="range" data-k="'+k+'" min="'+it[2]+'" max="'+it[3]+'" step="'+it[4]+'" value="'+P[k]+'"><span class="pv"><input type="number" data-kn="'+k+'" min="'+it[2]+'" max="'+it[3]+'" step="'+it[4]+'" value="'+P[k]+'"></span></div>';
+    });
+    h+='</div>';
+  });
+  document.getElementById('params').innerHTML=h;
+  document.querySelectorAll('input[type=range]').forEach(function(el){
+    el.addEventListener('input',function(){var k=el.dataset.k;P[k]=parseFloat(el.value);var n=document.querySelector('input[data-kn="'+k+'"]');if(n)n.value=el.value;markDirty();scheduleRun();});
+  });
+  document.querySelectorAll('input[data-kn]').forEach(function(el){
+    el.addEventListener('change',function(){var k=el.dataset.kn;var v=parseFloat(el.value);if(isNaN(v))return;P[k]=v;var r=document.querySelector('input[data-k="'+k+'"]');if(r)r.value=v;markDirty();scheduleRun();});
+  });
+}
+function markDirty(){
+  var changed=JSON.stringify(P)!==JSON.stringify(BASE);
+  document.getElementById('dirtyFlag').innerHTML=changed?'<span class="dirty">● 已改动(非真实值)</span>':'';
+}
+var runTimer=null;
+function scheduleRun(){clearTimeout(runTimer);runTimer=setTimeout(function(){try{runSim();}catch(e){console.error(e);}},250);}
+document.getElementById('rerun').addEventListener('click',function(){runSim();});
+document.getElementById('reset').addEventListener('click',function(){P=JSON.parse(JSON.stringify(BASE));renderParams();markDirty();runSim();});
+
+function initTune(){
+  if(typeof CONFIG==='undefined'||typeof DATA_PERIODS==='undefined'){document.getElementById('live').textContent='❌ 配置加载失败';return;}
+  try{
+    BASE=snapshotPersona(snapshot());P=JSON.parse(JSON.stringify(BASE));
+    renderParams();markDirty();runSim();
+  }catch(e){document.getElementById('live').textContent='❌ 出错:'+e.message;console.error(e);}
+}
+
+/* ===================== 🎵 音效 ===================== */
+function initSfx(){
+// 分组定义。type: 'play'=Sfx.play(name); 'hover'=Sfx.playHover(kind)
+const GROUPS=[
+  { t:'🖱 鼠标划过 HOVER（沉闷·跟手·极短）', items:[
+    {type:'hover', k:'btn',  nm:'划过 · 主按钮',  ds:'偏低沉（392Hz），重要元素，足感'},
+    {type:'hover', k:'deal', nm:'划过 · 投资卡',  ds:'中低（440Hz），稳'},
+    {type:'hover', k:'opt',  nm:'划过 · 题目选项',ds:'最低沉（349Hz），柔和'},
+    {type:'hover', k:'icon', nm:'划过 · 图标钮',  ds:'略高（523Hz），轻巧'},
+  ]},
+  { t:'👆 操作音 OPERATION（清脆·明确）', items:[
+    {type:'play', k:'click',   nm:'点击 · 通用按钮', ds:'清脆双音叠（1046+1568Hz），脆生生'},
+    {type:'play', k:'pick',    nm:'点选 · 选项/投资', ds:'清亮灵动「叮」，选中确定感'},
+    {type:'play', k:'swipe',   nm:'翻页 · 推进/下一站',ds:'轻快上扬滑音，流动感'},
+    {type:'play', k:'confirm', nm:'押注 · 封存确认',  ds:'稳重「咚」，低频盖章落定感'},
+  ]},
+  { t:'🚀 开始游戏 START', items:[
+    {type:'play', k:'start', nm:'开场 · 史诗号角', ds:'低频上扫+号角琶音+顶点和弦齐鸣，进入游戏时播'},
+  ]},
+  { t:'⚖️ 揭晓结果 REVEAL（按命运档位）', items:[
+    {type:'play', k:'SS', nm:'SS · 传奇回报', ds:'欢庆五音上行+高频亮顶'},
+    {type:'play', k:'S',  nm:'S · 投资成功',  ds:'明亮三音'},
+    {type:'play', k:'A',  nm:'A · 勉强保本',  ds:'中性双音'},
+    {type:'play', k:'B',  nm:'B · 投资失利',  ds:'低沉下行'},
+    {type:'play', k:'C',  nm:'C · 血本无归',  ds:'失落顿挫下坠'},
+  ]},
+  { t:'🏁 结局 ENDING', items:[
+    {type:'play', k:'winBig',  nm:'大胜（高分结局）', ds:'六音欢腾琶音+顶音'},
+    {type:'play', k:'winMid',  nm:'中胜', ds:'四音上行'},
+    {type:'play', k:'neutral', nm:'平局', ds:'平和三音'},
+    {type:'play', k:'lose',    nm:'失败/出局', ds:'缓缓下坠'},
+  ]},
+];
+
+var list=document.getElementById('sfxList');
+GROUPS.forEach(g=>{
+  const grp=document.createElement('div'); grp.className='grp';
+  grp.innerHTML=`<div class="grp-t">${g.t}</div>`;
+  g.items.forEach(it=>{
+    const row=document.createElement('div'); row.className='srow sfx-row';
+    row.innerHTML=`<div class="play"></div><div class="info"><div class="nm2">${it.nm}</div><div class="ds">${it.ds}</div></div><div class="wave"><span></span><span></span><span></span><span></span></div>`;
+    row.onclick=()=>{
+      try{
+        if(!window.Sfx) return;
+        Sfx.unlock();
+        // 点音效先停掉正在播放的背景音乐(避免音乐+音效叠在一起)
+        if(typeof stopBgm==='function'){ try{ stopBgm(); }catch(e){} }
+        if(it.type==='hover'){ Sfx.playHover(it.k); }
+        else { Sfx.play(it.k); }
+        // 播放态反馈:点击瞬间亮起,按音效时长后自动复位(短音效闪一下,start类长音效约1.6s)
+        // 只清音效行,不动正在播放的背景音乐行(music-row)
+        const dur = it.type==='hover' ? 220 : (/^start/.test(it.k) ? 1600 : 420);
+        document.querySelectorAll('#sfxPanel .sfx-row.playing').forEach(r=>{ if(r!==row){ r.classList.remove('playing'); clearTimeout(r._pt); } });
+        row.classList.add('playing');
+        clearTimeout(row._pt);
+        row._pt=setTimeout(()=>row.classList.remove('playing'), dur);
+      }catch(e){}
+    };
+    grp.appendChild(row);
+  });
+  list.appendChild(grp);
+});
+
+// ===== 背景音乐 · 多版本分组试听(新旧分开,不交错) =====
+const TIMES={P1:'Ⅰ 门户泡沫(00-04)',P2:'Ⅱ Web2.0(05-09)',P3:'Ⅲ 移动互联(10-15)',P4:'Ⅳ 硬科技(16-22)',P5:'Ⅴ AI新纪元(23-26)'};
+let bgmAudio=null, bgmPlaying=null;
+function stopBgm(){ if(bgmAudio){bgmAudio.pause();bgmAudio.currentTime=0;} if(bgmPlaying){bgmPlaying.classList.remove('playing');bgmPlaying=null;} }
+function makeMusicRow(file,label,ds){
+  const row=document.createElement('div'); row.className='srow music-row';
+  row.innerHTML=`<div class="play"></div><div class="info"><div class="nm2">${label}</div><div class="ds">${ds}</div></div><div class="wave"><span></span><span></span><span></span><span></span></div>`;
+  row.onclick=()=>{ try{
+    if(bgmPlaying===row){ stopBgm(); return; }
+    stopBgm();
+    if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
+    bgmAudio.src='audio/'+file+'?v=20260629futureadmin1';
+    bgmAudio.play().catch(()=>{});
+    row.classList.add('playing'); bgmPlaying=row;
+  }catch(e){} };
+  return row;
+}
+function musicGroup(title, suffix, ds){
+  const g=document.createElement('div'); g.className='grp';
+  g.innerHTML='<div class="grp-t">'+title+'</div>';
+  ['P1','P2','P3','P4','P5'].forEach(k=>{
+    g.appendChild(makeMusicRow(k+suffix+'.mp3', TIMES[k], ds));
+  });
+  list.appendChild(g);
+}
+// 背景音乐(游戏实际使用的就是这套: audio/P1.mp3 ~ P5.mp3,无后缀)
+musicGroup('🎵 时代背景音乐 · 5 时代各一首','','游戏实际播放·胡伟立风格配乐');
+// 整页首次触摸/点击即解锁
+
+
+}
+/* 全局首次触摸解锁音频(只注册一次) */
+['pointerdown','touchstart'].forEach(function(ev){document.addEventListener(ev,function(){try{window.Sfx&&Sfx.unlock();}catch(e){}},{once:true,passive:true});});
+
+</script>
+</body>
+</html>
