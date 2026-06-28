@@ -163,7 +163,7 @@ const CONFIG = {
     endingBestNone: '这一生，未曾抓住真正的大鱼',
     endingWorstNone: '谨慎如你，未踩重大深坑',
     endingRecordHead: '— 二十四年押注轨迹 —',
-    endingFootBrand: '2050未来投资模拟器 · <b>2026—2050</b> · 🦞 小龙虾出品',
+    endingFootBrand: '2050未来投资模拟器 · <b>2026—2050</b> · <span style="white-space:nowrap">🦞 小龙虾出品</span>',
     endingFootQrTip: '长按扫码押注你自己的未来 · 仅供娱乐',
     // 五档结果简称(轨迹表/高光框用，区别于 outcomeTiers.label 长名)
     outcomeShort: { SS:'传奇', S:'命中', A:'保本', B:'失利', C:'惨败' },
