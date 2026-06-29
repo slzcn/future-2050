@@ -250,12 +250,12 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629futureadmin14"></script>
-<script src="data-periods.js?v=20260629futureadmin14"></script>
-<script src="data-endings.js?v=20260629futureadmin14"></script>
-<script src="data-persona5.js?v=20260629futureadmin14"></script>
-<script src="data-profile6.js?v=20260629futureadmin14"></script>
-<script src="engine-sfx.js?v=20260629futureadmin14"></script>
+<script src="config.js?v=20260629futureadmin15"></script>
+<script src="data-periods.js?v=20260629futureadmin15"></script>
+<script src="data-endings.js?v=20260629futureadmin15"></script>
+<script src="data-persona5.js?v=20260629futureadmin15"></script>
+<script src="data-profile6.js?v=20260629futureadmin15"></script>
+<script src="engine-sfx.js?v=20260629futureadmin15"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -916,6 +916,9 @@ function initTune(){
 }
 
 /* ===================== 🎵 音效 ===================== */
+/* 背景音乐播放器(全局作用域,供 activateTab 切tab时调用 stopBgm) */
+let bgmAudio=null, bgmPlaying=null;
+function stopBgm(){ if(bgmAudio){try{bgmAudio.pause();bgmAudio.currentTime=0;}catch(e){}} if(bgmPlaying){bgmPlaying.classList.remove('playing');bgmPlaying=null;} }
 function initSfx(){
 // 分组定义。type: 'play'=Sfx.play(name); 'hover'=Sfx.playHover(kind)
 const GROUPS=[
@@ -980,8 +983,6 @@ GROUPS.forEach(g=>{
 
 // ===== 背景音乐 · 多版本分组试听(新旧分开,不交错) =====
 const TIMES={P1:'Ⅰ 门户泡沫(00-04)',P2:'Ⅱ Web2.0(05-09)',P3:'Ⅲ 移动互联(10-15)',P4:'Ⅳ 硬科技(16-22)',P5:'Ⅴ AI新纪元(23-26)'};
-let bgmAudio=null, bgmPlaying=null;
-function stopBgm(){ if(bgmAudio){bgmAudio.pause();bgmAudio.currentTime=0;} if(bgmPlaying){bgmPlaying.classList.remove('playing');bgmPlaying=null;} }
 function makeMusicRow(file,label,ds){
   const row=document.createElement('div'); row.className='srow music-row';
   row.innerHTML=`<div class="play"></div><div class="info"><div class="nm2">${label}</div><div class="ds">${ds}</div></div><div class="wave"><span></span><span></span><span></span><span></span></div>`;
@@ -989,7 +990,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629futureadmin14';
+    bgmAudio.src='audio/'+file+'?v=20260629futureadmin15';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
