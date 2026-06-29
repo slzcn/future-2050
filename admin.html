@@ -251,9 +251,9 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629futureadmin20"></script>
-<script src="data-bundle.js?v=20260629futureadmin20"></script>
-<script src="engine.js?v=20260629futureadmin20"></script>
+<script src="config.js?v=20260629futureadmin21"></script>
+<script src="data-bundle.js?v=20260629futureadmin21"></script>
+<script src="engine.js?v=20260629futureadmin21"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -703,7 +703,7 @@ function snapshotPersona(base){
   });
   return base;
 }
-window.PMNAME={buffett:'巴菲特',simons:'西蒙斯',soros:'索罗斯',wood:'木头姐',trumpish:'豪赌狂人',muskish:'钢铁狂想家'};
+window.PMNAME={hassabis:'哈萨比斯',simons:'西蒙斯',altman:'奥特曼',musk:'马斯克',thiel:'彼得·蒂尔',johnson:'布莱恩·约翰逊'};
 var PARAM_DEFS=[
   ['评分系数（资本:业绩:人脉=2:3:1）',[['coefA','资本系数a',0,0.5,0.001],['coefB','业绩系数b',0,0.6,0.001],['coefC','人脉系数c',0,0.3,0.001]]],
   ['起始值',[['sAum','初始资本',0,300,5],['sTrack','初始业绩',0,300,5],['sNet','初始人脉',0,200,5],['sLuck','初始运气',0,100,5],['sHealth','初始健康',0,100,5]]],
@@ -996,7 +996,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629futureadmin20';
+    bgmAudio.src='audio/'+file+'?v=20260629futureadmin21';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
