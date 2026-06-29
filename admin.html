@@ -55,8 +55,8 @@
   .row .bar{position:absolute;left:0;top:0;height:100%;border-radius:5px;background:var(--accent);transition:width .4s;min-width:2px;}
   .row .pct{flex:0 0 clamp(100px,24vw,120px);text-align:right;font-weight:800;font-variant-numeric:tabular-nums;font-size:12px;color:var(--ink-soft);}
   .row .pct small{color:var(--ink-faint);font-weight:600;}
-  .pct-val{color:var(--accent);font-weight:800;}
-  .pct-sub{color:var(--ink-faint);font-weight:600;font-size:11px;margin-left:2px;}
+  .pct-val{color:var(--accent);font-weight:800;font-size:13px;}
+  .pct-sub{color:var(--ink-faint);font-weight:600;font-size:11px;margin-left:5px;padding:1px 5px;background:rgba(138,90,58,.07);border-radius:5px;}
   /* 项目热度特殊色彩 */
   .deal-heat .bar{background:linear-gradient(90deg,#ff6b6b,#ffa94d);}
   .deal-heat .pct-sub{color:#c92a2a;font-size:11px;}
@@ -228,12 +228,12 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629futureadmin5"></script>
-<script src="data-periods.js?v=20260629futureadmin5"></script>
-<script src="data-endings.js?v=20260629futureadmin5"></script>
-<script src="data-persona5.js?v=20260629futureadmin5"></script>
-<script src="data-profile6.js?v=20260629futureadmin5"></script>
-<script src="engine-sfx.js?v=20260629futureadmin5"></script>
+<script src="config.js?v=20260629futureadmin6"></script>
+<script src="data-periods.js?v=20260629futureadmin6"></script>
+<script src="data-endings.js?v=20260629futureadmin6"></script>
+<script src="data-persona5.js?v=20260629futureadmin6"></script>
+<script src="data-profile6.js?v=20260629futureadmin6"></script>
+<script src="engine-sfx.js?v=20260629futureadmin6"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -321,7 +321,7 @@ function renderStats(R,V){
     var cnt={},tot=0;R.forEach(function(r){var v=r[key];if(v){cnt[v]=(cnt[v]||0)+1;tot++;}});
     var arr=Object.keys(cnt).map(function(k){return [k,cnt[k]];}).sort(function(a,b){return b[1]-a[1];});
     if(!arr.length)return '<div class="loading">暂无数据</div>';
-    return arr.map(function(x){var p=pct(x[1],tot);return '<div class="row"><div class="nm">'+esc(x[0])+'</div><div class="barwrap"><div class="bar" style="width:'+p+'%"></div></div><div class="pct">'+x[1]+' ('+p.toFixed(0)+'%)</div></div>';}).join('');
+    return arr.map(function(x){var p=pct(x[1],tot);return '<div class="row"><div class="nm">'+esc(x[0])+'</div><div class="barwrap"><div class="bar" style="width:'+p+'%"></div></div><div class="pct"><span class="pct-val">'+x[1]+'</span><span class="pct-sub">'+p.toFixed(0)+'%</span></div></div>';}).join('');
   }
   function scoreStats(){
     var sc=R.map(function(r){return r.score;}).filter(function(s){return typeof s==='number';}).sort(function(a,b){return a-b;});
@@ -870,7 +870,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629futureadmin5';
+    bgmAudio.src='audio/'+file+'?v=20260629futureadmin6';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
