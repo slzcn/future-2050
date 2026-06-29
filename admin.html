@@ -52,20 +52,20 @@
 
   /* 横条统计(称号/风格/趋势分布等,stats+tune 共用) */
   .row{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:clamp(12px,3vw,13px);}
-  .row .nm{flex:0 0 clamp(96px,30vw,150px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
+  .row .nm{flex:0 0 clamp(72px,22vw,150px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
   .row .e{flex:0 0 18px;text-align:center;font-size:15px;}
   .row .barwrap{flex:1;min-width:40px;height:17px;background:rgba(255,255,255,.06);border-radius:5px;position:relative;overflow:hidden;}
   .row .bar{position:absolute;left:0;top:0;height:100%;border-radius:5px;background:var(--accent);transition:width .4s;min-width:2px;}
-  .row .pct{flex:0 0 clamp(100px,24vw,120px);text-align:right;font-weight:800;font-variant-numeric:tabular-nums;font-size:12px;color:var(--ink-soft);}
+  .row .pct{flex:0 0 clamp(78px,20vw,120px);text-align:right;font-weight:800;font-variant-numeric:tabular-nums;font-size:12px;color:var(--ink-soft);}
   .row .pct small{color:var(--ink-faint);font-weight:600;}
   .pct-val{color:var(--accent);font-weight:800;font-size:13px;}
   .pct-sub{color:var(--ink-faint);font-weight:600;font-size:11px;margin-left:5px;padding:1px 5px;background:rgba(39,211,224,.1);border-radius:5px;}
 
   /* 🥧 环形饼图(结局称号分布) v2 */
   .pieWrap{display:flex;gap:22px;align-items:center;flex-wrap:wrap;justify-content:center;padding:6px 0;}
-  .pieSvg{flex:0 0 auto;width:220px;height:220px;filter:drop-shadow(0 6px 14px rgba(255,255,255,.08));}
+  .pieSvg{flex:0 0 auto;width:min(220px,62vw);height:auto;aspect-ratio:1/1;max-width:240px;filter:drop-shadow(0 6px 14px rgba(255,255,255,.08));}
   .pieSvg .seg{cursor:pointer;transition:transform .28s cubic-bezier(.34,1.56,.64,1),opacity .22s,filter .22s;transform-origin:center;transform-box:fill-box;}
-  .pieSvg .seg:hover{filter:brightness(1.1) drop-shadow(0 4px 10px rgba(0,0,0,.5));}
+  @media(hover:hover){.pieSvg .seg:hover{filter:brightness(1.1) drop-shadow(0 4px 10px rgba(0,0,0,.5));}}
   .pieSvg.dim .seg{opacity:.25;}
   .pieSvg.dim .seg.act{opacity:1;}
   .pieCenter .c-emoji{font-size:36px;line-height:1;}
@@ -74,7 +74,8 @@
   .pieCenter .c-cnt{font-size:12px;font-weight:700;fill:var(--ink-faint);font-variant-numeric:tabular-nums;}
   .pieLegend{flex:1 1 240px;min-width:220px;display:flex;flex-direction:column;gap:4px;}
   .pieLegend .lg{display:flex;align-items:center;gap:9px;padding:6px 10px;border-radius:9px;cursor:pointer;transition:background .2s,transform .2s,box-shadow .2s;border:1px solid transparent;}
-  .pieLegend .lg:hover,.pieLegend .lg.act{background:rgba(39,211,224,.1);border-color:rgba(39,211,224,.32);transform:translateX(3px);box-shadow:0 2px 6px rgba(255,255,255,.06);}
+  .pieLegend .lg.act{background:rgba(39,211,224,.1);border-color:rgba(39,211,224,.32);transform:translateX(3px);box-shadow:0 2px 6px rgba(255,255,255,.06);}
+  @media(hover:hover){.pieLegend .lg:hover{background:rgba(39,211,224,.1);border-color:rgba(39,211,224,.32);transform:translateX(3px);box-shadow:0 2px 6px rgba(255,255,255,.06);}}
   .pieLegend .dot{flex:0 0 12px;width:12px;height:12px;border-radius:3px;box-shadow:0 1px 2px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.25);}
   .pieLegend .lg-nm{flex:0 1 auto;font-size:13px;font-weight:700;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.02em;min-width:0;}
   .pieLegend .lg-nm .lg-emo{margin-right:4px;}
@@ -250,9 +251,9 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629futureadmin18"></script>
-<script src="data-bundle.js?v=20260629futureadmin18"></script>
-<script src="engine.js?v=20260629futureadmin18"></script>
+<script src="config.js?v=20260629futureadmin19"></script>
+<script src="data-bundle.js?v=20260629futureadmin19"></script>
+<script src="engine.js?v=20260629futureadmin19"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -324,14 +325,14 @@ function donutChart(data){
     var a0g=a0+gap/2, a1g=Math.max(a0g+0.1,a1-gap/2);
     segs+='<path class="seg" d="'+arcPath(a0g,a1g)+'" fill="'+(d.color||'var(--accent)')+'" data-i="'+i+'"'+
           ' style="--ox:'+off[0].toFixed(2)+'px;--oy:'+off[1].toFixed(2)+'px"'+
-          ' onmouseenter="pieHover(\''+id+'\','+i+')" onmouseleave="pieHover(\''+id+'\',-1)"></path>';
+          ' onmouseenter="pieHover(\''+id+'\','+i+')" onmouseleave="pieHover(\''+id+'\',-1)" onclick="pieClick(\''+id+'\','+i+')"></path>';
     meta.push({label:d.label,emoji:d.emoji||'',color:d.color||'var(--accent)',value:d.value,pct:pp});
   });
   // 图例(含迷你进度条)
   var maxPct=Math.max.apply(null,meta.map(function(m){return m.pct;}));
   var legend=meta.map(function(m,i){
     var barW=(m.pct/maxPct*100).toFixed(1);
-    return '<div class="lg" data-i="'+i+'" onmouseenter="pieHover(\''+id+'\','+i+')" onmouseleave="pieHover(\''+id+'\',-1)">'+
+    return '<div class="lg" data-i="'+i+'" onmouseenter="pieHover(\''+id+'\','+i+')" onmouseleave="pieHover(\''+id+'\',-1)" onclick="pieClick(\''+id+'\','+i+')">'+
       '<span class="dot" style="background:'+m.color+'"></span>'+
       '<span class="lg-nm">'+(m.emoji?'<span class="lg-emo">'+esc(m.emoji)+'</span>':'')+esc(m.label)+'</span>'+
       '<span class="lg-bar"><i style="width:'+barW+'%;background:'+m.color+'"></i></span>'+
@@ -342,7 +343,7 @@ function donutChart(data){
   var center=_pieCenterHTML(cx,cy,null,tot,null,'总计','');
   window._pieData=window._pieData||{}; window._pieData[id]={meta:meta,tot:tot,cx:cx,cy:cy};
   return '<div class="pieWrap">'+
-    '<svg class="pieSvg" id="'+id+'" width="240" height="240" viewBox="0 0 240 240">'+
+    '<svg class="pieSvg" id="'+id+'" viewBox="0 0 240 240" preserveAspectRatio="xMidYMid meet">'+
       '<g>'+segs+'</g>'+
       '<g class="pieCenter" id="'+id+'-c">'+center+'</g>'+
     '</svg>'+
@@ -360,12 +361,20 @@ function _pieCenterHTML(cx,cy,emoji,big,small,bigLabel,smallLabel){
          '<text class="c-pct" x="'+cx+'" y="'+(cy+20)+'" text-anchor="middle">'+big+'</text>'+
          '<text class="c-cnt" x="'+cx+'" y="'+(cy+40)+'" text-anchor="middle">'+smallLabel+'</text>';
 }
+/* 点击锁定扇区(触屏主交互;桌面也可点固定) */
+function pieClick(id,i){
+  window._piePin=window._piePin||{};
+  if(window._piePin[id]===i){ window._piePin[id]=-1; pieHover(id,-1); }  // 再点同一个=解锁
+  else { window._piePin[id]=i; pieHover(id,i); }
+}
 function pieHover(id,i){
   var svg=document.getElementById(id);if(!svg)return;
   var data=(window._pieData||{})[id];if(!data)return;
   var lg=document.getElementById(id+'-lg'), cen=document.getElementById(id+'-c');
   var segs=svg.querySelectorAll('.seg'), lgs=lg?lg.querySelectorAll('.lg'):[];
-  if(i<0){ // 离开:复位
+  if(i<0){ // 离开:若有锁定则回到锁定态,否则复位
+    var pin=(window._piePin||{})[id];
+    if(pin!=null&&pin>=0){ pieHover(id,pin); return; }
     svg.classList.remove('dim');
     segs.forEach(function(s){s.classList.remove('act');s.style.transform='';});
     Array.prototype.forEach.call(lgs,function(l){l.classList.remove('act');});
@@ -987,7 +996,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629futureadmin18';
+    bgmAudio.src='audio/'+file+'?v=20260629futureadmin19';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
