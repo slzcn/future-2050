@@ -250,12 +250,9 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629futureadmin15"></script>
-<script src="data-periods.js?v=20260629futureadmin15"></script>
-<script src="data-endings.js?v=20260629futureadmin15"></script>
-<script src="data-persona5.js?v=20260629futureadmin15"></script>
-<script src="data-profile6.js?v=20260629futureadmin15"></script>
-<script src="engine-sfx.js?v=20260629futureadmin15"></script>
+<script src="config.js?v=20260629futureadmin16"></script>
+<script src="data-bundle.js?v=20260629futureadmin16"></script>
+<script src="engine.js?v=20260629futureadmin16"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -990,7 +987,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629futureadmin15';
+    bgmAudio.src='audio/'+file+'?v=20260629futureadmin16';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };

@@ -1,3 +1,9 @@
+/* ============================================================
+ * data-bundle.js — 游戏数据合集(自动合并,勿手改单块,改原始 data-*.js 后重跑 merge_js.py)
+ * 含: DATA_PERIODS / DATA_ENDINGS / PERSONA5 / PROFILE / MASTERS
+ * ============================================================ */
+
+/* ===== data-periods.js ===== */
 // ===== 2050未来投资模拟器 · 5纪元剧情数据 =====
 // 引擎契约同原版(aum/track/net + trend up/hot/down/safe), 仅内容为未来题材
 const DATA_PERIODS = {
@@ -1342,3 +1348,267 @@ const DATA_PERIODS = {
     }
   ]
 };
+if(typeof window!=='undefined'&&typeof DATA_PERIODS!=='undefined')window.DATA_PERIODS=DATA_PERIODS;
+
+/* ===== data-endings.js ===== */
+// ===== 2050未来投资模拟器 · 结局阈值 + 文明级称号 =====
+// 改档位线/结局名/解读名言 改这里
+
+const DATA_ENDINGS = {
+  endingTiers: [
+    { min: 700, key: "legend" },
+    { min: 550, key: "master" },
+    { min: 400, key: "veteran" },
+    { min: 250, key: "steady" },
+    { min: 150, key: "rollercoaster" },
+    { min: 0,   key: "exit" },
+  ],
+  endingMeta: {
+    legend: { emoji:"👑", title:"文明设计师 · 定义未来的人", color:"#27d3e0", bg:"#08131a", glow:"rgba(39,211,224,.18)",
+      quote:"真正的远见，是在所有人争论未来会不会来时，提前买下通往它的每一张船票。",
+      summary:"二十四年，你押中了人类文明的每一次范式跃迁——AGI、具身智能、长生、星地、意识上传。你不是在预测未来，你在亲手为它编程。后来者把你的每一次出手写进历史课本，称之为「先知的下注」。可只有你记得，这背后是无数个对着算力期货发抖的凌晨，是几次差点把整个基金赔进黑天鹅的鬼门关。你赢了，赢得彻底——你成了那个被未来记住名字的人。" },
+    master: { emoji:"🌌", title:"新世界缔造者 · 穿越奇点的人", color:"#7b9cf0", bg:"#0b1020", glow:"rgba(123,156,240,.14)",
+      quote:"奇点不是一个时刻，是一连串需要勇气的选择——而你，几乎每次都选对了。",
+      summary:"二十四年浮沉，你成为新纪元公认的顶级未来投资人。你的资金催生了改变物种命运的公司，也躲过了数次足以团灭的泡沫。你早已不是当年那个在AGI临界点前手足无措的观察员，而是懂得在文明的惊涛里保持航向的舵手。新世界有一部分，是被你的钱推着诞生的——这份重量，足够你坦然了。" },
+    veteran: { emoji:"🛰️", title:"未来合伙人 · 稳健的远航者", color:"#5ab0a0", bg:"#0a1614", glow:"rgba(90,176,160,.12)",
+      quote:"押注未来不必次次封神，只要每一步都还站在通往明天的甲板上。",
+      summary:"二十四年下来，你成为一名受人尊敬的未来基金合伙人。你没能投出定义时代的超级独角兽，但你为出资人稳稳地兑现了回报，建起了扎实的口碑。你深知，在一个连「人是什么」都被改写的时代，能控制住贪婪、看懂大势、稳稳活下来，本身就是一种稀缺的天赋。" },
+    steady: { emoji:"⚖️", title:"清醒的幸存者 · 及格线上的人", color:"#8a93a8", bg:"#10131c", glow:"rgba(138,147,168,.10)",
+      quote:"在一个加速狂奔的时代，没被甩下车，已经赢过了大多数人。",
+      summary:"二十四年的未来押注，你算是稳稳站住了。押中过几把好的，也踩过几个深坑，整体打成一场不功不过的均衡局。你没能跻身顶级，但也从未出局——在一个范式每五年就推倒重来的纪元里，这份清醒和韧性弥足珍贵。回望来路，你既有遗憾，也有庆幸：至少，你始终还在牌桌上。" },
+    rollercoaster: { emoji:"🎢", title:"过山车赌徒 · 大起大落的人", color:"#d99a3a", bg:"#181206", glow:"rgba(217,154,58,.14)",
+      quote:"在风口上飞得越高，泡沫破时摔得越狠——这是我用真金白银换来的教训。",
+      summary:"二十四年像一场失控的过山车。你抓住过具身爆发的浪潮、押中过长生概念的黑马，也在意识上传泡沫、聚变事故、长生药丑闻这些时代陷阱里栽过大跟头。你的账本上，封神与惨败几乎相互抵消。你比谁都懂「狂热」与「恐惧」的滋味，只是常常控制不住。能在这样的跌宕里坚持二十四年，你已赢过了绝大多数同行。" },
+    exit: { emoji:"🪐", title:"时代的祭品 · 离场的勇者", color:"#c2554a", bg:"#1a0d0b", glow:"rgba(194,85,74,.12)",
+      quote:"未来本就九死一生——能在物种级的惊涛里搏击二十四年，已是勇敢。",
+      summary:"二十四年的未来押注，最终没能抵达理想的彼岸。几次重仓踩中了时代最深的陷阱，每一个都让你元气大伤。出资人渐渐失去耐心，募资越来越难，你的牌桌慢慢散了。但请不要太苛责自己：在一个连未来都不确定的时代，你曾全心全意地相信过、热爱过、押注过。或许，是时候带着这一身故事和伤疤，去开启下一段旅程了——新世界，总会有新的牌桌。" },
+    earlyout: { emoji:"🧠", title:"心智透支 · 倒在半途的人", color:"#9a6ad9", bg:"#140e1c", glow:"rgba(154,106,217,.14)",
+      quote:"我跑赢了时代，却输给了自己的大脑。再快的未来，也救不回烧穿的心智。",
+      summary:"你太拼了。无数个被信息洪流淹没的深夜、无数次在AI依赖与现实焦虑间反复拉扯、无数回透支认知带宽去追赶加速的世界。终于，在生涯尚未走到终点时，你的心智彻底崩了。你或许押中过漂亮的项目、攒下过不错的影响力，但这一切，在精神崩溃的那一刻都显得苍白。这是一个迟来的提醒：在加速的时代里，守住心智，才有资格谈论未来。" },
+  },
+};
+if(typeof window!=='undefined'&&typeof DATA_ENDINGS!=='undefined')window.DATA_ENDINGS=DATA_ENDINGS;
+
+/* ===== data-persona5.js ===== */
+// 未来观人格五维画像数据层（与 6 位未来大师一一对应，同源）
+// 玩家五维(0-100) → 欧氏距离最近的人格原型 = 你的人格，必然对应同名大师
+// 五维：risk 审慎↔加速 / data 信念↔理性 / horizon 短线↔长期 / focus 分散↔集中 / decisive 观望↔果断
+// 人格 anchor 直接采用对应大师的五维坐标；配色对齐大师流派色
+// 语境：2026-2050 奇点叙事
+// 作者 小龙虾
+
+const PERSONA5 = {
+  DIM: ['risk','data','horizon','focus','decisive'],
+  // 6 大人格原型 ←→ 6 大师 一一对应
+  archetypes: [
+    { key:'cold_oracle', emoji:'🧊', title:'冷算先知', color:'#27d3e0', master:'hassabis',
+      anchor:{risk:25,data:90,horizon:90,focus:75,decisive:50},
+      tag:'只信数据 · 验证真理',
+      desc:'你是最让出资人安心的那类未来投资人——只押推得通、算得清的科学突破，对每一个「颠覆世界」的故事都先泼一盆冷水。在所有人为奇点狂热时，你像一块沉静的寒冰。你的天花板也许不够耀眼，但你几乎从不接盘泡沫。在加速的时代里，清醒就是你最锋利的武器。' },
+    { key:'quantum_quant', emoji:'📐', title:'量子量化师', color:'#5a4b8a', master:'simons',
+      anchor:{risk:60,data:100,horizon:15,focus:15,decisive:100},
+      tag:'纯数据 · 拒绝故事',
+      desc:'你对故事和情怀完全免疫，只信数字和模型。在未来的信息洪流里捞出确定的金子，让算法替你做决定——你赢在概率，而不是直觉。情绪是噪音，模型才是信仰，市场的每一次波动在你眼里都只是数据点。' },
+    { key:'singularity_believer', emoji:'🔮', title:'奇点信徒', color:'#9a6ad9', master:'altman',
+      anchor:{risk:90,data:50,horizon:75,focus:75,decisive:90},
+      tag:'押注 AGI · All in 未来',
+      desc:'你为「人类与 AI 合体」的未来全情燃烧，坚信通用智能必将降临，愿意为一个让你心动的奇点 All in。你能押中定义时代的公司，也最容易在泡沫顶点接最后一棒。你的人生大起大落，但你从不后悔——因为你真的相信过那个更好的未来。' },
+    { key:'interstellar', emoji:'🚀', title:'星际布道者', color:'#f0942a', master:'musk',
+      anchor:{risk:90,data:40,horizon:100,focus:75,decisive:90},
+      tag:'文明跃迁 · 押注疯狂',
+      desc:'别人算 ROI，你算「这能不能让文明跃迁到下一级」。火星、星际、永生——你押的从来不是公司，是科幻照进现实。你愿意为一个百年后的未来下注，也甘愿为之倾尽所有。要么名垂青史，要么血本无归，中间地带从不属于你。' },
+    { key:'paradigm_hunter', emoji:'⚡', title:'范式猎手', color:'#c2554a', master:'thiel',
+      anchor:{risk:75,data:75,horizon:60,focus:100,decisive:90},
+      tag:'反共识 · 猎拐点',
+      desc:'你专猎范式拐点，最大的快感是在所有人都看错时独自看对。你像一只埋伏在拐点的猎鹰，平时按兵不动，机会来临时集中重兵一击致命。你对「从零到一」极度敏感，真正的暴利永远藏在共识的对面——但赌错方向时，孤注一掷也会让你伤得最重。' },
+    { key:'longevity_guardian', emoji:'🌿', title:'长存守护者', color:'#5ab0a0', master:'johnson',
+      anchor:{risk:25,data:90,horizon:100,focus:50,decisive:25},
+      tag:'慢与持久 · 不追风口',
+      desc:'你押注未来时谨慎，却比谁都更看重「人」与「持久」。当所有人冲向最快的赛道，你押的是健康、生命与时间本身。你不追风口，却总能在那些「慢而正确」的方向上收获时间的礼物。你的软肋是有时太念旧、太相信长期，对认定的方向下不去止损的手。' },
+  ],
+
+  match(ps){
+    let best=null, bd=1e9;
+    for(const a of this.archetypes){
+      let s=0;
+      for(const k of this.DIM){ const d=(ps[k]||50)-a.anchor[k]; s+=d*d; }
+      const dist=Math.sqrt(s);
+      if(dist<bd){ bd=dist; best=a; }
+    }
+    return best;
+  },
+
+  // 动态副标题：取偏离中点最远的前 3 维，拼成"加速·理性·长期"
+  subFromDims(ps, dimsMeta){
+    const arr = this.DIM.map(k=>{
+      const v=ps[k]!=null?ps[k]:50;
+      const meta=dimsMeta.find(d=>d.key===k);
+      const word = v>=50 ? (meta?meta.high:k) : (meta?meta.low:k);
+      return { k, dev:Math.abs(v-50), word };
+    }).sort((a,b)=>b.dev-a.dev);
+    const picked = arr.filter(x=>x.dev>=8).slice(0,3).map(x=>x.word);
+    return picked.length? picked.join(' · ') : '攻守兼备 · 不走极端';
+  },
+
+  // 桥接句：玩家和匹配大师在哪 1-2 维最契合
+  bridge(ps, masterP6, masterName, dimsMeta){
+    const cand = this.DIM.map(k=>{
+      const pv=ps[k]!=null?ps[k]:50;
+      const mv=masterP6[k]!=null?masterP6[k]:50;
+      return { k, diff:Math.abs(pv-mv), dev:Math.abs(pv-50), pv };
+    }).filter(x=>x.dev>=15).sort((a,b)=>a.diff-b.diff).filter(x=>x.diff<=22);
+    if(!cand.length) return '';
+    const words = cand.slice(0,2).map(x=>{
+      const meta=dimsMeta.find(d=>d.key===x.k);
+      return x.pv>=50 ? (meta?meta.high:x.k) : (meta?meta.low:x.k);
+    });
+    const mn = masterName.replace(/\(.*\)/,'');
+    return `在「${words.join('、')}」上，你和${mn}几乎重合——`;
+  },
+};
+
+if (typeof window !== 'undefined') window.PERSONA5 = PERSONA5;
+if(typeof window!=='undefined'&&typeof PERSONA5!=='undefined')window.PERSONA5=PERSONA5;
+
+/* ===== data-profile6.js ===== */
+// 未来观人格五维画像数据层（每个纪元一道题，纯测一维）
+// 5 个维度 — 每维 0~100，50 为中性。雷达图：实线=答题人，虚线=匹配大师
+// 语境：2026-2050 五大纪元
+// 作者 小龙虾
+//
+// 维度定义（key / 低分端 ↔ 高分端 / 含义）：
+//  risk     审慎 ↔ 加速      敢为还看不清的未来下多大重注
+//  data     信念 ↔ 理性      靠数据/逻辑还是靠人/故事/愿景
+//  horizon  短线 ↔ 长期      追当下兑现还是赌长期复利
+//  focus    分散 ↔ 集中      广撒网还是集中重仓
+//  decisive 观望 ↔ 果断      谨慎等待还是机会来了就出手
+//
+// 5 个纪元各一题，每题主打一个维度（强信号 +4 / 0 / -4 三档），单维归一化分母取 4。
+
+const PROFILE = {
+  dims: [
+    { key:'risk',     low:'审慎', high:'加速', axis:'风险偏好',
+      lowDesc:'你只押看得懂、推得通的确定性，警惕每一个被狂热吹大的故事，宁可慢一步也不接最后一棒。',
+      highDesc:'你坚信未来会比所有人预期的来得更快更猛，敢为还看不清的范式下重注，冲在奇点最前面。' },
+    { key:'data',     low:'信念', high:'理性', axis:'决策依据',
+      lowDesc:'你会被愿景、创始人和"改变世界"的叙事点燃，愿意为一个让你心潮澎湃的未来押上一切。',
+      highDesc:'你冷静地用数据和逻辑说话，对情怀和宏大叙事免疫，该止损时绝不为信仰多停留一秒。' },
+    { key:'horizon',  low:'短线', high:'长期', axis:'时间视野',
+      lowDesc:'你看重当下的确定兑现，灵活进出，不愿被一笔投资长期套牢。',
+      highDesc:'你愿意为时间的复利耐心等待，相信慢即是快，能拿住好资产十年甚至一辈子。' },
+    { key:'focus',    low:'分散', high:'集中', axis:'下注集中度',
+      lowDesc:'你广撒网、分散风险，不把鸡蛋放在一个篮子里。',
+      highDesc:'你敢于在看准的机会上集中重仓，赢就赢得淋漓尽致。' },
+    { key:'decisive', low:'观望', high:'果断', axis:'行动节奏',
+      lowDesc:'你谨慎、爱观望，宁可错过也要等信息足够清晰再动手。',
+      highDesc:'你雷厉风行，机会窗口一开就果断出手，不在犹豫里错失良机。' },
+  ],
+  // 单维归一化分母（每题单维最强 ±4）
+  norm: 4,
+
+  // 5 道情境题，对应 5 个纪元（P1-P5）。每题只打一个主维度，三档清晰（+4/0/-4）。
+  scenarios: {
+    // P1 AGI 临界(2026-2029) —— 主测 risk 风险偏好(审慎↔加速)
+    P1: { q:'AGI 突破在即，一个项目要你在信息不全时快速决断。你的第一反应是——',
+      opts:[
+        { t:'临界点只过一次，先果断重注占坑，怕错过物种级机会', e:{risk:4} },
+        { t:'越是狂热越要冷静，信息不全绝不出手，宁可错过', e:{risk:-4} },
+        { t:'小仓试一点，边走边看再加减', e:{risk:0} },
+      ]},
+    // P2 具身爆发(2030-2034) —— 主测 data 决策依据(信念↔理性)
+    P2: { q:'一家机器人公司还没量产，创始人却描绘了一个让你心潮澎湃的未来。你——',
+      opts:[
+        { t:'被愿景击中，愿意为还看不清的未来赌一把伟大的人', e:{data:-4} },
+        { t:'愿景再美，没跑通量产和现金流我绝不碰', e:{data:4} },
+        { t:'愿景听完，再看数据，综合判断', e:{data:0} },
+      ]},
+    // P3 长生时代(2035-2039) —— 主测 horizon 时间视野(短线↔长期)
+    P3: { q:'长生疗法两条路：一个三年能上市变现，一个要耕耘二十年才见效。你更中意——',
+      opts:[
+        { t:'三年就能落袋的，长生这种事我先吃到红利再说', e:{horizon:-4} },
+        { t:'耕耘二十年的大生意，活得久才是终极复利', e:{horizon:4} },
+        { t:'长短搭配，既要当下也要未来', e:{horizon:0} },
+      ]},
+    // P4 星地经济(2040-2044) —— 主测 focus 下注集中度(分散↔集中)
+    P4: { q:'星地经济烧钱漫长，手里这笔钱你的下注习惯是——',
+      opts:[
+        { t:'看准一个赛道就集中重仓梭进去，赢个痛快', e:{focus:4} },
+        { t:'分散到多个轨道方向，绝不把鸡蛋放一个篮子', e:{focus:-4} },
+        { t:'主力集中、小仓分散，两手都抓', e:{focus:0} },
+      ]},
+    // P5 意识纪元(2045-2050) —— 主测 decisive 行动节奏(观望↔果断)
+    P5: { q:'意识上传引爆争议，重大决策关头所有人都说你疯了。你——',
+      opts:[
+        { t:'机会窗口一开就果断出手，绝不犹豫', e:{decisive:4} },
+        { t:'再等等看，伦理和监管更清晰了才动手', e:{decisive:-4} },
+        { t:'先小步试水，确认了再加码', e:{decisive:0} },
+      ]},
+  },
+};
+
+if (typeof window !== 'undefined') window.PROFILE = PROFILE;
+if(typeof window!=='undefined'&&typeof PROFILE!=='undefined')window.PROFILE=PROFILE;
+
+/* ===== data-masters.js ===== */
+// 未来大师匹配数据层 - 把玩家的五维画像映射到最像的「未来世代代表」
+// 五维：risk 审慎↔加速 / data 信念↔理性 / horizon 短线↔长期 / focus 分散↔集中 / decisive 观望↔果断
+// 锚点范围 0~100，50 为中性
+// 语境：2026-2050 奇点叙事 —— 6 位押注人类未来的传奇投资人(真实原型 + 风格化代号)
+// 作者 小龙虾
+
+const MASTERS = {
+  // 流派主题色（卡片配色跟随，对齐人格气质色）
+  schools: {
+    architect: { name:'AI 文明派', color:'#27d3e0' },   // 冷算先知
+    quant:     { name:'量化决断派', color:'#5a4b8a' },   // 量子量化师
+    singular:  { name:'奇点信仰派', color:'#9a6ad9' },   // 奇点信徒
+    interstellar:{ name:'星际远征派', color:'#f0942a' }, // 星际布道者
+    hunter:    { name:'范式狩猎派', color:'#c2554a' },   // 范式猎手
+    longevity: { name:'长存人本派', color:'#5ab0a0' },   // 长存守护者
+  },
+  // 大师五维锚点 p6{risk,data,horizon,focus,decisive}(0~100) + 标签 + 对话感点评
+  list: [
+    { id:'hassabis', name:'冷算先知', en:'The Cold Oracle · 图灵转世', emoji:'🧊', school:'architect',
+      p6:{risk:25,data:90,horizon:90,focus:75,decisive:50}, tags:'数据为王 · 科学长征',
+      blurb:'AI 文明的总设计师。你和他都信奉「先把问题算清楚，再谈改变世界」——在所有人为奇点狂热时，你像一块沉静的寒冰，只押推得通、证得明的科学突破。你赌的不是风口，是真理被验证的那一刻。' },
+    { id:'simons', name:'量子量化师', en:'The Quantum Quant · 量子先生', emoji:'📐', school:'quant',
+      p6:{risk:60,data:100,horizon:15,focus:15,decisive:100}, tags:'纯数据驱动 · 模型至上',
+      blurb:'量化决断的化身。你和他一样对故事与情怀完全免疫，只信数字和模型说话——在未来的信息洪流里捞出确定的金子，让算法替你做决定。情绪是噪音，概率才是信仰。' },
+    { id:'altman', name:'奇点信徒', en:'The Singularity Believer', emoji:'🔮', school:'singular',
+      p6:{risk:90,data:50,horizon:75,focus:75,decisive:90}, tags:'押注 AGI 必至 · All in 未来',
+      blurb:'坚信奇点终将降临的布道者。你和他都为「人类与 AI 合体」的未来全情下注，相信通用智能必将到来，敢在别人还在争论时果断 All in。你押的不是一家公司，是一整个新物种的诞生。' },
+    { id:'musk', name:'星际布道者', en:'The Interstellar Evangelist', emoji:'🚀', school:'interstellar',
+      p6:{risk:90,data:40,horizon:100,focus:75,decisive:90}, tags:'文明跃迁 · 火星与长生',
+      blurb:'活在百年之后的远征者。别人算 ROI，你算「这能不能让文明跃迁到下一级」。火星、星际、永生——你押的从来不是季度财报，是科幻照进现实。要么名垂青史，要么血本无归，中间地带不存在。' },
+    { id:'thiel', name:'范式猎手', en:'The Paradigm Hunter', emoji:'⚡', school:'hunter',
+      p6:{risk:75,data:75,horizon:60,focus:100,decisive:90}, tags:'反共识 · 押注拐点',
+      blurb:'专猎范式拐点的反共识者。你和他都对「从零到一」极度敏感，最大的快感是在所有人都看错时独自看对。你不在热闹里凑份子，只在无人问津的角落里集中重兵——真正的暴利，永远藏在共识的对面。' },
+    { id:'johnson', name:'长存守护者', en:'The Longevity Guardian', emoji:'🌿', school:'longevity',
+      p6:{risk:25,data:90,horizon:100,focus:50,decisive:25}, tags:'慢与持久 · 不追风口',
+      blurb:'押注「活得更久」的长期主义者。你和他一样不追风口、只信人本与持久——当所有人冲向最快的赛道，你押的是健康、生命与时间本身。慢，是你最深的远见；活下去，就是最终极的复利。' },
+  ],
+};
+
+// 五维匹配：玩家五维画像 p6{risk,data,horizon,focus,decisive}（0~100）
+// 与每位大师的 p6 算欧氏距离，最近的即最像
+MASTERS.DIM6 = ['risk','data','horizon','focus','decisive'];
+MASTERS.match = function(p6){
+  const keys = MASTERS.DIM6;
+  const ranked = MASTERS.list.map(m=>{
+    let s=0;
+    for(const k of keys){ const d=(p6[k]||50)-(m.p6?m.p6[k]:50); s+=d*d; }
+    return { m, d: Math.sqrt(s) };
+  }).sort((a,b)=> a.d - b.d);
+  // 相似度:最大距离 sqrt(5*100^2)=223.6,映射为 0~100% 百分比
+  const MAXD=Math.sqrt(5*100*100);
+  const pct=Math.round((1-ranked[0].d/MAXD)*100);
+  return {
+    best: ranked[0].m,
+    bestPct: Math.max(0,Math.min(100,pct)),
+    others: ranked.slice(1, 3).map(x=>x.m),   // 次相似 2 位
+    school: MASTERS.schools[ranked[0].m.school],
+  };
+};
+
+if (typeof window !== 'undefined') window.MASTERS = MASTERS;
+if(typeof window!=='undefined'&&typeof MASTERS!=='undefined')window.MASTERS=MASTERS;
