@@ -250,9 +250,9 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629futureadmin17"></script>
-<script src="data-bundle.js?v=20260629futureadmin17"></script>
-<script src="engine.js?v=20260629futureadmin17"></script>
+<script src="config.js?v=20260629futureadmin18"></script>
+<script src="data-bundle.js?v=20260629futureadmin18"></script>
+<script src="engine.js?v=20260629futureadmin18"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -914,7 +914,7 @@ function initTune(){
 
 /* ===================== 🎵 音效 ===================== */
 /* 背景音乐播放器(全局作用域,供 activateTab 切tab时调用 stopBgm) */
-let bgmAudio=null, bgmPlaying=null;
+var bgmAudio=null, bgmPlaying=null;  // var:避免 activateTab(初始化时)调 stopBgm 触发 let TDZ
 function stopBgm(){ if(bgmAudio){try{bgmAudio.pause();bgmAudio.currentTime=0;}catch(e){}} if(bgmPlaying){bgmPlaying.classList.remove('playing');bgmPlaying=null;} }
 function initSfx(){
 // 分组定义。type: 'play'=Sfx.play(name); 'hover'=Sfx.playHover(kind)
@@ -987,7 +987,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629futureadmin17';
+    bgmAudio.src='audio/'+file+'?v=20260629futureadmin18';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
