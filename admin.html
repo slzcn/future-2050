@@ -486,7 +486,7 @@ function renderStats(R,V){
   document.getElementById('logout').onclick=logout;
   var h='';
   h+='<div class="panel"><h2>核心指标</h2><div class="kpi">'+box(total,'总答题局数')+box(nPlayers,'独立玩家')+box(todayN,'今日新增局')+box(visitN,'总访问')+box(invited,'被邀请来的局')+box(deadRate(),'出局率')+'</div></div>';
-  h+='<div class="panel"><h2>🏆 结局称号分布 <span class="hint">鼠标划过看详情</span></h2>'+titlePie()+'</div>';
+  h+='<div class="panel"><h2>🏆 结局称号分布</h2>'+titlePie()+'</div>';
   h+='<div class="panel"><h2>🎭 投资风格分布</h2>'+distBars('style')+'</div>';
   h+='<div class="panel"><h2>📈 综合评分</h2>'+scoreStats()+'</div>';
   h+='<div class="panel"><h2>🥇 最高分排行 Top 20</h2>'+leaderboard()+'</div>';
@@ -833,7 +833,7 @@ function runSim(){
   var q=function(arr,p){return arr[Math.floor(arr.length*p)];};
   var endColor={legend:'#27d3e0',master:'#7b9cf0',veteran:'#5ab0a0',steady:'#8a93a8',rollercoaster:'#d99a3a',exit:'#c2554a',earlyout:'#9a6ad9'};
   var h='';
-  h+='<div class="panel"><h2>🏆 结局称号分布 <span style="font-size:11px;color:#8a9bb3;font-weight:600">鼠标划过看详情</span></h2>';
+  h+='<div class="panel"><h2>🏆 结局称号分布</h2>';
   h+='<div class="txt" style="font-size:11px;color:#8a9bb3;margin-bottom:10px;">目标比例: 封神10% / 一线20% / 资深20% / 稳进20% / 过山车15% / 离场5% / 健康透支10%</div>';
   var pieData=order.map(function(k){var nmStr=nm[k],sp=nmStr.indexOf(' '),emo=sp>0?nmStr.slice(0,sp):'',lab=sp>0?nmStr.slice(sp+1):nmStr;return {label:lab,emoji:emo,value:endCnt[k],color:endColor[k]};});
   h+=donutChart(pieData);
