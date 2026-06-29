@@ -251,9 +251,9 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629futureadmin23"></script>
-<script src="data-bundle.js?v=20260629futureadmin23"></script>
-<script src="engine.js?v=20260629futureadmin23"></script>
+<script src="config.js?v=20260629futureadmin24"></script>
+<script src="data-bundle.js?v=20260629futureadmin24"></script>
+<script src="engine.js?v=20260629futureadmin24"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -882,7 +882,7 @@ function runSim(){
         var bestKey=null,bd=1e9;
         PERSONA5.archetypes.forEach(function(a){
           var ss=0;
-          DIM.forEach(function(dk){ var av=(P&&P['pa_'+a.key+'_'+dk]!=null)?P['pa_'+a.key+'_'+dk]:a.anchor[dk]; var dd=(ps[dk]||50)-av; ss+=dd*dd; });
+          DIM.forEach(function(dk){ var av=(P&&P['pa_'+a.key+'_'+dk]!=null)?P['pa_'+a.key+'_'+dk]:a.anchor[dk]; var dd=(ps[dk]!=null?ps[dk]:50)-av; ss+=dd*dd; });
           var dist=Math.sqrt(ss); if(dist<bd){bd=dist;bestKey=a.key;}
         });
         cnt[bestKey]++;
@@ -1008,7 +1008,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629futureadmin23';
+    bgmAudio.src='audio/'+file+'?v=20260629futureadmin24';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
