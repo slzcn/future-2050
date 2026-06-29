@@ -1348,7 +1348,6 @@ const DATA_PERIODS = {
     }
   ]
 };
-if(typeof window!=='undefined'&&typeof DATA_PERIODS!=='undefined')window.DATA_PERIODS=DATA_PERIODS;
 
 /* ===== data-endings.js ===== */
 // ===== 2050未来投资模拟器 · 结局阈值 + 文明级称号 =====
@@ -1387,7 +1386,6 @@ const DATA_ENDINGS = {
       summary:"你太拼了。无数个被信息洪流淹没的深夜、无数次在AI依赖与现实焦虑间反复拉扯、无数回透支认知带宽去追赶加速的世界。终于，在生涯尚未走到终点时，你的心智彻底崩了。你或许押中过漂亮的项目、攒下过不错的影响力，但这一切，在精神崩溃的那一刻都显得苍白。这是一个迟来的提醒：在加速的时代里，守住心智，才有资格谈论未来。" },
   },
 };
-if(typeof window!=='undefined'&&typeof DATA_ENDINGS!=='undefined')window.DATA_ENDINGS=DATA_ENDINGS;
 
 /* ===== data-persona5.js ===== */
 // 未来观人格五维画像数据层（与 6 位未来大师一一对应，同源）
@@ -1468,7 +1466,6 @@ const PERSONA5 = {
 };
 
 if (typeof window !== 'undefined') window.PERSONA5 = PERSONA5;
-if(typeof window!=='undefined'&&typeof PERSONA5!=='undefined')window.PERSONA5=PERSONA5;
 
 /* ===== data-profile6.js ===== */
 // 未来观人格五维画像数据层（每个纪元一道题，纯测一维）
@@ -1547,7 +1544,6 @@ const PROFILE = {
 };
 
 if (typeof window !== 'undefined') window.PROFILE = PROFILE;
-if(typeof window!=='undefined'&&typeof PROFILE!=='undefined')window.PROFILE=PROFILE;
 
 /* ===== data-masters.js ===== */
 // 未来大师匹配数据层 - 把玩家的五维画像映射到最像的「未来世代代表」
@@ -1611,4 +1607,12 @@ MASTERS.match = function(p6){
 };
 
 if (typeof window !== 'undefined') window.MASTERS = MASTERS;
-if(typeof window!=='undefined'&&typeof MASTERS!=='undefined')window.MASTERS=MASTERS;
+
+/* ===== 全局规范化(合并产物统一挂载,幂等) ===== */
+if(typeof window!=='undefined'){
+  if(typeof DATA_PERIODS!=='undefined')window.DATA_PERIODS=DATA_PERIODS;
+  if(typeof DATA_ENDINGS!=='undefined')window.DATA_ENDINGS=DATA_ENDINGS;
+  if(typeof PERSONA5!=='undefined')window.PERSONA5=PERSONA5;
+  if(typeof PROFILE!=='undefined')window.PROFILE=PROFILE;
+  if(typeof MASTERS!=='undefined')window.MASTERS=MASTERS;
+}

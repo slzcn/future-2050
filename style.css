@@ -57,7 +57,7 @@
   @keyframes tapBtn{0%{transform:scale(1)}40%{transform:scale(.94)}100%{transform:scale(1)}}
   /* 投资卡选中:边框脉冲高亮 */
   .deal.pulse{animation:dealPulse .55s ease;}
-  @keyframes dealPulse{0%{box-shadow:0 0 0 0 rgba(184,134,11,.5)}100%{box-shadow:0 0 0 12px rgba(184,134,11,0)}}
+  @keyframes dealPulse{0%{box-shadow:0 0 0 0 rgba(39,211,224,.5)}100%{box-shadow:0 0 0 12px rgba(39,211,224,0)}}
   /* 情境选项选中:弹入 */
   .sc-opt.bounce{animation:optBounce .4s cubic-bezier(.34,1.56,.64,1);}
   @keyframes optBounce{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
@@ -218,7 +218,7 @@
   .reveal-item .ryear{font-size:12px;color:var(--ink-faint);font-weight:700;}
   .reveal-item .rname{font-size:16px;font-weight:800;}
   .reveal-item .rtier{font-size:12px;font-weight:800;padding:2px 10px;border-radius:3px;white-space:nowrap;}
-  .rtier.ss{background:rgba(184,134,11,.16);color:var(--gold);}
+  .rtier.ss{background:rgba(39,211,224,.16);color:var(--gold);}
   .rtier.s{background:rgba(60,107,79,.14);color:var(--good);}
   .rtier.a{background:rgba(154,123,58,.14);color:var(--warn);}
   .rtier.b,.rtier.c{background:rgba(168,69,58,.12);color:var(--bad);}
@@ -229,9 +229,9 @@
   /* 结局/分享卡 */
   #ending{padding:46px 0 20px;}
   /* 结局卡:整体背景随等级变(同色系浅底)+顶部等级色光晕渐变氛围 */
-  .share-card{background:var(--ending-bg,#f5f1e8);border:1px solid var(--accent-c,#27d3e0);padding:42px 32px 36px;position:relative;overflow:hidden;box-shadow:0 8px 30px var(--ending-glow,rgba(184,134,11,.1));}
+  .share-card{background:var(--ending-bg,#0d1320);border:1px solid var(--accent-c,#27d3e0);padding:42px 32px 36px;position:relative;overflow:hidden;box-shadow:0 8px 30px var(--ending-glow,rgba(39,211,224,.12));}
   /* 顶部等级色光晕(从顶部渐隐到透明,渲染等级氛围) */
-  .share-card::before{content:"";position:absolute;top:0;left:0;right:0;height:140px;background:radial-gradient(ellipse at 50% 0%,var(--ending-glow,rgba(184,134,11,.1)) 0%,transparent 70%);pointer-events:none;z-index:0;}
+  .share-card::before{content:"";position:absolute;top:0;left:0;right:0;height:140px;background:radial-gradient(ellipse at 50% 0%,var(--ending-glow,rgba(39,211,224,.12)) 0%,transparent 70%);pointer-events:none;z-index:0;}
   .share-card::after{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--accent-c,#27d3e0);z-index:1;}
   .share-card>*{position:relative;z-index:1;}
   .sc-head{text-align:center;margin-bottom:28px;}
@@ -276,9 +276,9 @@
   /* 长图预览遮罩 */
   .img-modal{position:fixed;inset:0;background:rgba(26,23,20,.9);z-index:200;display:none;flex-direction:column;align-items:center;padding:24px 16px;overflow-y:auto;}
   .img-modal.show{display:flex;}
-  .img-modal .tip{color:#f5f1e8;font-size:14px;margin-bottom:14px;text-align:center;line-height:1.7;}
+  .img-modal .tip{color:var(--ink);font-size:14px;margin-bottom:14px;text-align:center;line-height:1.7;}
   .img-modal img{max-width:100%;border-radius:6px;box-shadow:0 10px 40px rgba(0,0,0,.5);}
-  .img-modal .close-x{position:fixed;top:16px;right:20px;color:#f5f1e8;font-size:30px;cursor:pointer;z-index:201;}
+  .img-modal .close-x{position:fixed;top:16px;right:20px;color:var(--ink);font-size:30px;cursor:pointer;z-index:201;}
 
   .toast{position:fixed;bottom:34px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:12px 24px;border-radius:6px;font-size:14px;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90%;text-align:center;white-space:nowrap;}
   .toast.show{opacity:1;}
@@ -345,9 +345,9 @@ body:has(#cover:not(.hidden)) .info-btn{display:flex;}
 
 /* ===== 五维人格 + 投资大师匹配（从 vc_sim 迁移，2026-06-27） ===== */
   .sc-chapter{display:flex;align-items:center;justify-content:center;gap:10px;margin:52px 0 26px;}
-  .sc-chapter::before,.sc-chapter::after{content:"";flex:1;max-width:72px;height:1px;background:linear-gradient(90deg,transparent,var(--accent-c,#b8860b));opacity:.4;}
-  .sc-chapter::after{background:linear-gradient(90deg,var(--accent-c,#b8860b),transparent);}
-  .sc-chapter .ch-name{font-family:"Kaiti SC","STKaiti","Songti SC",serif;font-size:21px;letter-spacing:.08em;color:var(--accent-c,#b8860b);font-weight:900;flex:0 0 auto;}
+  .sc-chapter::before,.sc-chapter::after{content:"";flex:1;max-width:72px;height:1px;background:linear-gradient(90deg,transparent,var(--accent-c,#27d3e0));opacity:.4;}
+  .sc-chapter::after{background:linear-gradient(90deg,var(--accent-c,#27d3e0),transparent);}
+  .sc-chapter .ch-name{font-family:"Kaiti SC","STKaiti","Songti SC",serif;font-size:21px;letter-spacing:.08em;color:var(--accent-c,#27d3e0);font-weight:900;flex:0 0 auto;}
   .sc-quote + .sc-chapter{margin-top:36px;}
   /* 子模块标题(去序号,用 emoji 装饰+左侧竖线强调) */
   .sc-sub-head{display:flex;align-items:center;justify-content:center;gap:9px;font-size:15.5px;font-weight:800;color:var(--ink);letter-spacing:.1em;margin:28px 0 15px;line-height:1.4;}
@@ -357,25 +357,25 @@ body:has(#cover:not(.hidden)) .info-btn{display:flex;}
   /* MBTI 模块 */
   .mbti-block{margin:0;}
   .mbti-head h3{font-size:13px;letter-spacing:.14em;color:var(--ink-faint);text-align:center;margin-bottom:18px;font-weight:700;}
-  .mbti-card{border:1.5px solid var(--sc,#b8860b);border-radius:4px;padding:24px 22px;text-align:center;background:var(--card);position:relative;}
+  .mbti-card{border:1.5px solid var(--sc,#27d3e0);border-radius:4px;padding:24px 22px;text-align:center;background:var(--card);position:relative;}
   .mbti-card .mc-title{font-family:"Kaiti SC","STKaiti","Songti SC",serif;font-size:26px;font-weight:900;letter-spacing:.04em;color:var(--sc);margin-bottom:8px;}
   .mbti-card .mc-tag{font-size:13px;color:var(--ink-faint);letter-spacing:.1em;margin-bottom:16px;}
   .mbti-card .mc-desc{font-size:14px;color:var(--ink);line-height:2.05;text-align:left;text-indent:2em;}
   /* 投资风格画像 - 新增样式 */
   .mbti-card .mc-emoji{font-size:46px;line-height:1;margin-bottom:8px;}
-  .mbti-card .mc-sub{font-size:13.5px;color:var(--sc,#b8860b);letter-spacing:.16em;font-weight:700;margin-bottom:6px;}
+  .mbti-card .mc-sub{font-size:13.5px;color:var(--sc,#27d3e0);letter-spacing:.16em;font-weight:700;margin-bottom:6px;}
   /* 投资大师匹配卡 */
   .master-card .mm-pct{font-size:13px;color:var(--ink-faint);letter-spacing:.08em;margin-bottom:14px;}
-  .master-card .mm-pct .mm-pct-num{font-size:22px;font-weight:900;color:var(--sc,#b8860b);font-variant-numeric:tabular-nums;letter-spacing:0;}
-  .master-card{border:1.5px solid var(--sc,#b8860b);border-radius:4px;padding:24px 22px;text-align:center;background:var(--card);position:relative;}
+  .master-card .mm-pct .mm-pct-num{font-size:22px;font-weight:900;color:var(--sc,#27d3e0);font-variant-numeric:tabular-nums;letter-spacing:0;}
+  .master-card{border:1.5px solid var(--sc,#27d3e0);border-radius:4px;padding:24px 22px;text-align:center;background:var(--card);position:relative;}
   .master-card .mm-emoji{font-size:46px;line-height:1;margin-bottom:8px;}
-  .master-card .mm-portrait{width:150px;height:150px;border-radius:50%;margin:0 auto 16px;background-size:cover;background-position:center 12%;background-repeat:no-repeat;background-color:#16213a;border:4px solid var(--sc,#b8860b);box-shadow:0 6px 18px rgba(0,0,0,.16);position:relative;}
-  .master-card .mm-portrait .mm-emoji-mini{position:absolute;right:-2px;bottom:-2px;font-size:36px;line-height:1;background:#fff;border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;border:3px solid var(--sc,#b8860b);box-shadow:0 2px 6px rgba(0,0,0,.18);}
+  .master-card .mm-portrait{width:150px;height:150px;border-radius:50%;margin:0 auto 16px;background-size:cover;background-position:center 12%;background-repeat:no-repeat;background-color:#16213a;border:4px solid var(--sc,#27d3e0);box-shadow:0 6px 18px rgba(0,0,0,.16);position:relative;}
+  .master-card .mm-portrait .mm-emoji-mini{position:absolute;right:-2px;bottom:-2px;font-size:36px;line-height:1;background:#fff;border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;border:3px solid var(--sc,#27d3e0);box-shadow:0 2px 6px rgba(0,0,0,.18);}
   .master-card .mm-name{font-family:"Kaiti SC","STKaiti","Songti SC",serif;font-size:25px;font-weight:900;letter-spacing:.03em;color:var(--sc);margin-bottom:3px;}
   .master-card .mm-en{font-size:12px;color:var(--ink-faint);letter-spacing:.08em;margin-bottom:8px;font-style:italic;}
   .master-card .mm-school{font-size:13px;color:var(--sc);letter-spacing:.06em;font-weight:700;margin-bottom:16px;}
   .master-card .mm-blurb{font-size:14px;color:var(--ink);line-height:2.05;text-align:left;text-indent:2em;margin-bottom:18px;}
-  .master-card .mm-bridge{color:var(--sc,#b8860b);font-weight:800;}
+  .master-card .mm-bridge{color:var(--sc,#27d3e0);font-weight:800;}
 
   .master-card .mm-others-wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;padding-top:14px;border-top:1px dashed var(--line);}
   .master-card .mm-others-label{font-size:12px;color:var(--ink-faint);letter-spacing:.08em;}
@@ -385,15 +385,12 @@ body:has(#cover:not(.hidden)) .info-btn{display:flex;}
   .radar-canvas{width:min(360px,86vw);height:auto;display:block;margin-bottom:-7%;}
   .radar-legend{margin-top:-2px;display:flex;gap:18px;font-size:12.5px;color:var(--ink-soft);letter-spacing:.04em;}
   .radar-legend .lg{display:inline-flex;align-items:center;gap:6px;}
-  .radar-legend .lg i{display:inline-block;width:18px;height:0;border-top:2.4px solid var(--sc,#b8860b);}
+  .radar-legend .lg i{display:inline-block;width:18px;height:0;border-top:2.4px solid var(--sc,#27d3e0);}
   .radar-legend .lg-master i{border-top:1.8px dashed var(--ink-faint);}
   /* 6 维分项条 */
   .p6-list{margin:18px 0 10px;display:flex;flex-direction:column;gap:11px;}
   .p6-row{display:flex;align-items:center;gap:12px;font-size:13px;}
   .p6-axis{min-width:74px;color:var(--ink-soft);font-weight:700;letter-spacing:.04em;}
   .p6-bar{flex:1;height:6px;background:var(--line);border-radius:4px;position:relative;overflow:hidden;}
-  .p6-bar i{display:block;height:100%;background:var(--sc,#b8860b);border-radius:4px;}
+  .p6-bar i{display:block;height:100%;background:var(--sc,#27d3e0);border-radius:4px;}
   .p6-val{min-width:38px;text-align:right;font-size:12px;color:var(--ink-faint);letter-spacing:.06em;}
-  .cover-btns{display:flex;flex-direction:column;gap:13px;align-items:center;}
-  .cover-stats{margin-top:26px;font-size:12px;color:var(--ink-faint);line-height:1.9;letter-spacing:.03em;}
-  .cover-stats b{color:var(--ink-soft);font-weight:700;}
