@@ -50,7 +50,7 @@
 
   /* 横条统计(称号/风格/趋势分布等,stats+tune 共用) */
   .row{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:clamp(12px,3vw,13px);}
-  .row .nm{flex:0 0 clamp(96px,24vw,140px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
+  .row .nm{flex:0 0 clamp(96px,30vw,150px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
   .row .e{flex:0 0 18px;text-align:center;font-size:15px;}
   .row .barwrap{flex:1;min-width:40px;height:17px;background:rgba(26,23,20,.06);border-radius:5px;position:relative;overflow:hidden;}
   .row .bar{position:absolute;left:0;top:0;height:100%;border-radius:5px;background:var(--accent);transition:width .4s;min-width:2px;}
@@ -58,6 +58,28 @@
   .row .pct small{color:var(--ink-faint);font-weight:600;}
   .pct-val{color:var(--accent);font-weight:800;font-size:13px;}
   .pct-sub{color:var(--ink-faint);font-weight:600;font-size:11px;margin-left:5px;padding:1px 5px;background:rgba(138,90,58,.07);border-radius:5px;}
+
+  /* 🥧 环形饼图(结局称号分布) v2 */
+  .pieWrap{display:flex;gap:22px;align-items:center;flex-wrap:wrap;justify-content:center;padding:6px 0;}
+  .pieSvg{flex:0 0 auto;width:220px;height:220px;filter:drop-shadow(0 6px 14px rgba(26,23,20,.08));}
+  .pieSvg .seg{cursor:pointer;transition:transform .28s cubic-bezier(.34,1.56,.64,1),opacity .22s,filter .22s;transform-origin:center;transform-box:fill-box;}
+  .pieSvg .seg:hover{filter:brightness(1.1) drop-shadow(0 4px 10px rgba(26,23,20,.28));}
+  .pieSvg.dim .seg{opacity:.25;}
+  .pieSvg.dim .seg.act{opacity:1;}
+  .pieCenter .c-emoji{font-size:36px;line-height:1;}
+  .pieCenter .c-name{font-size:14px;font-weight:800;fill:var(--ink-soft);letter-spacing:.04em;}
+  .pieCenter .c-pct{font-size:28px;font-weight:900;fill:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:.02em;}
+  .pieCenter .c-cnt{font-size:12px;font-weight:700;fill:var(--ink-faint);font-variant-numeric:tabular-nums;}
+  .pieLegend{flex:1 1 240px;min-width:220px;display:flex;flex-direction:column;gap:4px;}
+  .pieLegend .lg{display:flex;align-items:center;gap:9px;padding:6px 10px;border-radius:9px;cursor:pointer;transition:background .2s,transform .2s,box-shadow .2s;border:1px solid transparent;}
+  .pieLegend .lg:hover,.pieLegend .lg.act{background:rgba(138,90,58,.07);border-color:rgba(138,90,58,.18);transform:translateX(3px);box-shadow:0 2px 6px rgba(26,23,20,.06);}
+  .pieLegend .dot{flex:0 0 12px;width:12px;height:12px;border-radius:3px;box-shadow:0 1px 2px rgba(26,23,20,.22),inset 0 1px 0 rgba(255,255,255,.25);}
+  .pieLegend .lg-nm{flex:0 1 auto;font-size:13px;font-weight:700;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.02em;min-width:0;}
+  .pieLegend .lg-nm .lg-emo{margin-right:4px;}
+  .pieLegend .lg-bar{flex:1 1 auto;min-width:30px;height:5px;background:rgba(26,23,20,.06);border-radius:3px;overflow:hidden;position:relative;margin:0 4px;}
+  .pieLegend .lg-bar i{position:absolute;left:0;top:0;height:100%;border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+  .pieLegend .lg-val{font-size:12.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;min-width:36px;text-align:right;}
+  .pieLegend .lg-pct{font-size:11.5px;font-weight:700;color:var(--ink-faint);min-width:42px;text-align:right;font-variant-numeric:tabular-nums;background:rgba(26,23,20,.04);padding:1px 5px;border-radius:5px;}
   /* 项目热度踩雷警示色（以下面为准） */
 
   /* KPI 网格(stats 核心指标 / scoreStats) */
@@ -226,12 +248,12 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629futureadmin8"></script>
-<script src="data-periods.js?v=20260629futureadmin8"></script>
-<script src="data-endings.js?v=20260629futureadmin8"></script>
-<script src="data-persona5.js?v=20260629futureadmin8"></script>
-<script src="data-profile6.js?v=20260629futureadmin8"></script>
-<script src="engine-sfx.js?v=20260629futureadmin8"></script>
+<script src="config.js?v=20260629futureadmin9"></script>
+<script src="data-periods.js?v=20260629futureadmin9"></script>
+<script src="data-endings.js?v=20260629futureadmin9"></script>
+<script src="data-persona5.js?v=20260629futureadmin9"></script>
+<script src="data-profile6.js?v=20260629futureadmin9"></script>
+<script src="engine-sfx.js?v=20260629futureadmin9"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -273,17 +295,104 @@ function logout(){try{localStorage.removeItem(AUTH_KEY);}catch(e){}location.relo
 })();
 
 /* ===================== Tab 调度(懒加载) ===================== */
+/* ===================== 🥧 通用环形饼图 v2 ===================== */
+/* data: [{label,value,color,emoji}]  鼠标划过扇区/图例联动高亮,中心显示详情 */
+var _pieSeq=0;
+function donutChart(data){
+  data=(data||[]).filter(function(d){return d.value>0;});
+  if(!data.length)return '<div class="loading">暂无数据</div>';
+  var tot=data.reduce(function(a,b){return a+b.value;},0);
+  var id='pie'+(++_pieSeq);
+  var R=108,r=66,cx=120,cy=120;        // 外半径/内半径/中心 (较之前锦大)
+  function pt(cxx,cyy,rad,ang){var a=(ang-90)*Math.PI/180;return [cxx+rad*Math.cos(a),cyy+rad*Math.sin(a)];}
+  function arcPath(a0,a1){
+    var so=pt(cx,cy,R,a0), eo=pt(cx,cy,R,a1);
+    var si=pt(cx,cy,r,a1), ei=pt(cx,cy,r,a0);
+    var large=(a1-a0)>180?1:0;
+    return 'M '+so[0].toFixed(2)+' '+so[1].toFixed(2)+
+           ' A '+R+' '+R+' 0 '+large+' 1 '+eo[0].toFixed(2)+' '+eo[1].toFixed(2)+
+           ' L '+si[0].toFixed(2)+' '+si[1].toFixed(2)+
+           ' A '+r+' '+r+' 0 '+large+' 0 '+ei[0].toFixed(2)+' '+ei[1].toFixed(2)+' Z';
+  }
+  var gap=0.6;                          // 扇区间隙(度),轮廓更清爽
+  var ang=0,segs='',meta=[],maxIdx=0,maxV=0;
+  data.forEach(function(d,i){
+    var sweep=d.value/tot*360, a0=ang, a1=ang+sweep; ang=a1;
+    var pp=(d.value/tot*100);
+    if(d.value>maxV){maxV=d.value;maxIdx=i;}
+    // 扇区中心角→外推位移方向(加到 8px)
+    var mid=(a0+a1)/2, off=pt(0,0,8,mid);
+    var a0g=a0+gap/2, a1g=Math.max(a0g+0.1,a1-gap/2);
+    segs+='<path class="seg" d="'+arcPath(a0g,a1g)+'" fill="'+(d.color||'var(--accent)')+'" data-i="'+i+'"'+
+          ' style="--ox:'+off[0].toFixed(2)+'px;--oy:'+off[1].toFixed(2)+'px"'+
+          ' onmouseenter="pieHover(\''+id+'\','+i+')" onmouseleave="pieHover(\''+id+'\',-1)"></path>';
+    meta.push({label:d.label,emoji:d.emoji||'',color:d.color||'var(--accent)',value:d.value,pct:pp});
+  });
+  // 图例(含迷你进度条)
+  var maxPct=Math.max.apply(null,meta.map(function(m){return m.pct;}));
+  var legend=meta.map(function(m,i){
+    var barW=(m.pct/maxPct*100).toFixed(1);
+    return '<div class="lg" data-i="'+i+'" onmouseenter="pieHover(\''+id+'\','+i+')" onmouseleave="pieHover(\''+id+'\',-1)">'+
+      '<span class="dot" style="background:'+m.color+'"></span>'+
+      '<span class="lg-nm">'+(m.emoji?'<span class="lg-emo">'+esc(m.emoji)+'</span>':'')+esc(m.label)+'</span>'+
+      '<span class="lg-bar"><i style="width:'+barW+'%;background:'+m.color+'"></i></span>'+
+      '<span class="lg-val">'+m.value+'</span>'+
+      '<span class="lg-pct">'+m.pct.toFixed(1)+'%</span></div>';
+  }).join('');
+  // 中心默认显示总量
+  var center=_pieCenterHTML(cx,cy,null,tot,null,'总计','');
+  window._pieData=window._pieData||{}; window._pieData[id]={meta:meta,tot:tot,cx:cx,cy:cy};
+  return '<div class="pieWrap">'+
+    '<svg class="pieSvg" id="'+id+'" width="240" height="240" viewBox="0 0 240 240">'+
+      '<g>'+segs+'</g>'+
+      '<g class="pieCenter" id="'+id+'-c">'+center+'</g>'+
+    '</svg>'+
+    '<div class="pieLegend" id="'+id+'-lg">'+legend+'</div>'+
+  '</div>';
+}
+/* 中心文本生成 (默认态/hover 态复用) */
+function _pieCenterHTML(cx,cy,emoji,big,small,bigLabel,smallLabel){
+  // 默认态:big=总量,bigLabel='总计'  hover:emoji+名称+占比%+局数
+  if(emoji===null){
+    return '<text class="c-name" x="'+cx+'" y="'+(cy-6)+'" text-anchor="middle">'+esc(bigLabel)+'</text>'+
+           '<text class="c-pct" x="'+cx+'" y="'+(cy+22)+'" text-anchor="middle">'+big+'</text>';
+  }
+  return '<text class="c-emoji" x="'+cx+'" y="'+(cy-12)+'" text-anchor="middle">'+esc(emoji)+'</text>'+
+         '<text class="c-pct" x="'+cx+'" y="'+(cy+20)+'" text-anchor="middle">'+big+'</text>'+
+         '<text class="c-cnt" x="'+cx+'" y="'+(cy+40)+'" text-anchor="middle">'+smallLabel+'</text>';
+}
+function pieHover(id,i){
+  var svg=document.getElementById(id);if(!svg)return;
+  var data=(window._pieData||{})[id];if(!data)return;
+  var lg=document.getElementById(id+'-lg'), cen=document.getElementById(id+'-c');
+  var segs=svg.querySelectorAll('.seg'), lgs=lg?lg.querySelectorAll('.lg'):[];
+  if(i<0){ // 离开:复位
+    svg.classList.remove('dim');
+    segs.forEach(function(s){s.classList.remove('act');s.style.transform='';});
+    Array.prototype.forEach.call(lgs,function(l){l.classList.remove('act');});
+    if(cen)cen.innerHTML=_pieCenterHTML(data.cx,data.cy,null,data.tot,null,'总计','');
+    return;
+  }
+  var m=data.meta[i];if(!m)return;
+  svg.classList.add('dim');
+  segs.forEach(function(s){var si=+s.dataset.i;if(si===i){s.classList.add('act');s.style.transform='translate(var(--ox),var(--oy)) scale(1.05)';}else{s.classList.remove('act');s.style.transform='';}});
+  Array.prototype.forEach.call(lgs,function(l){l.classList.toggle('act',+l.dataset.i===i);});
+  if(cen)cen.innerHTML=_pieCenterHTML(data.cx,data.cy,m.emoji,m.pct.toFixed(1)+'%',null,m.label,m.value+' 局');
+}
 function activateTab(p){
   var tab=document.querySelector('.tab[data-p="'+p+'"]');if(!tab)return;
+  // 切tab时停止正在播放的背景音乐(如果切出的tab有音乐在播)
   if(typeof stopBgm==='function')stopBgm();
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
   document.querySelectorAll('.page').forEach(function(pg){pg.classList.remove('on');});
   tab.classList.add('on');
   document.getElementById('tab-'+p).classList.add('on');
-  if(p==='stats'&&!loaded.stats){loaded.stats=1;loadStats();}
-  if(p==='doc'&&!loaded.doc){loaded.doc=1;renderDoc();initSfx();}
-  if(p==='tune'&&!loaded.tune){loaded.tune=1;initTune();}
-  if(p==='cfg'&&!loaded.cfg){loaded.cfg=1;renderConfig();}
+  // 重型初始化推到下一帧,让 tab 视觉切换先完成,避免"点了卡一下才进"的延迟感
+  function defer(fn){if(window.requestAnimationFrame){requestAnimationFrame(function(){requestAnimationFrame(fn);});}else{setTimeout(fn,0);}}
+  if(p==='stats'&&!loaded.stats){loaded.stats=1;defer(loadStats);}
+  if(p==='doc'&&!loaded.doc){loaded.doc=1;defer(function(){renderDoc();initSfx();});}
+  if(p==='tune'&&!loaded.tune){loaded.tune=1;var lv=document.getElementById('live');if(lv)lv.textContent='调参数据生成中...';defer(initTune);}
+  if(p==='cfg'&&!loaded.cfg){loaded.cfg=1;defer(renderConfig);}
 }
 function boot(){
   document.getElementById('logout').onclick=logout;
@@ -345,10 +454,17 @@ function renderStats(R,V){
     var max=arr[0][1];
     return arr.map(function(x){var p=pct(x[1],max),badR=x[1]?(x[2]/x[1]*100).toFixed(0):0,badColor=badR>30?'var(--bad)':badR>10?'var(--warn)':'var(--ink-faint)';return '<div class="row"><div class="nm">'+esc(x[0])+'</div><div class="barwrap"><div class="bar" style="width:'+p+'%"></div></div><div class="pct"><span class="pct-val">'+x[1]+'</span><span class="pct-sub" style="color:'+badColor+';background:'+(badR>30?'rgba(168,69,58,.08)':badR>10?'rgba(154,123,58,.1)':'rgba(138,90,58,.07)')+'">踩'+badR+'%</span></div></div>';}).join('');
   }
+  // 🏆 结局称号分布 — 环形饼图(真实玩家数据)
+  function titlePie(){
+    var cnt={};R.forEach(function(r){var v=r.title;if(v)cnt[v]=(cnt[v]||0)+1;});
+    var mm=endingMetaMap();
+    var data=Object.keys(cnt).map(function(k){var m=mm[k]||{};return {label:k,value:cnt[k],color:m.color||'var(--accent)',emoji:m.emoji||''};}).sort(function(a,b){return b.value-a.value;});
+    return donutChart(data);
+  }
   document.getElementById('logout').onclick=logout;
   var h='';
   h+='<div class="panel"><h2>核心指标</h2><div class="kpi">'+box(total,'总答题局数')+box(nPlayers,'独立玩家')+box(todayN,'今日新增局')+box(visitN,'总访问')+box(invited,'被邀请来的局')+box(deadRate(),'出局率')+'</div></div>';
-  h+='<div class="panel"><h2>🏆 结局称号分布</h2>'+distBars('title',true)+'</div>';
+  h+='<div class="panel"><h2>🏆 结局称号分布 <span class="hint">鼠标划过看详情</span></h2>'+titlePie()+'</div>';
   h+='<div class="panel"><h2>🎭 投资风格分布</h2>'+distBars('style')+'</div>';
   h+='<div class="panel"><h2>📈 综合评分</h2>'+scoreStats()+'</div>';
   h+='<div class="panel"><h2>🥇 最高分排行 Top 20</h2>'+leaderboard()+'</div>';
@@ -696,10 +812,10 @@ function runSim(){
   var q=function(arr,p){return arr[Math.floor(arr.length*p)];};
   var endColor={legend:'#b8860b',master:'#2c5282',veteran:'#3c6b4f',steady:'#5a6470',rollercoaster:'#9a7b3a',exit:'#a8453a',earlyout:'#7d5a3a'};
   var h='';
-  h+='<div class="panel"><h2>🏆 结局称号分布</h2>';
+  h+='<div class="panel"><h2>🏆 结局称号分布 <span style="font-size:11px;color:#8c857a;font-weight:600">鼠标划过看详情</span></h2>';
   h+='<div class="txt" style="font-size:11px;color:#8c857a;margin-bottom:10px;">目标比例: 封神10% / 一线20% / 资深20% / 稳进20% / 过山车15% / 离场5% / 健康透支10%</div>';
-  order.forEach(function(k){var c=endCnt[k],pct=(c/RUNS*100);var cut=(k==='exit')?('<'+P.cutRoller):(k==='earlyout'?'特殊':'≥'+tcut[k]);
-    h+='<div class="row"><div class="nm">'+nm[k]+'</div><div class="barwrap"><div class="bar" style="width:'+Math.min(100,pct*2.5)+'%;background:'+endColor[k]+'"></div></div><div class="pct">'+pct.toFixed(1)+'% <small style="color:#8c857a">'+cut+'</small></div></div>';});
+  var pieData=order.map(function(k){var nmStr=nm[k],sp=nmStr.indexOf(' '),emo=sp>0?nmStr.slice(0,sp):'',lab=sp>0?nmStr.slice(sp+1):nmStr;return {label:lab,emoji:emo,value:endCnt[k],color:endColor[k]};});
+  h+=donutChart(pieData);
   h+='</div>';
   h+='<div class="panel"><h2>📈 综合评分</h2><div class="stat-grid">';
   h+='<div class="stat"><div class="k">平均/中位</div><div class="v">'+Math.round(scores.reduce(function(a,b){return a+b;},0)/RUNS)+' <small>/ '+q(scores,0.5)+'</small></div></div>';
@@ -872,7 +988,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629futureadmin8';
+    bgmAudio.src='audio/'+file+'?v=20260629futureadmin9';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
