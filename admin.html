@@ -26,12 +26,12 @@
   .hero-title{font-family:"Kaiti SC","STKaiti","Songti SC",serif;font-weight:900;font-size:clamp(27px,6.2vw,40px);letter-spacing:.08em;margin:0 0 10px;color:var(--ink);text-shadow:0 2px 4px rgba(255,255,255,.07);line-height:1.15;}
   .hero-sub{font-size:clamp(12px,2.9vw,14px);color:var(--ink-faint);letter-spacing:.04em;font-weight:500;}
   .logout{position:absolute;top:16px;right:18px;color:var(--blue);cursor:pointer;font-size:12.5px;opacity:.6;transition:opacity .2s;padding:4px 8px;border-radius:6px;}
-  .logout:hover{opacity:1;background:rgba(74,124,217,.08);}
+  .logout:hover{opacity:1;background:color-mix(in srgb,var(--blue) 12%,transparent);}
   @media(min-width:768px){.hero{padding:44px 32px 32px;}.hero-title{font-size:40px;}.hero-name{font-size:21px;}}
 
   /* ── Tab 导航 ── */
   .tabs{display:flex;gap:6px;margin-bottom:18px;position:sticky;top:0;
-    background:linear-gradient(var(--paper) 80%,rgba(245,241,232,0));padding:10px 0 12px;z-index:20;flex-wrap:wrap;}
+    background:linear-gradient(var(--paper) 80%,transparent);padding:10px 0 12px;z-index:20;flex-wrap:wrap;}
   .tab{flex:1 1 auto;min-width:72px;text-align:center;padding:10px 4px;font-size:clamp(12px,3vw,13.5px);font-weight:700;
     border:1.5px solid var(--line);border-radius:9px;cursor:pointer;background:var(--card);color:var(--ink-soft);
     transition:all .2s;user-select:none;-webkit-user-select:none;letter-spacing:.02em;touch-action:manipulation;}
@@ -111,15 +111,15 @@
 .gate-item{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border-radius:9px;padding:10px 12px;}
 .gate-ic{font-size:18px;flex:0 0 auto;}
 .gate-nm{flex:1;font-weight:600;font-size:13px;line-height:1.2;display:flex;flex-direction:column;}
-.gate-nm i{font-style:normal;font-size:10px;color:#a39b8e;font-weight:500;font-family:"SF Mono",Menlo,monospace;}
+.gate-nm i{font-style:normal;font-size:10px;color:var(--ink-faint);font-weight:500;font-family:"SF Mono",Menlo,monospace;}
 .gate-n{flex:0 0 auto;font-weight:800;font-size:15px;color:var(--accent,#27d3e0);font-variant-numeric:tabular-nums;}
-.invest-rule{background:rgba(184,134,11,.06);border-radius:10px;padding:11px 13px;}
-.ir-h{font-weight:700;font-size:13px;margin-bottom:8px;color:#8a6d1b;}
+.invest-rule{background:color-mix(in srgb,var(--warn) 8%,transparent);border-radius:10px;padding:11px 13px;border:1px solid color-mix(in srgb,var(--warn) 22%,transparent);}
+.ir-h{font-weight:700;font-size:13px;margin-bottom:8px;color:var(--warn);}
 .ir-row{display:flex;align-items:center;gap:9px;font-size:13px;margin:5px 0;}
 .ir-cond{font-weight:600;flex:0 0 auto;font-variant-numeric:tabular-nums;}
 .ir-arr{color:#27d3e0;font-weight:800;}
-.ir-res{color:var(--ink-soft,#6b6358);}
-.ir-res.ok{color:#2e7d32;font-weight:600;}
+.ir-res{color:var(--ink-soft);}
+.ir-res.ok{color:var(--good);font-weight:600;}
   .txt{font-size:clamp(12px,3vw,13px);color:var(--ink-soft);line-height:1.8;}
   .txt b{color:var(--ink);}
   code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.92em;background:rgba(255,255,255,.06);padding:1px 5px;border-radius:4px;}
@@ -155,8 +155,8 @@
   #sfxPanel .play::before{content:'';display:block;width:0;height:0;border-style:solid;border-width:7px 0 7px 12px;border-color:transparent transparent transparent #fff;margin-left:3px;transition:.15s;}
   #sfxPanel .srow.playing .play{background:var(--good);animation:pulse 1.6s infinite;}
   #sfxPanel .srow.playing .play::before{border-width:0;width:11px;height:13px;margin-left:0;border-left:3.5px solid #fff;border-right:3.5px solid #fff;background:transparent;box-sizing:border-box;}
-  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(60,107,79,.45);}70%{box-shadow:0 0 0 9px rgba(60,107,79,0);}100%{box-shadow:0 0 0 0 rgba(60,107,79,0);}}
-  #sfxPanel .srow.playing{background:rgba(60,107,79,.08);}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(63,217,168,.5);}70%{box-shadow:0 0 0 9px rgba(63,217,168,0);}100%{box-shadow:0 0 0 0 rgba(63,217,168,0);}}
+  #sfxPanel .srow.playing{background:color-mix(in srgb,var(--good) 12%,transparent);}
   #sfxPanel .wave{display:none;gap:2px;align-items:flex-end;height:14px;margin-left:auto;flex:0 0 auto;padding-right:2px;}
   #sfxPanel .srow.playing .wave{display:flex;}
   #sfxPanel .wave span{width:2.5px;background:var(--good);border-radius:2px;animation:wv .8s ease-in-out infinite;}
@@ -248,12 +248,12 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629futureadmin12"></script>
-<script src="data-periods.js?v=20260629futureadmin12"></script>
-<script src="data-endings.js?v=20260629futureadmin12"></script>
-<script src="data-persona5.js?v=20260629futureadmin12"></script>
-<script src="data-profile6.js?v=20260629futureadmin12"></script>
-<script src="engine-sfx.js?v=20260629futureadmin12"></script>
+<script src="config.js?v=20260629futureadmin13"></script>
+<script src="data-periods.js?v=20260629futureadmin13"></script>
+<script src="data-endings.js?v=20260629futureadmin13"></script>
+<script src="data-persona5.js?v=20260629futureadmin13"></script>
+<script src="data-profile6.js?v=20260629futureadmin13"></script>
+<script src="engine-sfx.js?v=20260629futureadmin13"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -452,7 +452,7 @@ function renderStats(R,V){
     var arr=Object.keys(pick).map(function(k){return [k,pick[k],bad[k]||0];}).sort(function(a,b){return b[1]-a[1];}).slice(0,15);
     if(!arr.length)return '<div class="loading">暂无轨迹数据(需新版答题记录)</div>';
     var max=arr[0][1];
-    return arr.map(function(x){var p=pct(x[1],max),badR=x[1]?(x[2]/x[1]*100).toFixed(0):0,badColor=badR>30?'var(--bad)':badR>10?'var(--warn)':'var(--ink-faint)';return '<div class="row"><div class="nm">'+esc(x[0])+'</div><div class="barwrap"><div class="bar" style="width:'+p+'%"></div></div><div class="pct"><span class="pct-val">'+x[1]+'</span><span class="pct-sub" style="color:'+badColor+';background:'+(badR>30?'rgba(168,69,58,.08)':badR>10?'rgba(154,123,58,.1)':'rgba(39,211,224,.1)')+'">踩'+badR+'%</span></div></div>';}).join('');
+    return arr.map(function(x){var p=pct(x[1],max),badR=x[1]?(x[2]/x[1]*100).toFixed(0):0,badColor=badR>30?'var(--bad)':badR>10?'var(--warn)':'var(--ink-faint)';return '<div class="row"><div class="nm">'+esc(x[0])+'</div><div class="barwrap"><div class="bar" style="width:'+p+'%"></div></div><div class="pct"><span class="pct-val">'+x[1]+'</span><span class="pct-sub" style="color:'+badColor+';background:'+(badR>30?'rgba(255,90,110,.12)':badR>10?'rgba(240,168,58,.12)':'rgba(39,211,224,.1)')+'">踩'+badR+'%</span></div></div>';}).join('');
   }
   // 🏆 结局称号分布 — 环形饼图(真实玩家数据)
   function titlePie(){
@@ -606,7 +606,7 @@ function renderConfig(){
     var MNAME={buffett:'巴菲特',simons:'西蒙斯',soros:'索罗斯',wood:'木头姐',trumpish:'豪赌狂人',muskish:'钢铁狂想家'};
     h+='<div class="panel"><h2>\u{1F3AD} 五维投资人格 · 6型称号 <span style="font-size:11px;color:#8a9bb3;font-weight:600">data-persona5.js · 对应6大师</span></h2>';
     PERSONA5.archetypes.forEach(function(s){
-      var col=esc(s.color||"#5a6470");
+      var col=esc(s.color||"#8a93a8");
       var ac=s.anchor||{};
       var anchorTxt=['risk','data','horizon','focus','decisive'].map(function(k){return k+':'+(ac[k]!=null?ac[k]:'-');}).join(' ');
       h+='<div class="formula" style="border-left-color:'+col+'">';
@@ -837,7 +837,7 @@ function runSim(){
     var tot=all.hot+all.up+all.down+all.safe||1;
     var TT={hot:30,up:50,down:15,safe:5};
     var tnm={hot:'🔥风口hot',up:'📈顺势up',down:'📉逆势down',safe:'🛡️稳健safe'};
-    var tcol={hot:'#c46a3a',up:'#3c6b4f',down:'#a8453a',safe:'#5a6470'};
+    var tcol={hot:'#d99a3a',up:'#3fd9a8',down:'#ff5a6e',safe:'#8a93a8'};
     h+='<div class="panel"><h2>🎯 标的趋势分布 <span style="font-size:11px;font-weight:600;color:#8a9bb3">共'+tot+'项</span></h2>';
     h+='<div class="txt" style="font-size:11px;color:#8a9bb3;margin-bottom:10px;">目标比例: 风口30% / 顺势50% / 逆势15% / 稳健5% —— 调整需手改 data-periods.js 各标的 trend</div>';
     ['hot','up','down','safe'].forEach(function(k){var pct=all[k]/tot*100;
@@ -987,7 +987,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629futureadmin12';
+    bgmAudio.src='audio/'+file+'?v=20260629futureadmin13';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
