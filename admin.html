@@ -251,9 +251,10 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629futureadmin25"></script>
-<script src="data-bundle.js?v=20260629futureadmin25"></script>
-<script src="engine.js?v=20260629futureadmin25"></script>
+<script src="config.js?v=20260629futureadmin26"></script>
+<script src="data-bundle.js?v=20260629futureadmin26"></script>
+<script>window.__NO_AUTO_AUDIO__=true;/*后台禁用全局音频自动解锁,避免iOS点空白处触发"播放动作";试听由row.onclick主动Sfx.unlock*/</script>
+<script src="engine.js?v=20260629futureadmin26"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -1008,7 +1009,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629futureadmin25';
+    bgmAudio.src='audio/'+file+'?v=20260629futureadmin26';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };

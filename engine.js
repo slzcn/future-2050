@@ -158,12 +158,16 @@ const Sfx = (function(){
   // 轻量提前 resume:不受 unlocked 守卫限制,每次交互都顺手 resume ctx
   // 作用:页面静置后 ctx 挂起,用户手指一按下就立即 resume,等松手触发音效时 ctx 已 running→即时发声不滞后
   function eagerResume(){ try{ if(ctx && ctx.state!=='running'){ ctx.resume(); } }catch(e){} }
+  // 全局自动解锁监听:游戏页需要(首声不滞后)。后台(admin)设 window.__NO_AUTO_AUDIO__=true 可禁用,
+  // 避免 iOS 下点任意空白处也触发 AudioContext resume 被系统当作"播放动作"。后台试听时由 row.onclick 主动 Sfx.unlock。
   try{
-    ['pointerdown','touchstart','keydown'].forEach(ev=>
-      document.addEventListener(ev, unlock, {once:false, passive:true, capture:true}));
-    // pointerdown/pointermove 提前唤醒(滞后修复:点击前ctx就开始resume)
-    ['pointerdown','pointermove','touchstart','keydown'].forEach(ev=>
-      document.addEventListener(ev, eagerResume, {once:false, passive:true, capture:true}));
+    if(!(typeof window!=='undefined' && window.__NO_AUTO_AUDIO__)){
+      ['pointerdown','touchstart','keydown'].forEach(ev=>
+        document.addEventListener(ev, unlock, {once:false, passive:true, capture:true}));
+      // pointerdown/pointermove 提前唤醒(滞后修复:点击前ctx就开始resume)
+      ['pointerdown','pointermove','touchstart','keydown'].forEach(ev=>
+        document.addEventListener(ev, eagerResume, {once:false, passive:true, capture:true}));
+    }
   }catch(e){}
 
   return {
