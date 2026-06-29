@@ -130,11 +130,11 @@
   .prow label{flex:0 0 clamp(96px,26vw,130px);color:var(--ink-soft);}
   .prow input[type=range]{flex:1;min-width:90px;height:24px;accent-color:var(--accent);background:transparent;cursor:pointer;-webkit-appearance:none;appearance:none;touch-action:manipulation;}
   .prow input[type=range]:focus{outline:none;}
-  .prow input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:rgba(0,0,0,.3);}
-  .prow input[type=range]::-moz-range-track{height:5px;border-radius:3px;background:rgba(0,0,0,.3);}
+  .prow input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:rgba(255,255,255,.14);}
+  .prow input[type=range]::-moz-range-track{height:5px;border-radius:3px;background:rgba(255,255,255,.14);}
   .prow input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.25);margin-top:-7px;cursor:pointer;}
   .prow input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.25);cursor:pointer;}
-  .prow .pv input{width:64px;text-align:right;font-family:inherit;font-size:13px;font-weight:800;border:1px solid var(--line);border-radius:5px;padding:5px 6px;background:#fff;color:var(--ink);-webkit-appearance:none;appearance:none;-moz-appearance:textfield;}
+  .prow .pv input{width:64px;text-align:right;font-family:inherit;font-size:13px;font-weight:800;border:1px solid var(--line);border-radius:5px;padding:5px 6px;background:var(--bg);color:var(--ink);-webkit-appearance:none;appearance:none;-moz-appearance:textfield;}
   .prow .pv input::-webkit-outer-spin-button,.prow .pv input::-webkit-inner-spin-button{-webkit-appearance:none;appearance:none;margin:0;display:none;}
   .prow .pv input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 22%,transparent);}
   .btnrow{display:flex;gap:10px;margin-top:10px;}
@@ -248,12 +248,12 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629futureadmin11"></script>
-<script src="data-periods.js?v=20260629futureadmin11"></script>
-<script src="data-endings.js?v=20260629futureadmin11"></script>
-<script src="data-persona5.js?v=20260629futureadmin11"></script>
-<script src="data-profile6.js?v=20260629futureadmin11"></script>
-<script src="engine-sfx.js?v=20260629futureadmin11"></script>
+<script src="config.js?v=20260629futureadmin12"></script>
+<script src="data-periods.js?v=20260629futureadmin12"></script>
+<script src="data-endings.js?v=20260629futureadmin12"></script>
+<script src="data-persona5.js?v=20260629futureadmin12"></script>
+<script src="data-profile6.js?v=20260629futureadmin12"></script>
+<script src="engine-sfx.js?v=20260629futureadmin12"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -987,7 +987,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629futureadmin11';
+    bgmAudio.src='audio/'+file+'?v=20260629futureadmin12';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
