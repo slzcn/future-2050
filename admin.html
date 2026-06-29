@@ -251,9 +251,9 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260629futureadmin22"></script>
-<script src="data-bundle.js?v=20260629futureadmin22"></script>
-<script src="engine.js?v=20260629futureadmin22"></script>
+<script src="config.js?v=20260629futureadmin23"></script>
+<script src="data-bundle.js?v=20260629futureadmin23"></script>
+<script src="engine.js?v=20260629futureadmin23"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -403,6 +403,18 @@ function activateTab(p){
   if(p==='cfg'&&!loaded.cfg){loaded.cfg=1;defer(renderConfig);}
 }
 function boot(){
+  // ── 映射完整性自检(防 vc↔future 同源镜像漏改埋雷,2026-06-29 加) ──
+  try{ if(typeof PERSONA5!=='undefined'&&PERSONA5.archetypes){
+    var __masters={}; for(var __k in PERSONA5.archetypes){__masters[PERSONA5.archetypes[__k].master]=1;}
+    var __pm=window.PMNAME||{};
+    Object.keys(__masters).forEach(function(m){ if(!__pm[m]) console.warn('[映射自检] 大师映射(PMNAME/MNAME)缺 key:',m,'— 该人格大师标注会显示英文/undefined,请补全映射'); });
+  }
+  if(typeof DATA_PERIODS!=='undefined'){
+    var __dp=DATA_PERIODS.periods||DATA_PERIODS;
+    if(Array.isArray(__dp)&&typeof TIMES!=='undefined'){
+      __dp.forEach(function(p){ if(p&&p.id&&!TIMES[p.id]) console.warn('[映射自检] 时代映射(TIMES)缺 key:',p.id,'— 音乐时代标签会缺失'); });
+    }
+  } }catch(__e){ console.warn('[映射自检] 执行异常',__e); }
   document.getElementById('logout').onclick=logout;
   Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(tab){
     tab.addEventListener('click',function(){
@@ -996,7 +1008,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260629futureadmin22';
+    bgmAudio.src='audio/'+file+'?v=20260629futureadmin23';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
