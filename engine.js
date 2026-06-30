@@ -46,6 +46,10 @@ const Sfx = (function(){
     g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+start+dur);
     o.connect(g); g.connect(master);
     o.start(ctx.currentTime+start); o.stop(ctx.currentTime+start+dur+0.02);
+    // 节点回收:oscillator 停止后主动断开自己+gain。否则反复发声(如连续答题)节点在
+    // AudioContext 累积不回收(部分浏览器/移动Safari 的自动GC不可靠),最终触资源上限→后续
+    // createOscillator 静默失败=没声音(表现为"用一段时间后偶尔失声")。不改任何发声参数。
+    o.onended=function(){ try{ o.disconnect(); g.disconnect(); }catch(e){} };
   }
   // 琶音(多音依次)
   function arp(freqs, step, dur, type='triangle', peak=0.5){

@@ -640,8 +640,10 @@ function calcStyle(){
   return out;
 }
 // 画雷达图：playerScores 实线，masterScores 虚线
-function drawRadar(canvas, playerScores, masterScores, accent){
+// progress: 0~1 入场动画进度(数据多边形从中心展开),默认1=完整(回看/截图直接终态)
+function drawRadar(canvas, playerScores, masterScores, accent, progress){
   if(typeof PROFILE==='undefined') return;
+  const prog = (progress==null)?1:Math.max(0,Math.min(1,progress));
   const dims = PROFILE.dims;
   const n = dims.length;
   const dpr = window.devicePixelRatio || 2;
@@ -683,28 +685,43 @@ function drawRadar(canvas, playerScores, masterScores, accent){
     ctx.beginPath();
     for(let i=0;i<n;i++){
       const ang = -Math.PI/2 + i*2*Math.PI/n;
-      const v = (scores[dims[i].key]!=null?scores[dims[i].key]:50)/100;
+      const v = (scores[dims[i].key]!=null?scores[dims[i].key]:50)/100 * prog;  // prog缩放:从中心展开
       const x = cx + R*v*Math.cos(ang), y = cy + R*v*Math.sin(ang);
       i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
     }
     ctx.closePath();
-    if(fill){ ctx.fillStyle=color; ctx.globalAlpha=0.14; ctx.fill(); ctx.globalAlpha=1; }
+    if(fill){ ctx.fillStyle=color; ctx.globalAlpha=0.14*prog; ctx.fill(); ctx.globalAlpha=1; }
     ctx.lineWidth = dashed?1.8:2.4;
     ctx.setLineDash(dashed?[5,4]:[]);
-    ctx.strokeStyle = color; ctx.stroke();
+    ctx.strokeStyle = color; ctx.globalAlpha = prog; ctx.stroke(); ctx.globalAlpha = 1;
     ctx.setLineDash([]);
-    if(!dashed){
+    // 顶点圆点(仅实线,动画末段才显形避免乱跳)
+    if(!dashed && prog>0.6){
       for(let i=0;i<n;i++){
         const ang = -Math.PI/2 + i*2*Math.PI/n;
-        const v = (scores[dims[i].key]!=null?scores[dims[i].key]:50)/100;
+        const v = (scores[dims[i].key]!=null?scores[dims[i].key]:50)/100 * prog;
         const x = cx + R*v*Math.cos(ang), y = cy + R*v*Math.sin(ang);
-        ctx.beginPath(); ctx.arc(x,y,3,0,2*Math.PI); ctx.fillStyle=color; ctx.fill();
+        ctx.beginPath(); ctx.arc(x,y,3,0,2*Math.PI); ctx.fillStyle=color; ctx.globalAlpha=(prog-0.6)/0.4; ctx.fill(); ctx.globalAlpha=1;
       }
     }
   }
   // 先画大师(虚线) 再画玩家(实线在上)；两者同色(流派色),靠线型区分
   if(masterScores) poly(masterScores, accent, true, false);
   poly(playerScores, accent, false, true);
+  // 存下玩家各顶点的"CSS像素坐标"+维度信息,供 hover tooltip 命中检测(动画终态时记一次)
+  if(prog>=1){
+    var verts=[];
+    for(let i=0;i<n;i++){
+      const ang=-Math.PI/2 + i*2*Math.PI/n;
+      const pv=(playerScores[dims[i].key]!=null?playerScores[dims[i].key]:50);
+      const v=pv/100;
+      verts.push({ x:cx+R*v*Math.cos(ang), y:cy+R*v*Math.sin(ang),
+        axis:dims[i].axis, val:Math.round(pv),
+        master:(masterScores&&masterScores[dims[i].key]!=null)?Math.round(masterScores[dims[i].key]):null });
+    }
+    canvas.__radarVerts=verts;            // CSS px(因ctx.scale过dpr,这里用逻辑坐标=CSS px)
+    canvas.__radarAccent=accent;
+  }
 }
 function calcScore(){
   // 净值线性评分(2026-06-22重构): 总分 = (资本-100-累计投入)*a + (业绩-100)*b + (人脉-100)*c
@@ -806,7 +823,8 @@ function renderMBTI(){
   const dimList = (typeof PROFILE!=='undefined') ? PROFILE.dims.map(d=>{
     const v = ps[d.key];
     const label = v>=58?d.high : (v<=42?d.low : '均衡');
-    return `<div class="p6-row"><span class="p6-axis">${d.axis}</span><div class="p6-bar"><i style="width:${v}%"></i></div><span class="p6-val">${label}</span></div>`;
+    const mv = (b&&b.p6&&b.p6[d.key]!=null) ? Math.round(b.p6[d.key]) : '';  // 大师分(用于hover)
+    return `<div class="p6-row" data-axis="${d.axis}" data-you="${Math.round(v)}" data-mt="${mv}"><span class="p6-axis">${d.axis}</span><div class="p6-bar"><i style="width:${v}%"></i></div><span class="p6-val">${label}</span></div>`;
   }).join('') : '';
 
   let masterHTML='';
@@ -839,16 +857,149 @@ function renderMBTI(){
     <div class="sc-sub-head"><span class="sh-emoji">📊</span>五维人格对比<span class="sh-emoji">📊</span></div>
     <div class="radar-wrap">
       <canvas id="radarCanvas" class="radar-canvas"></canvas>
+      <div id="radarTip" class="radar-tip"></div>
       ${legend}
     </div>
-    <div class="p6-list">${dimList}</div>`;
-  // 画雷达图(canvas 需在 DOM 后绘制)
+    <div class="p6-list">${dimList}<div id="p6Tip" class="radar-tip"></div></div>`;
+  // 画雷达图(canvas 需在 DOM 后绘制)。结局页很长,雷达在下方——必须滚进视口才播动画,
+  // 否则用户滑到时早动完了(只见终态)。先画终态兜底(防截图/不支持IO时空白),进视口再从0重播。
   const cv = document.getElementById('radarCanvas');
   if(cv && typeof PROFILE!=='undefined'){
-    requestAnimationFrame(()=>drawRadar(cv, ps, b?b.p6:null, accent));
+    cv.__radarParams={ps:ps, mp:(b?b.p6:null), accent:accent};  // 存渲染参数,供截图前结算到终态
+    requestAnimationFrame(()=>drawRadar(cv, ps, b?b.p6:null, accent, 1)); // 终态兜底
+    whenVisible(cv, ()=>animateRadar(cv, ps, b?b.p6:null, accent));        // 进视口播放
+    setupRadarHover(cv);                                                   // 鼠标划过顶点显数值
   }
+  setupP6Hover(el, accent);  // 雷达下方五维条:hover显示你的分/大师分
+  // 五维人格数值条(p6) count-up:同样进视口才滚
+  whenVisible(el.querySelector('.p6-list')||el, ()=>countUpBars(el));
   // 暂存本局雷达数据(供存档/回看重绘 canvas, 因 canvas 像素不随 innerHTML 保存)
   window._lastRadar = { ps: ps, mp: (b?b.p6:null), accent: accent };
+}
+
+// 元素滚进视口时触发 cb。默认每次进入都触发(完全离开视口后再进来可重播);
+// 不支持 IntersectionObserver 则立即执行一次。
+function whenVisible(target, cb){
+  if(!target){ cb(); return; }
+  if(typeof IntersectionObserver==='undefined'){ cb(); return; }
+  var inside=false;
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        if(!inside){ inside=true; cb(); }   // 进入(之前在外面)→播一次
+      } else {
+        inside=false;                        // 完全离开→武装下次重播
+      }
+    });
+  }, { threshold:0.35 });  // 露出35%才算"看到了",完全移出才 reset
+  io.observe(target);
+}
+
+// 雷达 hover/触摸:指针靠近某顶点时,浮出该维"名称+你的分/大师分"小气泡(命中圆点~26px内)
+function setupRadarHover(canvas){
+  var tip=document.getElementById('radarTip'); if(!tip)return;
+  function locate(clientX, clientY){
+    var verts=canvas.__radarVerts; if(!verts)return null;
+    var rect=canvas.getBoundingClientRect();
+    var px=(clientX-rect.left), py=(clientY-rect.top);
+    // verts是CSS px坐标,但canvas样式width可能≠绘制W;按rect等比换算
+    var fx=px/rect.width*(canvas.clientWidth||rect.width);
+    var fy=py/rect.height*(canvas.clientHeight||rect.height);
+    var best=null,bd=1e9;
+    verts.forEach(function(v){var d=Math.hypot(v.x-fx,v.y-fy);if(d<bd){bd=d;best=v;}});
+    return (best&&bd<=26)?{v:best,px:px,py:py}:null;
+  }
+  function show(hit){
+    var v=hit.v, ac=canvas.__radarAccent||'#27d3e0';
+    tip.innerHTML='<span class="rt-axis">'+v.axis+'</span>'+
+      '<span class="rt-you" style="color:'+ac+'">你 '+v.val+'</span>'+
+      (v.master!=null?'<span class="rt-mt">大师 '+v.master+'</span>':'');
+    // 定位在顶点上方(气泡相对 radar-wrap 定位)
+    tip.style.left=hit.px+'px';
+    tip.style.top=(hit.py-12)+'px';
+    tip.classList.add('show');
+  }
+  function hide(){ tip.classList.remove('show'); }
+  canvas.addEventListener('mousemove',function(e){var h=locate(e.clientX,e.clientY);h?show(h):hide();});
+  canvas.addEventListener('mouseleave',hide);
+  // 触屏:点一下顶点也能看(手机用户)
+  canvas.addEventListener('touchstart',function(e){
+    if(!e.touches[0])return; var t=e.touches[0]; var h=locate(t.clientX,t.clientY);
+    if(h){ show(h); setTimeout(hide,1800); }
+  },{passive:true});
+}
+
+// 雷达下方五维条 hover/触摸:浮出该维"你的分/大师分"气泡(复用 .radar-tip 样式)
+function setupP6Hover(scope, accent){
+  var tip=scope.querySelector('#p6Tip'); if(!tip)return;
+  var rows=scope.querySelectorAll('.p6-row');
+  function show(row){
+    var ac=accent||'#27d3e0';
+    var you=row.getAttribute('data-you'), mt=row.getAttribute('data-mt'), axis=row.getAttribute('data-axis');
+    tip.innerHTML='<span class="rt-axis">'+axis+'</span>'+
+      '<span class="rt-you" style="color:'+ac+'">你 '+you+'</span>'+
+      ((mt!=='' && mt!=null)?'<span class="rt-mt">大师 '+mt+'</span>':'');
+    // 气泡定位到该行上方中部(相对 p6-list)
+    var lr=scope.querySelector('.p6-list').getBoundingClientRect();
+    var rr=row.getBoundingClientRect();
+    tip.style.left=(rr.left-lr.left+rr.width/2)+'px';
+    tip.style.top=(rr.top-lr.top)+'px';
+    tip.classList.add('show');
+  }
+  function hide(){ tip.classList.remove('show'); }
+  Array.prototype.forEach.call(rows,function(row){
+    row.addEventListener('mouseenter',function(){show(row);});
+    row.addEventListener('mouseleave',hide);
+    row.addEventListener('touchstart',function(){ show(row); setTimeout(hide,1800); },{passive:true});
+  });
+}
+
+// 雷达入场动画:数据多边形从中心弹性展开(~700ms cubicOut),尊重reduce-motion
+function animateRadar(canvas, ps, mp, accent){
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(reduce){ drawRadar(canvas, ps, mp, accent, 1); return; }
+  var dur=720, t0=null;
+  function tick(ts){
+    if(!t0)t0=ts; var k=Math.min(1,(ts-t0)/dur);
+    var eased=1-Math.pow(1-k,3);  // cubicOut
+    drawRadar(canvas, ps, mp, accent, eased);
+    if(k<1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// 数值条宽度 count-up(p6-bar i 从0展开到内联width目标)
+function countUpBars(root){
+  if(!root)return;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var bars=root.querySelectorAll('.p6-bar i');
+  Array.prototype.forEach.call(bars,function(b,i){
+    var w=b.style.width; if(!w)return;
+    if(reduce){return;}
+    b.style.setProperty('--w', w);
+    b.style.width='0';
+    b.style.transition='width .6s cubic-bezier(.22,.61,.36,1)';
+    setTimeout(function(){ b.style.width=w; }, 120+i*60);
+  });
+}
+
+// 截图前结算:把进行中的入场动画立刻拉到终态,避免 html2canvas 截到半截雷达/归零数值条
+function settleEndingVisuals(){
+  // 1) 雷达:用存的参数重画到 progress=1(终态)
+  try{
+    var cv=document.getElementById('radarCanvas');
+    if(cv && cv.__radarParams && typeof drawRadar==='function'){
+      var pr=cv.__radarParams; drawRadar(cv, pr.ps, pr.mp, pr.accent, 1);
+    }
+  }catch(e){}
+  // 2) 五维数值条:若被 countUpBars 归零/动画中,直接设回目标宽(--w),并去掉过渡立即生效
+  try{
+    var bars=document.querySelectorAll('.p6-bar i');
+    Array.prototype.forEach.call(bars,function(b){
+      var target=b.style.getPropertyValue('--w');
+      if(target){ b.style.transition='none'; b.style.width=target; }
+    });
+  }catch(e){}
 }
 
 function toast(msg,ms){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),ms||2200);}
@@ -857,6 +1008,7 @@ function genImage(){
   if(typeof html2canvas==='undefined'){ toast(CONFIG.text.genImageFail||'截图库未就绪，请稍后再试',3000); return; }  // 库未加载完(慢网首次)直接提示,不抛错
   window._genImaging=true;
   if(window.Sfx)Sfx.play('click');
+  settleEndingVisuals();  // 截图前先把进行中的入场动画结算到终态(否则截到半截雷达/归零数值条)
   const card=document.getElementById('shareCard');
   // 截图前临时隐藏「二十四年押注轨迹」整章(章节标题+明细块都带 data-chapter=3),页面仍显示,只是不进截图,避免截图过长 + 残留孤立标题
   const ch3=[].slice.call(card.querySelectorAll('[data-chapter="3"]'));
