@@ -179,7 +179,13 @@ function viewLastResult(){
   // 【修复】雷达图是 canvas，像素不随 innerHTML 保存，回看时从存档 radar 数据重绘，否则雷达图消失
   if(r.radar && typeof drawRadar==='function'){
     const cv=document.getElementById('radarCanvas');
-    if(cv){ requestAnimationFrame(()=>drawRadar(cv, r.radar.ps, r.radar.mp, r.radar.accent)); }
+    if(cv){
+      requestAnimationFrame(()=>drawRadar(cv, r.radar.ps, r.radar.mp, r.radar.accent));
+      // 回看走恢复存档html的独立路径,不经renderMBTI,需补绑hover监听(否则划过节点/条块无浮层)
+      const mb=document.getElementById('mbtiBlock');
+      if(typeof setupRadarHover==='function') setupRadarHover(cv);
+      if(typeof setupP6Hover==='function' && mb) setupP6Hover(mb, r.radar.accent);
+    }
   }
   // 重新挂载渲染(MBTI block 已在html里)
   window.scrollTo({top:0,behavior:'smooth'});
