@@ -721,9 +721,13 @@ function drawRadar(canvas, playerScores, masterScores, accent, progress){
       const ang=-Math.PI/2 + i*2*Math.PI/n;
       const pv=(playerScores[dims[i].key]!=null?playerScores[dims[i].key]:50);
       const v=pv/100;
+      const hasM=(masterScores&&masterScores[dims[i].key]!=null);
+      const mvVal=hasM?masterScores[dims[i].key]:null;
+      // 同一条轴存两个命中点:你的实线顶点(x,y) + 大师虚线顶点(mx,my),划过任一都弹同条轴浮层
       verts.push({ x:cx+R*v*Math.cos(ang), y:cy+R*v*Math.sin(ang),
+        mx:hasM?cx+R*(mvVal/100)*Math.cos(ang):null, my:hasM?cy+R*(mvVal/100)*Math.sin(ang):null,
         axis:dims[i].axis, val:Math.round(pv),
-        master:(masterScores&&masterScores[dims[i].key]!=null)?Math.round(masterScores[dims[i].key]):null });
+        master:hasM?Math.round(mvVal):null });
     }
     canvas.__radarVerts=verts;            // CSS px(因ctx.scale过dpr,这里用逻辑坐标=CSS px)
     canvas.__radarAccent=accent;
@@ -912,8 +916,15 @@ function setupRadarHover(canvas){
     var fx=px/rect.width*(canvas.clientWidth||rect.width);
     var fy=py/rect.height*(canvas.clientHeight||rect.height);
     var best=null,bd=1e9;
-    verts.forEach(function(v){var d=Math.hypot(v.x-fx,v.y-fy);if(d<bd){bd=d;best=v;}});
-    // 命中:同时返回鼠标相对 wrap 的坐标(气泡跟随鼠标,不是固定在顶点)
+    verts.forEach(function(v){
+      var d=Math.hypot(v.x-fx,v.y-fy);                       // 到"你"实线顶点
+      if(d<bd){bd=d;best=v;}
+      if(v.mx!=null){                                         // 到"大师"虚线顶点(同条轴)
+        var dm=Math.hypot(v.mx-fx,v.my-fy);
+        if(dm<bd){bd=dm;best=v;}
+      }
+    });
+    // 命中(实线或虚线顶点任一在26px内):返回鼠标相对 wrap 的坐标(气泡跟随鼠标)
     if(best&&bd<=26){
       var wr=wrap.getBoundingClientRect();
       return {v:best, mx:clientX-wr.left, my:clientY-wr.top};
