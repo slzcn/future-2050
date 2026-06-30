@@ -403,7 +403,6 @@ body:has(#cover:not(.hidden)) .info-btn{display:flex;}
   /* 6 维分项条 */
   .p6-list{margin:18px 0 10px;display:flex;flex-direction:column;gap:11px;position:relative;}
   .p6-row{cursor:default;}
-  @media(hover:hover){.p6-row:hover .p6-bar{box-shadow:0 0 0 1px var(--sc,#27d3e0) inset;}}
   .p6-row{display:flex;align-items:center;gap:12px;font-size:13px;}
   .p6-axis{min-width:74px;color:var(--ink-soft);font-weight:700;letter-spacing:.04em;}
   .p6-bar{flex:1;height:6px;background:var(--line);border-radius:4px;position:relative;overflow:hidden;}

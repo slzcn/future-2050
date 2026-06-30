@@ -898,25 +898,30 @@ function whenVisible(target, cb){
 // 雷达 hover/触摸:指针靠近某顶点时,浮出该维"名称+你的分/大师分"小气泡(命中圆点~26px内)
 function setupRadarHover(canvas){
   var tip=document.getElementById('radarTip'); if(!tip)return;
+  var wrap=tip.offsetParent||canvas.parentNode;  // 气泡定位上下文(radar-wrap)
   function locate(clientX, clientY){
     var verts=canvas.__radarVerts; if(!verts)return null;
     var rect=canvas.getBoundingClientRect();
-    var px=(clientX-rect.left), py=(clientY-rect.top);
-    // verts是CSS px坐标,但canvas样式width可能≠绘制W;按rect等比换算
+    var px=(clientX-rect.left), py=(clientY-rect.top);  // 鼠标相对 canvas(用于命中检测)
     var fx=px/rect.width*(canvas.clientWidth||rect.width);
     var fy=py/rect.height*(canvas.clientHeight||rect.height);
     var best=null,bd=1e9;
     verts.forEach(function(v){var d=Math.hypot(v.x-fx,v.y-fy);if(d<bd){bd=d;best=v;}});
-    return (best&&bd<=26)?{v:best,px:px,py:py}:null;
+    // 命中:同时返回鼠标相对 wrap 的坐标(气泡跟随鼠标,不是固定在顶点)
+    if(best&&bd<=26){
+      var wr=wrap.getBoundingClientRect();
+      return {v:best, mx:clientX-wr.left, my:clientY-wr.top};
+    }
+    return null;
   }
   function show(hit){
     var v=hit.v, ac=canvas.__radarAccent||'#27d3e0';
     tip.innerHTML='<span class="rt-axis">'+v.axis+'</span>'+
       '<span class="rt-you" style="color:'+ac+'">你 '+v.val+'</span>'+
       (v.master!=null?'<span class="rt-mt">大师 '+v.master+'</span>':'');
-    // 定位在顶点上方(气泡相对 radar-wrap 定位)
-    tip.style.left=hit.px+'px';
-    tip.style.top=(hit.py-12)+'px';
+    // 紧贴鼠标上方(相对 radar-wrap)
+    tip.style.left=hit.mx+'px';
+    tip.style.top=(hit.my-10)+'px';
     tip.classList.add('show');
   }
   function hide(){ tip.classList.remove('show'); }
