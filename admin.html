@@ -205,7 +205,8 @@
   #authGate{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
   #authGate .agt{font-size:18px;font-weight:800;margin-bottom:6px;}
   #authGate .ags{font-size:12.5px;color:var(--ink-faint);margin-bottom:16px;text-align:center;}
-  #authPin{width:240px;max-width:80vw;font-size:18px;text-align:center;letter-spacing:.3em;padding:12px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);}
+  #authPin{width:240px;max-width:80vw;font-size:18px;text-align:center;letter-spacing:.3em;padding:12px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);transition:border-color .18s,box-shadow .18s;}
+  #authPin:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent);}
   #authBtn{width:240px;max-width:80vw;margin-top:14px;border:1.5px solid var(--accent);background:var(--accent);color:var(--paper);font-family:inherit;font-size:15px;font-weight:700;padding:12px;border-radius:8px;cursor:pointer;letter-spacing:.05em;}
   #authErr{color:var(--bad);font-size:13px;min-height:18px;margin-top:8px;}
   #authGate .agtip{color:var(--ink-faint);font-size:11.5px;margin-top:16px;}
@@ -272,10 +273,10 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260630futureadmin28"></script>
-<script src="data-bundle.js?v=20260630futureadmin28"></script>
+<script src="config.js?v=20260701futureadmin29"></script>
+<script src="data-bundle.js?v=20260701futureadmin29"></script>
 <script>window.__NO_AUTO_AUDIO__=true;/*后台禁用全局音频自动解锁,避免iOS点空白处触发"播放动作";试听由row.onclick主动Sfx.unlock*/</script>
-<script src="engine.js?v=20260630futureadmin28"></script>
+<script src="engine.js?v=20260701futureadmin29"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -1067,7 +1068,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260630futureadmin28';
+    bgmAudio.src='audio/'+file+'?v=20260701futureadmin29';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
