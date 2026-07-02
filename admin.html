@@ -273,10 +273,10 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260701futureadmin29"></script>
-<script src="data-bundle.js?v=20260701futureadmin29"></script>
+<script src="config.js?v=20260702authcolor"></script>
+<script src="data-bundle.js?v=20260702authcolor"></script>
 <script>window.__NO_AUTO_AUDIO__=true;/*后台禁用全局音频自动解锁,避免iOS点空白处触发"播放动作";试听由row.onclick主动Sfx.unlock*/</script>
-<script src="engine.js?v=20260701futureadmin29"></script>
+<script src="engine.js?v=20260702authcolor"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -305,13 +305,13 @@ function logout(){try{localStorage.removeItem(AUTH_KEY);}catch(e){}location.relo
   if(loggedIn()){pass();return;}
   var pin=document.getElementById('authPin'),btn=document.getElementById('authBtn'),err=document.getElementById('authErr');
   function tryLogin(){
-    var v=(pin.value||'').trim();err.textContent='校验中…';
-    if(!SB.url||!SB.key){err.textContent='未配置 Supabase';return;}
+    var v=(pin.value||'').trim();err.style.color='var(--ink-faint)';err.textContent='校验中…';
+    if(!SB.url||!SB.key){err.style.color='var(--bad)';err.textContent='未配置 Supabase';return;}
     sbGet('dashboard_auth?select=pin&limit=1').then(function(rows){
       var real=(rows&&rows[0]&&rows[0].pin)||'';
       if(v&&v===real){try{localStorage.setItem(AUTH_KEY,String(Date.now()));}catch(e){}pass();}
-      else err.textContent='口令错误';
-    }).catch(function(){err.textContent='网络错误，稍后重试';});
+      else {err.style.color='var(--bad)';err.textContent='口令错误';}
+    }).catch(function(){err.style.color='var(--bad)';err.textContent='网络错误，稍后重试';});
   }
   btn.addEventListener('click',tryLogin);
   pin.addEventListener('keydown',function(e){if(e.key==='Enter')tryLogin();});
@@ -1068,7 +1068,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260701futureadmin29';
+    bgmAudio.src='audio/'+file+'?v=20260702authcolor';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };
