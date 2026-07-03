@@ -32,7 +32,7 @@ function shuffleOnce(arr){
 // 开新一局时清掉所有 _sh 标记,让新局重新随机(否则同一浏览器会话内多局顺序会一样)
 function resetShuffle(){
   try{
-    Object.keys((typeof PROFILE!=='undefined'?PROFILE.scenarios:MBTI.scenarios)||{}).forEach(k=>{const sc=(typeof PROFILE!=='undefined'?PROFILE.scenarios:MBTI.scenarios)[k];const a=sc&&sc.opts;if(a)delete a._sh;});
+    Object.keys((typeof PROFILE!=='undefined'&&PROFILE.scenarios)||{}).forEach(k=>{const a=PROFILE.scenarios[k].opts;if(a)delete a._sh;});
     (GAME.periods||[]).forEach(p=>(p.rounds||[]).forEach(r=>{if(r.deals)delete r.deals._sh;}));
   }catch(e){}
 }
