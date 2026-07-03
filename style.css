@@ -343,7 +343,7 @@ body:has(#cover:not(.hidden)) .info-btn{display:flex;}
 .invite-banner b{color:var(--accent,#27d3e0);font-weight:800;}
 
 
-/* ===== 五维人格 + 投资大师匹配（从 vc_sim 迁移，2026-06-27） ===== */
+/* ===== 五维人格 + 投资大师匹配（2026-06-27） ===== */
   .sc-chapter{display:flex;align-items:center;justify-content:center;gap:10px;margin:52px 0 26px;}
   .sc-chapter::before,.sc-chapter::after{content:"";flex:1;max-width:72px;height:1px;background:linear-gradient(90deg,transparent,var(--accent-c,#27d3e0));opacity:.4;}
   .sc-chapter::after{background:linear-gradient(90deg,var(--accent-c,#27d3e0),transparent);}

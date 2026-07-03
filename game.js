@@ -254,8 +254,6 @@ function toggleMusic(){
 }
 
 // 投资选择不主导风格(会被「想赢选顺势」带偏),风格纯由情境题决定
-// (顶层常量:confirmDeal/undoStaged 等多个函数都要访问,必须在函数外,否则块级作用域报 TREND_MBTI is not defined)
-const TREND_MBTI = { up:{}, hot:{}, down:{}, safe:{} };
 
 function startGame(){
   if(window.Sfx)Sfx.play('start');
@@ -349,7 +347,7 @@ function enterPeriod(){
 }
 function showScenario(){
   const p=GAME.periods[pIdx];
-  const sc=(typeof PROFILE!=='undefined'&&PROFILE.scenarios&&PROFILE.scenarios[p.id])?PROFILE.scenarios[p.id]:MBTI.scenarios[p.id];
+  const sc=(typeof PROFILE!=='undefined'&&PROFILE.scenarios&&PROFILE.scenarios[p.id])?PROFILE.scenarios[p.id]:(typeof MBTI!=='undefined'&&MBTI.scenarios?MBTI.scenarios[p.id]:null);
   if(!sc){ showStory(); return; }
   shuffleOnce(sc.opts);  // 随机展示选项顺序(首次进入本题时洗一次)
   const opts=sc.opts.map((o,i)=>`<div class="sc-opt" data-i="${i}" onclick="pickScenario(${i})">${o.t}</div>`).join('');
@@ -364,13 +362,14 @@ function showScenario(){
 function pickScenario(i){
   if(window.Sfx)Sfx.play('pick');
   const p=GAME.periods[pIdx];
-  const SC=(typeof PROFILE!=='undefined'&&PROFILE.scenarios&&PROFILE.scenarios[p.id])?PROFILE.scenarios[p.id]:MBTI.scenarios[p.id];
+  const SC=(typeof PROFILE!=='undefined'&&PROFILE.scenarios&&PROFILE.scenarios[p.id])?PROFILE.scenarios[p.id]:(typeof MBTI!=='undefined'&&MBTI.scenarios?MBTI.scenarios[p.id]:null);
+  if(!SC){return;}
   const o=SC.opts[i];
   if(o.e){for(const k in o.e){ if(mbti[k]==null) mbti[k]=0; mbti[k]+=o.e[k]; } }
   // 选中反馈:仅选中的选项出波纹+弹入效果
   document.querySelectorAll('.sc-opt').forEach(el=>el.classList.toggle('picked',+el.dataset.i===i));
   const sel=document.querySelector('.sc-opt[data-i="'+i+'"]');
-  if(sel && window._vcAnim){ const r=sel.getBoundingClientRect(); window._vcAnim.ripple(sel, r.left+r.width/2, r.top+r.height/2); window._vcAnim.anim(sel,'bounce'); }
+  if(sel && window._f2050Anim){ const r=sel.getBoundingClientRect(); window._f2050Anim.ripple(sel, r.left+r.width/2, r.top+r.height/2); window._f2050Anim.anim(sel,'bounce'); }
   setTimeout(()=>showStory(),420);
 }
 function renderTop(){
@@ -490,8 +489,6 @@ function confirmDeal(){
   if(window.Sfx)Sfx.play('confirm');
   const p=GAME.periods[pIdx], r=p.rounds[rIdx], d=r.deals[selDeal];
   const small = !!(window._smallSet && window._smallSet[selDeal]);
-  // 投资选择按 trend 暗含性格倾向，累积 MBTI 分
-  const tm2=TREND_MBTI[d.trend]; if(tm2){for(const k in tm2)mbti[k]+=tm2[k];}
   // 记累计投入(方案A:不扣资本数值,仅记录,评分时减)
   state.spent=(state.spent||0)+(d.amt||0);
   stagedThisPeriod.push({year:r.year, deal:d, tag:d.tag, name:d.name, small, amt:d.amt||0});
@@ -515,7 +512,6 @@ function undoStaged(){
   if(!stagedThisPeriod.length) return;
   const last=stagedThisPeriod.pop();
   state.spent=Math.max(0,(state.spent||0)-(last.amt||last.deal.amt||0));  // 撤销:投入加回来
-  const tm=TREND_MBTI[last.deal.trend]; if(tm){for(const k in tm)mbti[k]-=tm[k];}
   selDeal=null; saveProgress();
   const r=GAME.periods[pIdx].rounds[rIdx];
   const prevIdx=r.deals.findIndex(x=>x.name===last.deal.name && x.tag===last.deal.tag);
@@ -653,7 +649,7 @@ function drawRadar(canvas, playerScores, masterScores, accent, progress){
   const dims = PROFILE.dims;
   const n = dims.length;
   const dpr = window.devicePixelRatio || 2;
-  const W = canvas.clientWidth || 320, H = W;
+  const W = canvas.clientWidth || Math.round(canvas.getBoundingClientRect().width) || 320, H = W;
   canvas.width = W*dpr; canvas.height = H*dpr;
   canvas.style.height = H+'px';
   const ctx = canvas.getContext('2d');
@@ -1161,7 +1157,7 @@ function stopMusic(){
     setTimeout(()=>el.classList.remove(cls), 600);
   }
   // 暴露给 pickScenario 等选中逻辑调用(选中那刻才出效果)
-  window._vcAnim={ ripple:spawnRipple, anim:addAnim };
+  window._f2050Anim={ ripple:spawnRipple, anim:addAnim };
   document.addEventListener('pointerdown', function(e){
     const x=e.clientX, y=e.clientY;
     // 主按钮
