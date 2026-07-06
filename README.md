@@ -14,7 +14,6 @@
 | `engine.js` | 音效 + 背景音乐引擎（自动合并 Sfx/Music） | 一般不动 |
 | `game.js` | 渲染 + 流程逻辑（GAME 对象，含分享/二维码/截图） | 改交互流程、结算 UI、分享卡 |
 | `portraits-inline.js` | 大师头像 base64 内嵌（绕过妙搭 CORS） | 换头像（重新生成 base64） |
-| `admin.html` | 调参/数据后台（需口令登录） | 看数据、调平衡参数 |
 | `vendor/` | 第三方库（html2canvas / qrcode） | 不动 |
 | `audio/` | 背景音乐 / 音效素材 | 换音频 |
 | `portraits/` | 头像原图（生成 inline 用，不直接引用） | 换头像原图 |
