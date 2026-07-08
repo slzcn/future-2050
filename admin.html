@@ -273,10 +273,10 @@
   <div class="footer"><span style="white-space:nowrap">🦞 小龙虾出品</span> · 所有数值实时读自游戏真实配置，所见即所玩</div>
 </div>
 
-<script src="config.js?v=20260707edgeauth"></script>
-<script src="data-bundle.js?v=20260707edgeauth"></script>
+<script src="config.js?v=20260709vcdb"></script>
+<script src="data-bundle.js?v=20260709vcdb"></script>
 <script>window.__NO_AUTO_AUDIO__=true;/*后台禁用全局音频自动解锁,避免iOS点空白处触发"播放动作";试听由row.onclick主动Sfx.unlock*/</script>
-<script src="engine.js?v=20260707edgeauth"></script>
+<script src="engine.js?v=20260709vcdb"></script>
 <script>
 "use strict";
 /* ===================== 公共 ===================== */
@@ -288,9 +288,9 @@ function pct(n,t){return t?(n/t*100):0;}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
 function tierMin(k){return (DATA_ENDINGS.endingTiers.find(function(t){return t.key===k;})||{}).min||0;}
 /* ===================== 后台 API（走 Edge Function）=====================
-   登录口令、读数据均经 Supabase Edge Function admin-api
+   登录口令、读数据均经 Supabase Edge Function(函数名取 CONFIG.supabase.fn)
    真实口令 / service_role 都在服务器环境变量里，浏览器物理拿不到 */
-var API_BASE=(SB.url||'').replace(/\/$/,'')+'/functions/v1/admin-api';
+var API_BASE=(SB.url||'').replace(/\/$/,'')+'/functions/v1/'+(SB.fn||'admin-api');
 var API_TOKEN_KEY='***';
 function apiToken(){try{return localStorage.getItem(API_TOKEN_KEY)||'';}catch(e){return '';}}
 function apiSetToken(t){try{if(t)localStorage.setItem(API_TOKEN_KEY,t);else localStorage.removeItem(API_TOKEN_KEY);}catch(e){}}
@@ -1097,7 +1097,7 @@ function makeMusicRow(file,label,ds){
     if(bgmPlaying===row){ stopBgm(); return; }
     stopBgm();
     if(!bgmAudio){ bgmAudio=new Audio(); bgmAudio.loop=true; bgmAudio.volume=0.7; }
-    bgmAudio.src='audio/'+file+'?v=20260707edgeauth';
+    bgmAudio.src='audio/'+file+'?v=20260709vcdb';
     bgmAudio.play().catch(()=>{});
     row.classList.add('playing'); bgmPlaying=row;
   }catch(e){} };

@@ -4,9 +4,12 @@
 
 const CONFIG = {
   // === 数据上报(经 Edge Function,前端零密钥) ===
-  // 只需 url(拼 Edge Function 地址);上报由服务端 service_role 插表,前端不带任何 key。future-2050 专属项目(与vc-simulator独立)。
+  // 只需 url(拼 Edge Function 地址);上报由服务端 service_role 插表,前端不带任何 key。
+  // 2026-07-09 迁库: future 数据并入 vc 库(cddkniwbhvcbfgkgomtl),用 future_ 前缀表隔离,
+  // 走专属函数 future-admin-api(读写 future_results/future_visits),与 vc 游戏数据互不干扰。
   supabase: {
-    url: 'https://kctfmnejpfnazvklfzny.supabase.co',
+    url: 'https://cddkniwbhvcbfgkgomtl.supabase.co',
+    fn: 'future-admin-api',
   },
 
   // 玩家初始属性

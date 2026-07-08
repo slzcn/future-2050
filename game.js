@@ -93,7 +93,7 @@ function reportApi(kind, row){
     var sb=(CONFIG&&CONFIG.supabase)||{};
     if(!sb.url)return;
     if(kind!=='result'&&kind!=='visit')return;
-    fetch(sb.url.replace(/\/$/,'')+'/functions/v1/admin-api/report',{
+    fetch(sb.url.replace(/\/$/,'')+'/functions/v1/'+(sb.fn||'admin-api')+'/report',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({kind:kind, row:row})
