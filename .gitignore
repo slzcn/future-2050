@@ -9,3 +9,6 @@ portraits/*_raw.jpg
 # 系统文件
 .DS_Store
 .cleanup_backup/
+
+# 妙搭应用 id（企业内网标识，不公开）
+.miaoda_app

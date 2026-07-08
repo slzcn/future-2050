@@ -76,8 +76,8 @@ GIT_TERMINAL_PROMPT=0 git push origin main   # ⚠️ 必带 GIT_TERMINAL_PROMPT
 rm -rf /tmp/miaoda_future && mkdir -p /tmp/miaoda_future
 cp index.html game.js config.js style.css data-bundle.js engine.js portraits-inline.js admin.html /tmp/miaoda_future/
 cp -r vendor audio portraits /tmp/miaoda_future/
-cd /tmp && lark-cli apps +html-publish --app-id app_178ssax0415 --path ./miaoda_future --as user
-# 线上：https://fenmikeji.aiforce.cloud/app/app_178ssax0415/
+cd /tmp && lark-cli apps +html-publish --app-id "$MIAODA_APP" --path ./miaoda_future --as user
+# 发布成功后可在妙搭控制台看到线上链接（企业内网，不写入公开仓）
 ```
 
 > 完整升级/发布规范（含移植矩阵、自检清单、踩坑记录）见
