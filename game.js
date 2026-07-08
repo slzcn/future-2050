@@ -91,18 +91,12 @@ function reportApi(kind, row){
   try{ if(window.parent && window.parent!==window){ window.parent.postMessage(Object.assign({__future2050__:kind}, row), '*'); } }catch(e){}
   try{
     var sb=(CONFIG&&CONFIG.supabase)||{};
-    if(!sb.url||!sb.key)return;
-    var table=(kind==='result')?'results':(kind==='visit')?'visits':null;
-    if(!table)return;
-    fetch(sb.url.replace(/\/$/,'')+'/rest/v1/'+table,{
+    if(!sb.url)return;
+    if(kind!=='result'&&kind!=='visit')return;
+    fetch(sb.url.replace(/\/$/,'')+'/functions/v1/admin-api/report',{
       method:'POST',
-      headers:{
-        'apikey':sb.key,
-        'Authorization':'Bearer '+sb.key,
-        'Content-Type':'application/json',
-        'Prefer':'return=minimal'
-      },
-      body:JSON.stringify(row)
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({kind:kind, row:row})
     }).catch(function(){});
   }catch(e){}
 }
