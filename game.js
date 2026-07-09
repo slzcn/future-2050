@@ -829,7 +829,7 @@ function renderMBTI(){
 
   let masterHTML='';
   if(mt){
-    const pSrc=(window.PORTRAITS_INLINE&&window.PORTRAITS_INLINE[b.id])||('portraits/'+b.id+'.jpg');
+    const pSrc=(window.PORTRAITS_INLINE&&window.PORTRAITS_INLINE[b.id])||'';
     const pctTxt=(typeof mt.bestPct==='number')?mt.bestPct:'';
     masterHTML=`
     <div class="master-card">
